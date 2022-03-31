@@ -35,10 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\SlashCommands\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\D2Api\APIHelper\APIHelper.csproj" />
   </ItemGroup>
 
