@@ -95,8 +95,8 @@ internal class ConfigHelper
 
     public static Color GetEmbedColor()
     {
-        var settings = GetBotSettings();
-        return new Color(settings.EmbedColor.R, settings.EmbedColor.G, settings.EmbedColor.B);
+        var settings = GetBotSettings().EmbedColor;
+        return new Color(settings.R, settings.G, settings.B);
     }
 
     public static BotSettings GetBotSettings() => 

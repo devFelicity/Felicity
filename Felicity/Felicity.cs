@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using BungieSharper.Client;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -23,7 +24,7 @@ internal class Felicity
     private readonly CommandService _commands;
     private readonly InteractionService _interaction;
     private readonly IServiceProvider _services;
-
+    
     public Felicity()
     {
         _client = new DiscordSocketClient(new DiscordSocketConfig
@@ -118,13 +119,15 @@ internal class Felicity
         // This tells us how to build slash commands.
         _client.Ready += async () =>
         {
+            /*var guild = _client.GetGuild(764586645684355092);
+            await guild.DeleteApplicationCommandsAsync();
+            await _client.Rest.DeleteAllGlobalCommandsAsync();*/
+
             // TODO: Temporal Shift is used as testing slash commands until they're good to go public
             await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
-            // var guild = _client.GetGuild(933971948965359626);
-            // await guild.DeleteApplicationCommandsAsync();
+            
             // await _interaction.RegisterCommandsGloballyAsync();
-            // await _client.Rest.DeleteAllGlobalCommandsAsync();
-
+            
             if (!_debug) TwitchService.Setup(_client);
 
             Log.Information($"Connected as {_client.CurrentUser}");

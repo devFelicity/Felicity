@@ -13,7 +13,6 @@ namespace Felicity.Helpers;
 
 internal class WebHelper
 {
-
     public static async Task Start()
     {
         var tcs = new CancellationTokenSource();
