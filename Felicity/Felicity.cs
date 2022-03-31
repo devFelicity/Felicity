@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -135,13 +135,16 @@ internal class Felicity
         _client.SelectMenuExecuted += SelectMenuHandler;
     }
 
-    private static async Task SlashCommandExecuted(SlashCommandInfo info, IInteractionContext context,
+    private static Task SlashCommandExecuted(SlashCommandInfo info, IInteractionContext context,
         IResult result)
     {
-        if (!result.IsSuccess)
-            if (result.Error != null)
-                await context.Interaction.RespondAsync($"{result.Error.GetType()}: {result.ErrorReason}",
-                    ephemeral: true);
+        if (result.IsSuccess)
+            return Task.CompletedTask;
+
+        if (result.Error != null)
+            Log.Error($"{result.Error.GetType()}: {result.ErrorReason}");
+
+        return Task.CompletedTask;
     }
 
     private static async Task SelectMenuHandler(SocketMessageComponent interaction)
