@@ -1,11 +1,10 @@
 ﻿// ReSharper disable UnusedMember.Global
 
-namespace Felicity.Enums
+namespace Felicity.Enums;
+
+public enum AltarsOfSorrow
 {
-    public enum AltarsOfSorrow
-    {
-        Shotgun,
-        Sniper,
-        Rocket
-    }
+    Shotgun,
+    Sniper,
+    Rocket
 }

@@ -1,10 +1,9 @@
 ﻿// ReSharper disable UnusedMember.Global
-namespace Felicity.Enums
+namespace Felicity.Enums;
+
+public enum CurseWeek
 {
-    public enum CurseWeek
-    {
-        Weak,
-        Medium,
-        Strong
-    }
+    Weak,
+    Medium,
+    Strong
 }

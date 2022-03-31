@@ -2,65 +2,64 @@
 using Felicity.Enums;
 using Newtonsoft.Json;
 
-namespace Felicity.Rotations
+namespace Felicity.Rotations;
+
+internal class CurrentRotations
 {
-    internal class CurrentRotations
-    {
-        [JsonProperty("DailyResetTimestamp")]
-        public static DateTime DailyResetTimestamp = DateTime.Now;
+    [JsonProperty("DailyResetTimestamp")]
+    public static DateTime DailyResetTimestamp = DateTime.Now;
 
-        [JsonProperty("WeeklyResetTimestamp")]
-        public static DateTime WeeklyResetTimestamp = DateTime.Now;
+    [JsonProperty("WeeklyResetTimestamp")]
+    public static DateTime WeeklyResetTimestamp = DateTime.Now;
 
-        // Dailies
+    // Dailies
 
-        [JsonProperty("LostSector")]
-        public static LostSector LostSector;
+    [JsonProperty("LostSector")]
+    public static LostSector LostSector;
 
-        [JsonProperty("LostSectorArmorDrop")]
-        public static LostSectorReward LostSectorArmorDrop;
+    [JsonProperty("LostSectorArmorDrop")]
+    public static LostSectorReward LostSectorArmorDrop;
 
-        [JsonProperty("AltarWeapon")]
-        public static AltarsOfSorrow AltarWeapon;
+    [JsonProperty("AltarWeapon")]
+    public static AltarsOfSorrow AltarWeapon;
 
-        [JsonProperty("Wellspring")]
-        public static Wellspring Wellspring;
+    [JsonProperty("Wellspring")]
+    public static Wellspring Wellspring;
 
-        // Weeklies
+    // Weeklies
 
-        [JsonProperty("LWChallengeEncounter")]
-        public static LastWish LWChallengeEncounter;
+    [JsonProperty("LWChallengeEncounter")]
+    public static LastWish LWChallengeEncounter;
 
-        [JsonProperty("DSCChallengeEncounter")]
-        public static DeepStoneCrypt DSCChallengeEncounter;
+    [JsonProperty("DSCChallengeEncounter")]
+    public static DeepStoneCrypt DSCChallengeEncounter;
 
-        /*
-        [JsonProperty("GoSChallengeEncounter")]
-        public static GardenOfSalvationEncounter GoSChallengeEncounter;
+    /*
+    [JsonProperty("GoSChallengeEncounter")]
+    public static GardenOfSalvationEncounter GoSChallengeEncounter;
 
-        [JsonProperty("VoGChallengeEncounter")]
-        public static VaultOfGlassEncounter VoGChallengeEncounter;
+    [JsonProperty("VoGChallengeEncounter")]
+    public static VaultOfGlassEncounter VoGChallengeEncounter;
 
-        [JsonProperty("VowChallengeEncounter")]
-        public static VowOfTheDiscipleEncounter VotDChallengeEncounter;
+    [JsonProperty("VowChallengeEncounter")]
+    public static VowOfTheDiscipleEncounter VotDChallengeEncounter;
 
-        [JsonProperty("CurseWeek")]
-        public static CurseWeek CurseWeek;
+    [JsonProperty("CurseWeek")]
+    public static CurseWeek CurseWeek;
 
-        [JsonProperty("AscendantChallenge")]
-        public static AscendantChallenge AscendantChallenge;
+    [JsonProperty("AscendantChallenge")]
+    public static AscendantChallenge AscendantChallenge;
 
-        [JsonProperty("Nightfall")]
-        public static Nightfall Nightfall;
+    [JsonProperty("Nightfall")]
+    public static Nightfall Nightfall;
 
-        [JsonProperty("NightfallWeaponDrops")]
-        public static NightfallWeapon NightfallWeaponDrops;
+    [JsonProperty("NightfallWeaponDrops")]
+    public static NightfallWeapon NightfallWeaponDrops;
 
-        [JsonProperty("EmpireHunt")]
-        public static EmpireHunt EmpireHunt;
+    [JsonProperty("EmpireHunt")]
+    public static EmpireHunt EmpireHunt;
 
-        [JsonProperty("NightmareHunts")]
-        public static NightmareHunt[] NightmareHunts;
-        */
-    }
+    [JsonProperty("NightmareHunts")]
+    public static NightmareHunt[] NightmareHunts;
+    */
 }

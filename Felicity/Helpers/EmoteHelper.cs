@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Felicity.Helpers
+namespace Felicity.Helpers;
+
+internal class EmoteHelper
 {
-    internal class EmoteHelper
-    {
-    }
 }
