@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using BungieSharper.Client;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -128,7 +127,8 @@ internal class Felicity
             
             // await _interaction.RegisterCommandsGloballyAsync();
             
-            if (!_debug) TwitchService.Setup(_client);
+            if (!_debug) 
+                TwitchService.Setup(_client);
 
             Log.Information($"Connected as {_client.CurrentUser}");
         };

@@ -23,7 +23,7 @@ internal static class Extensions
         DestinyCharacterComponent goodChar = null;
 
         var lastPlayed = new DateTime();
-        foreach (var (key, value) in destinyProfile.Characters.Data.Where(destinyCharacterComponent =>
+        foreach (var (_, value) in destinyProfile.Characters.Data.Where(destinyCharacterComponent =>
                      destinyCharacterComponent.Value.DateLastPlayed > lastPlayed))
         {
             lastPlayed = value.DateLastPlayed;
