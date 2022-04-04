@@ -1,0 +1,29 @@
+name: Build Felicity
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with: 
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Publish
+      run: dotnet publish -c Release -r linux-x64
+    - name: Upload
+      uses: actions/upload-artifact@v3.0.0
+      with:
+          path: Felicity/bin/Release/net6.0/publish/linux-x64
+          if-no-files-found: warn
+          retention-days: 30
