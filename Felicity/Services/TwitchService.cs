@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Discord;
 using Discord.WebSocket;
-using Felicity.Configs;
 using Felicity.Helpers;
 using Serilog;
 using TwitchLib.Api;
@@ -17,9 +17,6 @@ internal class TwitchService
 {
     public static TwitchAPI Api;
     public static DiscordSocketClient Client;
-
-    // ulong is announcement message id
-    private static readonly Dictionary<User, ulong> monitoredLiveStreams = new();
 
     public static void Setup(DiscordSocketClient client)
     {
@@ -100,7 +97,11 @@ internal class TwitchService
                     $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{myStream.UserName}>\n{mention}",
                     false, embed.Build());
 
-            monitoredLiveStreams.Add(currentUser, message.Id);
+            var filePath = $"Configs/{currentUser.Name.ToLower()}.txt";
+            if (File.Exists(filePath))
+               File.Delete(filePath);
+            
+            await File.WriteAllTextAsync(filePath, message.Id.ToString());
         }
         catch (Exception ex)
         {
@@ -123,7 +124,9 @@ internal class TwitchService
             return;
         }
 
-        if (!monitoredLiveStreams.ContainsKey(userFromConfig))
+        var filePath = $"Configs/{e.Channel.ToLower()}.txt";
+
+        if (!File.Exists(filePath))
         {
             Log.Error("No monitored stream found linked to ending stream.");
             return;
@@ -138,13 +141,8 @@ internal class TwitchService
             return;
         }
 
-        // ReSharper disable once UseDeconstruction
-        var monitoredLiveStream =
-            (from user in monitoredLiveStreams
-                where string.Equals(user.Key.Name, userFromConfig.Name, StringComparison.CurrentCultureIgnoreCase)
-                select user).FirstOrDefault();
-
-        var message = ((SocketTextChannel)Client.GetChannel(userFromConfig.ChannelId)).GetMessageAsync(monitoredLiveStream.Value).Result;
+        var messageId = ulong.Parse(File.ReadAllText(filePath));
+        var message = ((SocketTextChannel)Client.GetChannel(userFromConfig.ChannelId)).GetMessageAsync(messageId).Result;
 
         var vod = Api.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1).Result.Videos.First();
         var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
@@ -168,10 +166,10 @@ internal class TwitchService
             },
             Fields = new List<EmbedFieldBuilder>
             {
-                new() {Name = "─── Started ───", Value = $"<t:{e.Stream.StartedAt}:f>", IsInline = true},
+                new() {Name = "─── Started  ───", Value = $"<t:{e.Stream.StartedAt}:f>", IsInline = true},
                 new() {Name = "─── Duration ───", Value = vod.Duration, IsInline = true},
-                new() {Name = "─── Game ───", Value = e.Stream.GameName, IsInline = false},
-                new() {Name = "─── Views ───", Value = vod.ViewCount, IsInline = true}
+                new() {Name = "─── Game     ───", Value = e.Stream.GameName, IsInline = false},
+                new() {Name = "─── Views    ───", Value = vod.ViewCount, IsInline = true}
             }
         };
 
@@ -189,6 +187,6 @@ internal class TwitchService
             Log.Error($"{ex.GetType()}: {ex.Message}");
         }
 
-        monitoredLiveStreams.Remove(monitoredLiveStream.Key);
+        File.Delete(filePath);
     }
 }
