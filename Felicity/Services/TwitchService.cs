@@ -47,10 +47,28 @@ internal class TwitchService
     {
         Log.Information($"Processing online Twitch stream by {e.Channel}");
 
-        var myStream = e.Stream;
+        var currentUser =
+            (from user in ConfigHelper.GetTwitchSettings().Users
+                where string.Equals(user.Value.Name, e.Stream.UserName, StringComparison.CurrentCultureIgnoreCase)
+                select user.Value).FirstOrDefault();
+
+        if (currentUser == null)
+        {
+            Log.Error($"User not found in Twitch config.");
+            return;
+        }
+
+        var filePath = $"Configs/{currentUser.Name.ToLower()}-{e.Stream.Id}.txt";
+
+        if (File.Exists(filePath))
+        {
+            Log.Warning("Stream was already posted.");
+            return;
+        }
+
         var channelInfo = Api.Helix.Users.GetUsersAsync(new List<string> {e.Stream.UserId}).Result.Users
             .FirstOrDefault();
-        var timeStarted = (int) myStream.StartedAt.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        var timeStarted = (int)e.Stream.StartedAt.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
         var embed = new EmbedBuilder
         {
@@ -58,12 +76,12 @@ internal class TwitchService
             Author = new EmbedAuthorBuilder
             {
                 IconUrl = channelInfo == null ? "" : channelInfo.ProfileImageUrl,
-                Name = $"{myStream.UserName} is now live on Twitch:",
-                Url = $"https://twitch.tv/{myStream.UserName}"
+                Name = $"{e.Stream.UserName} is now live on Twitch:",
+                Url = $"https://twitch.tv/{e.Stream.UserName}"
             },
-            Title = myStream.Title,
-            Url = $"https://twitch.tv/{myStream.UserName}",
-            ImageUrl = myStream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
+            Title = e.Stream.Title,
+            Url = $"https://twitch.tv/{e.Stream.UserName}",
+            ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
             Footer = new EmbedFooterBuilder
             {
                 IconUrl = "https://whaskell.pw/images/felicity.jpg",
@@ -71,21 +89,13 @@ internal class TwitchService
             },
             Fields = new List<EmbedFieldBuilder>
             {
-                new() {Name = "─── Game ───", Value = myStream.GameName, IsInline = true},
+                new() {Name = "─── Game ───", Value = e.Stream.GameName, IsInline = true},
                 new() {Name = "─── Started ───", Value = $"<t:{timeStarted}:R>", IsInline = true}
             }
         };
 
-        var currentUser =
-            (from user in ConfigHelper.GetTwitchSettings().Users
-                where string.Equals(user.Value.Name, myStream.UserName, StringComparison.CurrentCultureIgnoreCase)
-                select user.Value).FirstOrDefault();
-
         try
         {
-            if (currentUser == null)
-                return;
-
             var mention = "";
             if (currentUser.MentionEveryone)
                 mention = "@everyone ";
@@ -94,13 +104,9 @@ internal class TwitchService
 
             var message = await Client.GetGuild(currentUser.ServerId).GetTextChannel(currentUser.ChannelId)
                 .SendMessageAsync(
-                    $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{myStream.UserName}>\n{mention}",
+                    $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{e.Stream.UserName}>\n{mention}",
                     false, embed.Build());
 
-            var filePath = $"Configs/{currentUser.Name.ToLower()}.txt";
-            if (File.Exists(filePath))
-               File.Delete(filePath);
-            
             await File.WriteAllTextAsync(filePath, message.Id.ToString());
         }
         catch (Exception ex)
@@ -124,7 +130,7 @@ internal class TwitchService
             return;
         }
 
-        var filePath = $"Configs/{e.Channel.ToLower()}.txt";
+        var filePath = $"Configs/{e.Channel.ToLower()}-{e.Stream.Id}.txt";
 
         if (!File.Exists(filePath))
         {
