@@ -17,6 +17,7 @@ internal class TwitchService
 {
     public static TwitchAPI Api;
     public static DiscordSocketClient Client;
+    private static LiveStreamMonitorService monitorService;
 
     public static void Setup(DiscordSocketClient client)
     {
@@ -32,20 +33,32 @@ internal class TwitchService
             }
         };
 
-        var members = ConfigHelper.GetTwitchSettings().Users.Select(user => user.Value.Name).ToList();
-
-        var monitorService = new LiveStreamMonitorService(Api);
-        monitorService.SetChannelsByName(members);
-        monitorService.OnStreamOnline += OnStreamOnline;
-        monitorService.OnStreamOffline += OnStreamOffline;
+        ConfigureMonitor();
         monitorService.Start();
+    }
 
+    public static void ConfigureMonitor()
+    {
+        var members = ConfigHelper.GetTwitchSettings().Users.Select(user => user.Value.Name).ToList();
+        monitorService = new LiveStreamMonitorService(TwitchService.Api);
+        monitorService.OnStreamOnline += TwitchService.OnStreamOnline;
+        monitorService.OnStreamOffline += TwitchService.OnStreamOffline;
+        monitorService.SetChannelsByName(members);
         Log.Information($"Listening to Twitch streams from: {string.Join(", ", members)}");
     }
 
-    private static async void OnStreamOnline(object sender, OnStreamOnlineArgs e)
+    public static void RestartMonitor()
     {
-        Log.Information($"Processing online Twitch stream by {e.Channel}");
+        monitorService.Stop();
+        ConfigureMonitor();
+        monitorService.Start();
+
+        Log.Information("Restarted TwitchMonitor");
+    }
+
+    public static async void OnStreamOnline(object sender, OnStreamOnlineArgs e)
+    {
+        Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
         var currentUser =
             (from user in ConfigHelper.GetTwitchSettings().Users
@@ -54,7 +67,7 @@ internal class TwitchService
 
         if (currentUser == null)
         {
-            Log.Error($"User not found in Twitch config.");
+            Log.Error("User not found in Twitch config.");
             return;
         }
 
@@ -116,9 +129,9 @@ internal class TwitchService
         }
     }
 
-    private static void OnStreamOffline(object sender, OnStreamOfflineArgs e)
+    public static void OnStreamOffline(object sender, OnStreamOfflineArgs e)
     {
-        Log.Information($"Processing offline Twitch stream by {e.Channel}");
+        Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
         var userFromConfig =
             (from user in ConfigHelper.GetTwitchSettings().Users
                 where string.Equals(user.Value.Name, e.Channel, StringComparison.CurrentCultureIgnoreCase)

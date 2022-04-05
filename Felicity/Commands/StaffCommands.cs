@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Ceen;
 using Discord;
 using Discord.Commands;
 using Felicity.Helpers;
+using Felicity.Services;
 
 // ReSharper disable UnusedMember.Global
 
@@ -37,5 +39,24 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
     public async Task Staff()
     {
         await ReplyAsync(Context.User.IsStaff().ToString());
+    }
+
+    [Command("restartTwitch")]
+    public async Task RestartTwitch()
+    {
+        if (!Context.User.IsStaff())
+            return;
+
+        try
+        {
+            TwitchService.RestartMonitor();
+            await ReplyAsync("Restarted TwitchMonitor");
+        }
+        catch (Exception ex)
+        {
+            var log = $"{ex.GetType()}: {ex.Message}";
+            await Log.ErrorAsync(log);
+            await ReplyAsync(log);
+        }
     }
 }
