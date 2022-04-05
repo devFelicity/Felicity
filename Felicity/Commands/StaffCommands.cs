@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ceen;
 using Discord;
 using Discord.Commands;
+using Felicity.Configs;
 using Felicity.Helpers;
 using Felicity.Services;
 
@@ -19,6 +22,20 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         var msg = Context.Client.Guilds.Aggregate(string.Empty, (current, guild) => current + $"Name: {guild.Name} // ID: {guild.Id}\n");
 
         await ReplyAsync(msg);
+    }
+
+    [Command("addServer")]
+    public async Task AddServer(ulong serverId)
+    {
+        const string path = "Configs/ServerConfig.json";
+        var currentConfig = ServerConfig.FromJson(await File.ReadAllTextAsync(path));
+
+        currentConfig.Settings ??= new Dictionary<string, ServerSetting>();
+
+        currentConfig.Settings.Add(serverId.ToString(), new ServerSetting());
+        await File.WriteAllTextAsync(path, currentConfig.ToJson());
+
+        await ReplyAsync($"Wrote new server \"{serverId}\"");
     }
 
     [Command("ban")]

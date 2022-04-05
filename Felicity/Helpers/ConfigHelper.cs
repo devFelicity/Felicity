@@ -14,11 +14,13 @@ internal class ConfigHelper
     private static IConfiguration _botConfig;
     private static IConfiguration _dataConfig;
     private static IConfiguration _emoteConfig;
+    private static IConfiguration _serverConfig;
     private static IConfiguration _twitchConfig;
     public static string ActiveConfigPath => configBasePath + "activeConfig.json";
     public static string BotConfigPath => configBasePath + "botConfig.json";
     public static string TwitchConfigPath => configBasePath + "twitchConfig.json";
     public static string DataConfigPath => configBasePath + "dataConfig.json";
+    public static string ServerConfigPath => configBasePath + "serverConfig.json";
     public static string EmoteConfigPath => configBasePath + "emoteConfig.json";
 
     public static bool LoadConfigFiles()
@@ -51,6 +53,19 @@ internal class ConfigHelper
         {
             File.WriteAllText(TwitchConfigPath, JsonConvert.SerializeObject(new TwitchConfig(), Formatting.Indented));
             Log.Error("<ConfigHelper> No twitchConfig.json file detected, creating new file.");
+            closeProgram = true;
+        }
+
+        if (File.Exists(ServerConfigPath))
+        {
+            _serverConfig = new ConfigurationBuilder()
+                .AddJsonFile(ServerConfigPath, false, true)
+                .Build();
+        }
+        else
+        {
+            File.WriteAllText(ServerConfigPath, JsonConvert.SerializeObject(new ServerConfig(), Formatting.Indented));
+            Log.Error("<ConfigHelper> No serverConfig.json file detected, creating new file.");
             closeProgram = true;
         }
 
@@ -99,9 +114,18 @@ internal class ConfigHelper
         return new Color(settings.R, settings.G, settings.B);
     }
 
-    public static BotSettings GetBotSettings() => 
-        _botConfig.GetRequiredSection("Settings").Get<BotSettings>();
+    public static BotSettings GetBotSettings()
+    {
+        return _botConfig.GetRequiredSection("Settings").Get<BotSettings>();
+    }
 
-    public static TwitchSettings GetTwitchSettings() =>
-        _twitchConfig.GetRequiredSection("Settings").Get<TwitchSettings>();
+    public static TwitchSettings GetTwitchSettings()
+    {
+        return _twitchConfig.GetRequiredSection("Settings").Get<TwitchSettings>();
+    }
+
+    public static ServerSetting GetServerSettings(ulong serverID)
+    {
+        return _twitchConfig.GetRequiredSection("Settings").GetRequiredSection(serverID.ToString()).Get<ServerSetting>();
+    }
 }
