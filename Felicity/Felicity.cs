@@ -134,7 +134,7 @@ internal class Felicity
             
             // await _interaction.RegisterCommandsGloballyAsync();
             
-            //if (!_debug) 
+            if (!_debug) 
                 TwitchService.Setup(_client);
 
             Log.Information($"Connected as {_client.CurrentUser.Username}#{_client.CurrentUser.DiscriminatorValue}");
