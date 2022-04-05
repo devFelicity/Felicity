@@ -13,7 +13,7 @@ using Felicity.Services;
 namespace Felicity.Commands.SlashCommands;
 
 [Group("lookup", "Various lookup commands for Destiny2")]
-public class LookupGuardians : InteractionModuleBase<SocketInteractionContext>
+public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("guardian", "Look up a profile of a player")]
     public async Task Guardian(
