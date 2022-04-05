@@ -18,8 +18,16 @@ namespace Felicity;
 
 internal class Felicity
 {
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable CS0649  // Remove unused variable
     private static bool _debug;
+#pragma warning restore CS0649
+#pragma warning restore IDE0044
+#pragma warning restore IDE0079
+
     private readonly DiscordSocketClient _client;
+
     private readonly CommandService _commands;
     private readonly InteractionService _interaction;
     private readonly IServiceProvider _services;
@@ -115,22 +123,21 @@ internal class Felicity
         _client.MessageReceived += HandleMessageAsync;
         _client.InteractionCreated += HandleInteraction;
 
-        // This tells us how to build slash commands.
         _client.Ready += async () =>
         {
             /*var guild = _client.GetGuild(764586645684355092);
-            await guild.DeleteApplicationCommandsAsync();
-            await _client.Rest.DeleteAllGlobalCommandsAsync();*/
+            await guild.DeleteApplicationCommandsAsync();*/
 
-            // TODO: Temporal Shift is used as testing slash commands until they're good to go public
-            await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
+            //await _client.Rest.DeleteAllGlobalCommandsAsync();
+
+            await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
             
             // await _interaction.RegisterCommandsGloballyAsync();
             
-            if (!_debug) 
+            //if (!_debug) 
                 TwitchService.Setup(_client);
 
-            Log.Information($"Connected as {_client.CurrentUser}");
+            Log.Information($"Connected as {_client.CurrentUser.Username}#{_client.CurrentUser.DiscriminatorValue}");
         };
 
         _interaction.SlashCommandExecuted += SlashCommandExecuted;
