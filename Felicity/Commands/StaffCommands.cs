@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,8 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
     [Command("listServers")]
     public async Task List()
     {
-        var msg = Context.Client.Guilds.Aggregate(string.Empty, (current, guild) => current + $"Name: {guild.Name} // ID: {guild.Id}\n");
+        var msg = Context.Client.Guilds.Aggregate(string.Empty,
+            (current, guild) => current + $"Name: {guild.Name} // ID: {guild.Id}\n");
 
         await ReplyAsync(msg);
     }

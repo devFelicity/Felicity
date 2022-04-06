@@ -40,9 +40,9 @@ internal class TwitchService
     public static void ConfigureMonitor()
     {
         var members = ConfigHelper.GetTwitchSettings().Users.Select(user => user.Value.Name).ToList();
-        monitorService = new LiveStreamMonitorService(TwitchService.Api);
-        monitorService.OnStreamOnline += TwitchService.OnStreamOnline;
-        monitorService.OnStreamOffline += TwitchService.OnStreamOffline;
+        monitorService = new LiveStreamMonitorService(Api);
+        monitorService.OnStreamOnline += OnStreamOnline;
+        monitorService.OnStreamOffline += OnStreamOffline;
         monitorService.SetChannelsByName(members);
         Log.Information($"Listening to Twitch streams from: {string.Join(", ", members)}");
     }
@@ -81,17 +81,12 @@ internal class TwitchService
 
         var channelInfo = Api.Helix.Users.GetUsersAsync(new List<string> {e.Stream.UserId}).Result.Users
             .FirstOrDefault();
-        var timeStarted = (int)e.Stream.StartedAt.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        var timeStarted = (int) e.Stream.StartedAt.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
         var embed = new EmbedBuilder
         {
             Color = Color.Purple,
-            Author = new EmbedAuthorBuilder
-            {
-                IconUrl = channelInfo == null ? "" : channelInfo.ProfileImageUrl,
-                Name = $"{e.Stream.UserName} is now live on Twitch:",
-                Url = $"https://twitch.tv/{e.Stream.UserName}"
-            },
+            ThumbnailUrl = channelInfo?.ProfileImageUrl,
             Title = e.Stream.Title,
             Url = $"https://twitch.tv/{e.Stream.UserName}",
             ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
@@ -102,8 +97,18 @@ internal class TwitchService
             },
             Fields = new List<EmbedFieldBuilder>
             {
-                new() {Name = "─── Game ───", Value = e.Stream.GameName, IsInline = true},
-                new() {Name = "─── Started ───", Value = $"<t:{timeStarted}:R>", IsInline = true}
+                new()
+                {
+                    Name = "─── Game ───",
+                    Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
+                    IsInline = true
+                },
+                new()
+                {
+                    Name = "─── Started ───", 
+                    Value = $"<t:{timeStarted}:R>", 
+                    IsInline = true
+                }
             }
         };
 
@@ -117,7 +122,7 @@ internal class TwitchService
 
             var message = await Client.GetGuild(currentUser.ServerId).GetTextChannel(currentUser.ChannelId)
                 .SendMessageAsync(
-                    $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{e.Stream.UserName}>\n{mention}",
+                    $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
                     false, embed.Build());
 
             await File.WriteAllTextAsync(filePath, message.Id.ToString());
@@ -143,7 +148,7 @@ internal class TwitchService
             return;
         }
 
-        var filePath = $"Configs/{e.Channel.ToLower()}-{e.Stream.Id}.txt";
+        var filePath = $"Configs/{userFromConfig.Name.ToLower()}-{e.Stream.Id}.txt";
 
         if (!File.Exists(filePath))
         {
@@ -151,7 +156,7 @@ internal class TwitchService
             return;
         }
 
-        var channelInfo = Api.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
+        var channelInfo = Api.Helix.Users.GetUsersAsync(new List<string> {e.Stream.UserId}).Result.Users
             .FirstOrDefault();
 
         if (channelInfo == null)
@@ -161,51 +166,121 @@ internal class TwitchService
         }
 
         var messageId = ulong.Parse(File.ReadAllText(filePath));
-        var message = ((SocketTextChannel)Client.GetChannel(userFromConfig.ChannelId)).GetMessageAsync(messageId).Result;
+        var message = ((SocketTextChannel) Client.GetChannel(userFromConfig.ChannelId)).GetMessageAsync(messageId)
+            .Result;
 
-        var vod = Api.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1).Result.Videos.First();
-        var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
-
-        var embed = new EmbedBuilder
+        var vodList = Api.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1).Result;
+        if (vodList.Videos.Length != 0)
         {
-            Color = Color.Purple,
-            Author = new EmbedAuthorBuilder
+            var vod = vodList.Videos.First();
+            var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
+
+            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+            var embed = new EmbedBuilder
             {
-                IconUrl = channelInfo.ProfileImageUrl,
-                Name = $"{e.Stream.UserName} was live on Twitch:",
-                Url = vodUrl
-            },
-            Title = e.Stream.Title,
-            Url = vodUrl,
-            ImageUrl = vod.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
-            Footer = new EmbedFooterBuilder
+                Color = Color.Purple,
+                Title = vod.Title,
+                Url = vodUrl,
+                ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
+                ThumbnailUrl = channelInfo.ProfileImageUrl,
+                Footer = new EmbedFooterBuilder
+                {
+                    IconUrl = "https://whaskell.pw/images/felicity.jpg",
+                    Text = "Felicity // whaskell.pw"
+                },
+                Fields = new List<EmbedFieldBuilder>
+                {
+                    new()
+                    {
+                        Name = "─── Started  ───", Value = $"<t:{unixTimestamp}:f>", 
+                        IsInline = true
+                    },
+                    new()
+                    {
+                        Name = "─── Duration ───", Value = vod.Duration, 
+                        IsInline = true
+                    },
+                    new()
+                    {
+                        Name = "─── Game     ───",
+                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
+                        IsInline = true
+                    },
+                    new()
+                    {
+                        Name = "─── Views    ───", 
+                        Value = vod.ViewCount, 
+                        IsInline = true
+                    }
+                }
+            };
+
+            try
             {
-                IconUrl = "https://whaskell.pw/images/felicity.jpg",
-                Text = "Felicity // whaskell.pw"
-            },
-            Fields = new List<EmbedFieldBuilder>
-            {
-                new() {Name = "─── Started  ───", Value = $"<t:{e.Stream.StartedAt}:f>", IsInline = true},
-                new() {Name = "─── Duration ───", Value = vod.Duration, IsInline = true},
-                new() {Name = "─── Game     ───", Value = e.Stream.GameName, IsInline = false},
-                new() {Name = "─── Views    ───", Value = vod.ViewCount, IsInline = true}
+                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                {
+                    properties.Content = $"<@{userFromConfig.UserId}> was live: <{vodUrl}>";
+                    properties.Embed = embed.Build();
+                });
+
+                File.Delete(filePath);
             }
-        };
-
-        try
-        {
-            (message as SocketUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+            catch (Exception ex)
             {
-                properties.Content = $"<@{userFromConfig.UserId}> is was live: <{vodUrl}>";
-                properties.Embed = embed.Build();
-            });
+                Log.Error("Error in Twitch OnStreamOffline");
+                Log.Error($"{ex.GetType()}: {ex.Message}");
+            }
         }
-        catch (Exception ex)
+        else
         {
-            Log.Error("Error in Twitch OnStreamOffline");
-            Log.Error($"{ex.GetType()}: {ex.Message}");
-        }
+            try
+            {
+                var embed = new EmbedBuilder
+                {
+                    Color = Color.Purple,
+                    Title = e.Stream.Title,
+                    ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
+                    ThumbnailUrl = channelInfo.ProfileImageUrl,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        IconUrl = "https://whaskell.pw/images/felicity.jpg",
+                        Text = "Felicity // whaskell.pw"
+                    },
+                    Fields = new List<EmbedFieldBuilder>
+                    {
+                        new()
+                        {
+                            Name = "─── Started  ───", Value = e.Stream.StartedAt.ToString("F"),
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "─── Duration ───", Value = (e.Stream.StartedAt - DateTime.Now).TotalHours,
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "─── Game     ───",
+                            Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                            IsInline = true
+                        }
+                    }
+                };
 
-        File.Delete(filePath);
+                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                {
+                    properties.Content = $"<@{userFromConfig.UserId}> was live:";
+                    properties.Embed = embed.Build();
+                });
+
+                File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error in Twitch OnStreamOffline");
+                Log.Error($"{ex.GetType()}: {ex.Message}");
+            }
+        }
     }
 }
