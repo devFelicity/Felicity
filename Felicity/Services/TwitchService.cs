@@ -99,13 +99,13 @@ internal class TwitchService
             {
                 new()
                 {
-                    Name = "─── Game ───",
+                    Name = "Game",
                     Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
                     IsInline = true
                 },
                 new()
                 {
-                    Name = "─── Started ───", 
+                    Name = "Started", 
                     Value = $"<t:{timeStarted}:R>", 
                     IsInline = true
                 }
@@ -193,24 +193,18 @@ internal class TwitchService
                 {
                     new()
                     {
-                        Name = "─── Started  ───", Value = $"<t:{unixTimestamp}:f>", 
+                        Name = "Started", Value = $"<t:{unixTimestamp}:f>", 
                         IsInline = true
                     },
                     new()
                     {
-                        Name = "─── Duration ───", Value = vod.Duration, 
+                        Name = "Duration", Value = vod.Duration, 
                         IsInline = true
                     },
                     new()
                     {
-                        Name = "─── Game     ───",
+                        Name = "Game",
                         Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
-                        IsInline = true
-                    },
-                    new()
-                    {
-                        Name = "─── Views    ───", 
-                        Value = vod.ViewCount, 
                         IsInline = true
                     }
                 }
@@ -251,17 +245,17 @@ internal class TwitchService
                     {
                         new()
                         {
-                            Name = "─── Started  ───", Value = e.Stream.StartedAt.ToString("F"),
+                            Name = "Started", Value = e.Stream.StartedAt.ToString("F"),
                             IsInline = true
                         },
                         new()
                         {
-                            Name = "─── Duration ───", Value = (e.Stream.StartedAt - DateTime.Now).TotalHours,
+                            Name = "Duration", Value = (e.Stream.StartedAt - DateTime.Now).TotalHours,
                             IsInline = true
                         },
                         new()
                         {
-                            Name = "─── Game     ───",
+                            Name = "Game",
                             Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
                             IsInline = true
                         }
