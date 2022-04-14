@@ -13,7 +13,7 @@ internal class ActiveConfig
     public static int RefreshesBeforeKick = 2;
 
     [JsonProperty("ActiveAFKUsers")]
-    public static List<ActiveAFKUser> ActiveAFKUsers { get; set; } = new List<ActiveAFKUser>();
+    public static List<ActiveAFKUser> ActiveAFKUsers { get; set; } = new();
 
     public class ActiveAFKUser
     {

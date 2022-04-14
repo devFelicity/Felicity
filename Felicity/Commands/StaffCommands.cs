@@ -34,7 +34,7 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         currentConfig.Settings ??= new Dictionary<string, ServerSetting>();
 
         currentConfig.Settings.Add(serverId.ToString(), new ServerSetting());
-        await File.WriteAllTextAsync(path, currentConfig.ToJson());
+        await File.WriteAllTextAsync(path, ServerConfig.ToJson(currentConfig));
 
         await ReplyAsync($"Wrote new server \"{serverId}\"");
     }
