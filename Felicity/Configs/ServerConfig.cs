@@ -63,11 +63,8 @@ public partial class ServerConfig
     {
         return JsonConvert.DeserializeObject<ServerConfig>(json, Converter.Settings);
     }
-}
 
-public static class Serialize
-{
-    public static string ToJson(this ServerConfig self)
+    public static string ToJson(ServerConfig self)
     {
         return JsonConvert.SerializeObject(self, Converter.Settings);
     }

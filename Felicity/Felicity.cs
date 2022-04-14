@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using APIHelper;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -109,9 +110,11 @@ internal class Felicity
         await _client.LoginAsync(TokenType.Bot, ConfigHelper.GetBotSettings().DiscordToken);
         await _client.StartAsync();
 
+        // TODO: make use of bungiesharper for this
+        API.FetchManifest();
         await Jobs.StartJobs();
-        await WebHelper.Start();
-
+        await OAuthService.Start(_client);
+        
         await Task.Delay(-1);
     }
 

@@ -30,6 +30,9 @@ internal class ConfigHelper
         if (!Directory.Exists("Configs"))
             Directory.CreateDirectory("Configs");
 
+        if (!Directory.Exists("Users"))
+            Directory.CreateDirectory("Users");
+
         if (File.Exists(BotConfigPath))
         {
             _botConfig = new ConfigurationBuilder()
