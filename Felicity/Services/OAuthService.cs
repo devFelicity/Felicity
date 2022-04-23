@@ -9,6 +9,7 @@ using APIHelper;
 using BungieSharper.Entities;
 using Ceen;
 using Ceen.Httpd;
+using Discord;
 using Discord.WebSocket;
 using Felicity.Configs;
 using Felicity.Helpers;
@@ -60,6 +61,8 @@ internal class OAuthService
     public static OAuthConfig GetUser(ulong discordId)
     {
         var path = $"Users/{discordId}.json";
+
+        // TODO: add check here for oauth refresh requirement
 
         return !File.Exists(path) ? null : OAuthConfig.FromJson(File.ReadAllText(path));
     }
@@ -135,21 +138,26 @@ public class AuthorizationHandler : IHttpModule
 
         await context.Response.WriteAllAsync("Registration successful, you may now close this window.");
 
-        var dmChannel = await OAuthService.DiscordClient.GetUser(Convert.ToUInt64(discordId)).CreateDMChannelAsync();
-
         var userCard = APIService.GetApiClient().Api
             .User_GetMembershipDataById(Convert.ToInt64(newUser.MembershipId),
                 BungieMembershipType.BungieNext).Result.DestinyMemberships.First();
 
+        var bungieTag = $"{userCard.BungieGlobalDisplayName}#{userCard.BungieGlobalDisplayNameCode}";
+        LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
+
         try
         {
+            var dmChannel = await OAuthService.DiscordClient.GetUser(Convert.ToUInt64(discordId)).CreateDMChannelAsync();
+            
             await dmChannel.SendMessageAsync(
-                $"You successfully linked your profile to Felicity, Bungie Name: {userCard.BungieGlobalDisplayName}#{userCard.BungieGlobalDisplayNameCode}\n" +
+                $"You successfully linked your profile to Felicity with the Bungie Name: **{bungieTag}**\n" +
                 "If this information is incorrect, please contact a staff member.");
         }
         catch (Exception ex)
         {
-            await Log.ErrorAsync($"{ex.GetType()}: {ex.Message}");
+            var msg = $"{ex.GetType()}: {ex.Message}";
+            await Log.ErrorAsync(msg);
+            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n"+ Format.Code(msg));
         }
 
         return true;
