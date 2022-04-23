@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 
 namespace Felicity.Helpers;
 
 internal class LogHelper
 {
+    public static SocketTextChannel DiscordLogChannel { get; set; }
+
     public static Task Log(LogMessage log)
     {
         var ex = "";
@@ -37,6 +40,12 @@ internal class LogHelper
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
         return Task.CompletedTask;
+    }
+
+    public static void LogToDiscord(string message)
+    {
+        DiscordLogChannel.SendMessageAsync(message);
     }
 }
