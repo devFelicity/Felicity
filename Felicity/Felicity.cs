@@ -37,7 +37,7 @@ internal class Felicity
     {
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
-            GatewayIntents = GatewayIntents.AllUnprivileged
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences
         });
         _commands = new CommandService();
         _interaction = new InteractionService(_client);
