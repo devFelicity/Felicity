@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Discord.Interactions;
 using Felicity.Helpers;
@@ -36,6 +37,24 @@ public class UserManagement : InteractionModuleBase<SocketInteractionContext>
                 return;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    [SlashCommand("unregister", "Remove your profile link from the bot.")]
+    public async Task Unregister()
+    {
+        await DeferAsync(true);
+
+        var path = $"Configs/{Context.User.Id}.json";
+
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+            await FollowupAsync("Deleted profile successfully.");
+        }
+        else
+        {
+            await FollowupAsync("You are not registered.");
         }
     }
 }
