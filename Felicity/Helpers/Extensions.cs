@@ -5,12 +5,20 @@ using BungieSharper.Entities.Destiny.Entities.Characters;
 using BungieSharper.Entities.Destiny.Responses;
 using Discord;
 using Discord.WebSocket;
+using Felicity.Configs;
+using Felicity.Services;
+
 // ReSharper disable UnusedMember.Global
 
 namespace Felicity.Helpers;
 
 internal static class Extensions
 {
+    public static OAuthConfig OAuth(this SocketUser user)
+    {
+        return OAuthService.GetUser(user.Id).Result;
+    }
+
     public static bool IsStaff(this SocketUser user)
     {
         var staff = ConfigHelper.GetBotSettings();

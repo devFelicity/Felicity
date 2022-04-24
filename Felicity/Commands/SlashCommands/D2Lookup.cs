@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BungieSharper.Client;
 using BungieSharper.Entities;
 using BungieSharper.Entities.Destiny;
-using BungieSharper.Entities.Exceptions;
 using BungieSharper.Entities.User;
 using Ceen;
 using Discord.Interactions;
@@ -31,7 +29,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
 
         if (string.IsNullOrEmpty(bungieTag))
         {
-            var linkedUser = OAuthService.GetUser(Context.User.Id);
+            var linkedUser = OAuthService.GetUser(Context.User.Id).Result;
             var linkedProfile = APIService.GetApiClient().Api.Destiny2_GetLinkedProfiles(linkedUser.MembershipId,
                 BungieMembershipType.BungieNext, false, linkedUser.AccessToken).Result;
 
@@ -78,19 +76,11 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
                 }
                 catch (Exception ex)
                 {
-                    if (((BungieBaseApiResponseException)ex.InnerException)?.ApiResponseMsg
-                        .ErrorCode == PlatformErrorCodes.UserCannotResolveCentralAccount)
-                    {
-                        await Log.ErrorAsync($"Failed to lookup: {bungieTag}");
-                        await FollowupAsync("Failed to lookup profile, try using the full Bungie.net profile link.\n-> https://www.bungie.net/7/en/User/Profile/");
-                    }
-                    else
-                    {
-                        var log = $"{ex.GetType()}: {ex.Message}";
-                        await Log.ErrorAsync(log);
-                        await FollowupAsync(log);
-                    }
+                    var msg = $"Failed to lookup: {bungieTag}\n{ex.GetType()}: {ex.Message}";
+                    await Log.ErrorAsync(msg);
+                    LogHelper.LogToDiscord(msg);
 
+                    await FollowupAsync("Failed to lookup profile, try using the full Bungie.net profile link.\n-> https://www.bungie.net/7/en/User/Profile/");
                     return;
                 }
             }

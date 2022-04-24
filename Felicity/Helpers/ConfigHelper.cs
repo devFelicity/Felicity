@@ -129,6 +129,12 @@ internal class ConfigHelper
 
     public static ServerSetting GetServerSettings(ulong serverID)
     {
-        return _twitchConfig.GetRequiredSection("Settings").GetRequiredSection(serverID.ToString()).Get<ServerSetting>();
+        return _serverConfig.GetRequiredSection("Settings").GetRequiredSection(serverID.ToString()).Get<ServerSetting>();
+    }
+
+    public static OAuthConfig GetUserSettings(ulong userID)
+    {
+        var path = $"Users/{userID}.json";
+        return File.Exists(path) ? OAuthConfig.FromJson(File.ReadAllText(path)) : null;
     }
 }

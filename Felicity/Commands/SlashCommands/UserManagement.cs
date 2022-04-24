@@ -27,7 +27,7 @@ public class UserManagement : InteractionModuleBase<SocketInteractionContext>
                     $"https://www.bungie.net/en/oauth/authorize?client_id={ConfigHelper.GetBotSettings().BungieClientId}&response_type=code&state={newUser.State}");
                 break;
             case UserLinkStatus.Incomplete:
-                var user = GetUser(Context.User.Id);
+                var user = GetUser(Context.User.Id).Result;
                 await FollowupAsync(
                     "You have an incomplete registration in progress, please visit this link to complete your registration:\n\n"
                     + $"https://www.bungie.net/en/oauth/authorize?client_id={ConfigHelper.GetBotSettings().BungieClientId}&response_type=code&state={user.State}");

@@ -21,7 +21,7 @@ internal class Felicity
 {
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable IDE0044 // Add readonly modifier
-#pragma warning disable CS0649  // Remove unused variable
+#pragma warning disable CS0649 // Remove unused variable
     private static bool _debug;
 #pragma warning restore CS0649
 #pragma warning restore IDE0044
@@ -32,12 +32,13 @@ internal class Felicity
     private readonly CommandService _commands;
     private readonly InteractionService _interaction;
     private readonly IServiceProvider _services;
-    
+
     public Felicity()
     {
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
-            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers |
+                             GatewayIntents.GuildPresences
         });
         _commands = new CommandService();
         _interaction = new InteractionService(_client);
@@ -114,7 +115,7 @@ internal class Felicity
         API.FetchManifest();
         await Jobs.StartJobs();
         await OAuthService.Start(_client);
-        
+
         await Task.Delay(-1);
     }
 

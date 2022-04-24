@@ -38,7 +38,7 @@ internal class LogHelper
                 Serilog.Log.Debug(ex);
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(log));
         }
 
         return Task.CompletedTask;

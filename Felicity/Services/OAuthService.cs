@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using APIHelper;
 using BungieSharper.Entities;
+using BungieSharper.Entities.Destiny;
 using Ceen;
 using Ceen.Httpd;
 using Discord;
@@ -58,16 +60,54 @@ internal class OAuthService
         return newConfig;
     }
 
-    public static OAuthConfig GetUser(ulong discordId)
+    public static async Task<OAuthConfig> GetUser(ulong discordId)
     {
         var path = $"Users/{discordId}.json";
+        var discordUser = DiscordClient.GetUser(discordId);
 
-        // TODO: add check here for oauth refresh requirement
+        var oauthValues = ConfigHelper.GetUserSettings(discordId);
+        if (oauthValues.RefreshExpiresAt < DateTime.Now)
+        {
+            try
+            {
+                await discordUser.CreateDMChannelAsync().Result.SendMessageAsync(
+                    "Your login has expired and needs to be renewed. If you wish to continue using our features, please use /register again.");
+                File.Delete($"Users/{discordId}.json");
+            }
+            catch (Exception ex)
+            {
+                var msg = $"{ex.GetType()}: {ex.Message}";
+                await Log.ErrorAsync(msg);
+                LogHelper.LogToDiscord($"Failed to message {Format.Code($"{discordUser} ({discordId})")}:\n{msg}");
+            }
 
-        return !File.Exists(path) ? null : OAuthConfig.FromJson(File.ReadAllText(path));
+            return null;
+        }
+
+        // ReSharper disable once InvertIf
+        if (oauthValues.ExpiresAt < DateTime.Now)
+        {
+            var client = new RestClient("https://www.bungie.net/");
+            var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            request.AddHeader("Authorization",
+                $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
+            request.AddParameter("grant_type", "refresh_token");
+            request.AddParameter("refresh_token", oauthValues.RefreshToken);
+
+            var response = await client.ExecuteAsync(request);
+            var refreshedUser = OAuthResponse.FromJson(response.Content);
+            UpdateUser(Convert.ToUInt64(discordId), refreshedUser);
+
+            LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
+        }
+
+        return !File.Exists(path) ? null : OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
     }
 
-    public static void UpdateUser(ulong discordId, OAuthResponse oauthResponse)
+    public static void UpdateUser(ulong discordId, OAuthResponse oauthResponse, long destinyMembershipId = 0,
+        BungieMembershipType destinyMembershipType = BungieMembershipType.None, List<long> destinyCharacterIDs = null)
     {
         var path = $"Users/{discordId}.json";
 
@@ -79,6 +119,14 @@ internal class OAuthService
         userConfig.RefreshExpiresAt = DateTime.Now.AddSeconds(oauthResponse.RefreshExpiresIn);
         userConfig.RefreshToken = oauthResponse.RefreshToken;
         userConfig.MembershipId = Convert.ToInt64(oauthResponse.MembershipId);
+
+        if (destinyMembershipId != 0 && destinyCharacterIDs != null)
+            userConfig.DestinyMembership = new DestinyMembership
+            {
+                CharacterIds = destinyCharacterIDs.ToArray(),
+                MembershipId = destinyMembershipId,
+                MembershipType = destinyMembershipType
+            };
 
         File.WriteAllText(path, OAuthConfig.ToJson(userConfig));
     }
@@ -134,21 +182,38 @@ public class AuthorizationHandler : IHttpModule
         var response = await client.ExecuteAsync(request);
 
         var newUser = OAuthResponse.FromJson(response.Content);
-        OAuthService.UpdateUser(Convert.ToUInt64(discordId), newUser);
 
         await context.Response.WriteAllAsync("Registration successful, you may now close this window.");
 
-        var userCard = APIService.GetApiClient().Api
-            .User_GetMembershipDataById(Convert.ToInt64(newUser.MembershipId),
-                BungieMembershipType.BungieNext).Result.DestinyMemberships.First();
+        var linkedProfiles = APIService.GetApiClient().Api
+            .Destiny2_GetLinkedProfiles(Convert.ToInt64(newUser.MembershipId), BungieMembershipType.BungieNext).Result;
 
-        var bungieTag = $"{userCard.BungieGlobalDisplayName}#{userCard.BungieGlobalDisplayNameCode}";
+        var destinyMembershipId = linkedProfiles.Profiles.First().MembershipId;
+        var destinyMembershipType = linkedProfiles.Profiles.First().MembershipType;
+        var destinyCharacterIDs = new List<long>();
+
+        var profile = APIService.GetApiClient().Api.Destiny2_GetProfile(destinyMembershipId, destinyMembershipType,
+            new[]
+            {
+                DestinyComponentType.Characters
+            }, newUser.AccessToken).Result;
+
+        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+        foreach (var (key, _) in profile.Characters.Data)
+            destinyCharacterIDs.Add(key);
+
+        var bungieTag =
+            $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
         LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
+
+        OAuthService.UpdateUser(Convert.ToUInt64(discordId), newUser, destinyMembershipId, destinyMembershipType,
+            destinyCharacterIDs);
 
         try
         {
-            var dmChannel = await OAuthService.DiscordClient.GetUser(Convert.ToUInt64(discordId)).CreateDMChannelAsync();
-            
+            var dmChannel = await OAuthService.DiscordClient.GetUser(Convert.ToUInt64(discordId))
+                .CreateDMChannelAsync();
+
             await dmChannel.SendMessageAsync(
                 $"You successfully linked your profile to Felicity with the Bungie Name: **{bungieTag}**\n" +
                 "If this information is incorrect, please contact a staff member.");
@@ -157,18 +222,9 @@ public class AuthorizationHandler : IHttpModule
         {
             var msg = $"{ex.GetType()}: {ex.Message}";
             await Log.ErrorAsync(msg);
-            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n"+ Format.Code(msg));
+            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
         }
 
         return true;
     }
-
-    // TODO: implement refresh token
-    /*
-       POST https://www.bungie.net/Platform/App/OAuth/Token/ HTTP/1.1
-       Authorization: Basic {base64encoded(client-id:client-secret)}
-       Content-Type: application/x-www-form-urlencoded
-       
-       grant_type=refresh_token&refresh_token={refresh-token}
-     */
 }

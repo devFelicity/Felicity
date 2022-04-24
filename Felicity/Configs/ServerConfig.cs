@@ -30,9 +30,9 @@ public partial class Destiny
 {
     [J("dailyReset")] public Vendor DailyReset { get; set; } = new();
     [J("weeklyReset")] public Vendor WeeklyReset { get; set; } = new();
-    [J("xur")] public Vendor Xur { get; set; } = new();
     [J("ada")] public Vendor Ada { get; set; } = new();
     [J("gunsmith")] public Vendor Gunsmith { get; set; } = new();
+    [J("xur")] public Vendor Xur { get; set; } = new();
 }
 
 public partial class Vendor

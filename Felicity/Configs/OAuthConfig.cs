@@ -1,4 +1,5 @@
 ﻿using System;
+using BungieSharper.Entities;
 using Newtonsoft.Json;
 
 // ReSharper disable UnusedMember.Global
@@ -17,6 +18,14 @@ public partial class OAuthConfig
     [J("refreshToken")] public string RefreshToken { get; set; }
     [J("refreshExpiresAt")] public DateTime RefreshExpiresAt { get; set; }
     [J("membershipId")] public long MembershipId { get; set; }
+    [J("destinyMembership")] public DestinyMembership DestinyMembership { get; set; }
+}
+
+public class DestinyMembership
+{
+    [J("membershipId")] public long MembershipId { get; set; }
+    [J("membershipType")] public BungieMembershipType MembershipType { get; set; }
+    [J("characterIds")] public long[] CharacterIds { get; set; }
 }
 
 public partial class OAuthConfig
