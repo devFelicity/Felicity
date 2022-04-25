@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using APIHelper;
@@ -52,7 +53,7 @@ internal class OAuthService
         var newConfig = new OAuthConfig
         {
             DiscordId = discordId,
-            State = Hash.Base64Encode($"{discordId}:{DateTime.Now:d}")
+            State = Hash.Base64Encode($"{discordId}:{DateTime.Now:T}")
         };
 
         File.WriteAllText($"Users/{discordId}.json", OAuthConfig.ToJson(newConfig));
@@ -148,6 +149,62 @@ internal class OAuthService
         Incomplete,
         Registered
     }
+
+    public static async Task PopulateDestinyMembership(string discordId, OAuthConfig currentUser)
+    {
+        if (currentUser.DestinyMembership != null)
+            return;
+
+        discordId = Regex.Match(discordId, @"\d+").Value;
+
+        try
+        {
+            var linkedProfiles = await APIService.GetApiClient().Api
+                .Destiny2_GetLinkedProfiles(Convert.ToInt64(currentUser.MembershipId), BungieMembershipType.BungieNext,
+                    authToken: currentUser.AccessToken);
+
+            var destinyMembershipId = linkedProfiles.Profiles.First().MembershipId;
+            var destinyMembershipType = linkedProfiles.Profiles.First().MembershipType;
+            var destinyCharacterIDs = new List<long>();
+
+            var profile = APIService.GetApiClient().Api.Destiny2_GetProfile(destinyMembershipId, destinyMembershipType,
+                new[]
+                {
+                    DestinyComponentType.Characters
+                }, currentUser.AccessToken).Result;
+
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var (key, _) in profile.Characters.Data)
+                destinyCharacterIDs.Add(key);
+
+            var bungieTag =
+                $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
+            LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
+
+            var oAuthResponse = new OAuthResponse
+            {
+                AccessToken = currentUser.AccessToken, ExpiresIn = 3500,
+                MembershipId = currentUser.MembershipId.ToString(), RefreshExpiresIn = 7775990,
+                RefreshToken = currentUser.RefreshToken, TokenType = currentUser.TokenType
+            };
+
+            UpdateUser(Convert.ToUInt64(discordId), oAuthResponse, destinyMembershipId, destinyMembershipType,
+                destinyCharacterIDs);
+
+            var dmChannel = await DiscordClient.GetUser(Convert.ToUInt64(discordId))
+                .CreateDMChannelAsync();
+
+            await dmChannel.SendMessageAsync(
+                $"You successfully linked your profile to Felicity with the Bungie Name: **{bungieTag}**\n" +
+                "If this information is incorrect, please contact a staff member.");
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{ex.GetType()}: {ex.Message}";
+            await Log.ErrorAsync(msg);
+            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
+        }
+    }
 }
 
 public class AuthorizationHandler : IHttpModule
@@ -181,49 +238,28 @@ public class AuthorizationHandler : IHttpModule
 
         var response = await client.ExecuteAsync(request);
 
-        var newUser = OAuthResponse.FromJson(response.Content);
-
-        await context.Response.WriteAllAsync("Registration successful, you may now close this window.");
-
-        var linkedProfiles = APIService.GetApiClient().Api
-            .Destiny2_GetLinkedProfiles(Convert.ToInt64(newUser.MembershipId), BungieMembershipType.BungieNext).Result;
-
-        var destinyMembershipId = linkedProfiles.Profiles.First().MembershipId;
-        var destinyMembershipType = linkedProfiles.Profiles.First().MembershipType;
-        var destinyCharacterIDs = new List<long>();
-
-        var profile = APIService.GetApiClient().Api.Destiny2_GetProfile(destinyMembershipId, destinyMembershipType,
-            new[]
-            {
-                DestinyComponentType.Characters
-            }, newUser.AccessToken).Result;
-
-        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-        foreach (var (key, _) in profile.Characters.Data)
-            destinyCharacterIDs.Add(key);
-
-        var bungieTag =
-            $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
-        LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
-
-        OAuthService.UpdateUser(Convert.ToUInt64(discordId), newUser, destinyMembershipId, destinyMembershipType,
-            destinyCharacterIDs);
-
-        try
+        if (response.IsSuccessful)
         {
-            var dmChannel = await OAuthService.DiscordClient.GetUser(Convert.ToUInt64(discordId))
-                .CreateDMChannelAsync();
-
-            await dmChannel.SendMessageAsync(
-                $"You successfully linked your profile to Felicity with the Bungie Name: **{bungieTag}**\n" +
-                "If this information is incorrect, please contact a staff member.");
+            await context.Response.WriteAllAsync("Registration successful, you may now close this window.");
+            var newUser = OAuthResponse.FromJson(response.Content);
+            OAuthService.UpdateUser(Convert.ToUInt64(discordId), newUser);
         }
-        catch (Exception ex)
+        else
         {
-            var msg = $"{ex.GetType()}: {ex.Message}";
-            await Log.ErrorAsync(msg);
-            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
+            await context.Response.WriteAllAsync(response.Content);
+            return false;
         }
+        
+        // try
+        // {
+        //     
+        // }
+        // catch (Exception ex)
+        // {
+        //     var msg = $"{ex.GetType()}: {ex.Message}";
+        //     await Log.ErrorAsync(msg);
+        //     LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
+        // }
 
         return true;
     }
