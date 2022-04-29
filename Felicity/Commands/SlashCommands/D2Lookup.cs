@@ -13,14 +13,15 @@ using Discord.Interactions;
 using Felicity.Helpers;
 using Felicity.Services;
 
+// ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Felicity.Commands.SlashCommands;
 
-[Group("lookup", "Various lookup commands for Destiny2")]
+[Group("lookup", "Various lookup commands for Destiny 2.")]
 public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("guardian", "Look up a profile of a player")]
+    [SlashCommand("guardian", "Look up a profile of a player.")]
     public async Task Guardian(
         [Summary("bungiename", "Bungie name of the requested user (name#1234)")]
         string bungieTag = "")
@@ -101,7 +102,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
         await FollowupAsync("", new[] {player.GenerateLookupEmbed(bungieName, membershipId, membershipType)});
     }
 
-    [SlashCommand("accountshare", "Look up account shared emblems of a player")]
+    [SlashCommand("accountshare", "Look up account shared emblems of a player.")]
     public async Task AccountShare(
         [Summary("bungiename", "Bungie name of the requested user (name#1234)")]
         string bungieTag)
@@ -216,7 +217,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
                 Text = $"Parsed {emblemCount} emblems."
             }
         };
-        
+
         if (sortedList.Count == 0)
         {
             embed.Description = "Account has no shared emblems.";

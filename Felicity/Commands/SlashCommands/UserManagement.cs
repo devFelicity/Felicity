@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Discord.Interactions;
 using Felicity.Helpers;
-
 using static Felicity.Services.OAuthService;
 
+// ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Felicity.Commands.SlashCommands;
@@ -23,7 +23,7 @@ public class UserManagement : InteractionModuleBase<SocketInteractionContext>
             case UserLinkStatus.NotRegistered:
                 var newUser = CreateUser(Context.User.Id);
                 await FollowupAsync(
-                    "Please visit this link to complete your registration, the bot will DM you when your registration is complete.\n\n"+
+                    "Please visit this link to complete your registration, the bot will DM you when your registration is complete.\n\n" +
                     $"https://www.bungie.net/en/oauth/authorize?client_id={ConfigHelper.GetBotSettings().BungieClientId}&response_type=code&state={newUser.State}");
                 break;
             case UserLinkStatus.Incomplete:
