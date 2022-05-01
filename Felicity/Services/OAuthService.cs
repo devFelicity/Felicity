@@ -21,9 +21,9 @@ using ServerConfig = Ceen.Httpd.ServerConfig;
 
 namespace Felicity.Services;
 
-internal class OAuthService
+internal static class OAuthService
 {
-    public static DiscordSocketClient DiscordClient;
+    private static DiscordSocketClient DiscordClient;
 
     public static async Task Start(DiscordSocketClient discordClient)
     {
@@ -67,6 +67,10 @@ internal class OAuthService
         var discordUser = DiscordClient.GetUser(discordId);
 
         var oauthValues = ConfigHelper.GetUserSettings(discordId);
+
+        if (oauthValues == null)
+            return null;
+        
         if (oauthValues.RefreshExpiresAt < DateTime.Now)
         {
             try
@@ -104,7 +108,7 @@ internal class OAuthService
             LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
         }
 
-        return !File.Exists(path) ? null : OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
+        return OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
     }
 
     public static void UpdateUser(ulong discordId, OAuthResponse oauthResponse, long destinyMembershipId = 0,

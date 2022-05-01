@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord.Commands;
+using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 
 namespace Felicity.Helpers;
 
 public class RequireOAuthPrecondition : PreconditionAttribute
 {
-    public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
+    public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        if ((context.User as SocketUser).OAuth() == null)
-        {
-            return Task.FromResult(PreconditionResult.FromError(
-                "This command requires you to be registered to provide user information to the API. Please /register and try again."));
-        }
+        var oauth = (context.User as SocketUser).OAuth();
 
-        return Task.FromResult(PreconditionResult.FromSuccess());
+        if (oauth != null) return Task.FromResult(PreconditionResult.FromSuccess());
+
+        const string msg = "This command requires you to be registered to provide user information to the API.\nPlease /register and try again.";
+        context.Interaction.RespondAsync(msg);
+
+        return Task.FromResult(PreconditionResult.FromError(msg));
     }
 }
