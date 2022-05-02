@@ -9,6 +9,7 @@ using Discord.Interactions;
 using Felicity.Enums;
 using Felicity.Helpers;
 using Felicity.Services;
+using Felicity.Structs;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -18,6 +19,20 @@ namespace Felicity.Commands.SlashCommands;
 [Group("vendor", "Group of commands related to vendors and their available items.")]
 public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
 {
+    [RequireOAuthPrecondition]
+    [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]
+    public async Task Xur()
+    {
+        await DeferAsync();
+
+        var oauth = Context.User.OAuth();
+        var destinyMembership = oauth.DestinyMembership;
+
+        var xurCache = ProcessData.FetchInventory(oauth, destinyMembership);
+
+        await FollowupAsync(embed: xurCache.BuildEmbed());
+    }
+
     [RequireOAuthPrecondition]
     [SlashCommand("mods", "Get list of mods currently available at vendors.")]
     public async Task Mods()
