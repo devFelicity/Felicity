@@ -1,18 +1,45 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BungieSharper.Entities;
 using BungieSharper.Entities.GroupsV2;
 using BungieSharper.Entities.User;
+using Discord;
 using Discord.Commands;
+using Felicity.Helpers;
 using Felicity.Services;
 
+// ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Felicity.Commands.TestCommands;
 
 public class D2TestCommands : ModuleBase<SocketCommandContext>
 {
+    [RequireOwner]
+    [Command("addEmote")]
+    public async Task AddEmote(string name, string url)
+    {
+        if (Context.Guild.Emotes.Any(guildEmote => guildEmote.Name == name))
+        {
+            await ReplyAsync("Emote with that name already exists.");
+            return;
+        }
+
+        if (!ConfigHelper.GetEmoteSettings().ServerIDs.Contains(Context.Guild.Id))
+        {
+            await ReplyAsync("This server is not a designated emote bank.");
+            return;
+        }
+
+        var imageBytes = new HttpClient().GetByteArrayAsync(url).Result;
+        var newEmote = Context.Guild.CreateEmoteAsync(name, new Image(new MemoryStream(imageBytes))).Result;
+
+        await ReplyAsync($"New emote created: {newEmote}");
+    }
+
     [Command("getClan")]
     public async Task GetClan(string bungieTag)
     {
