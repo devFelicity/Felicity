@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Discord;
 using Felicity.Configs;
 using Microsoft.Extensions.Configuration;
@@ -16,11 +17,12 @@ internal static class ConfigHelper
     private static IConfiguration _emoteConfig;
     private static IConfiguration _serverConfig;
     private static IConfiguration _twitchConfig;
+
     public static string ActiveConfigPath => configBasePath + "activeConfig.json";
     private static string BotConfigPath => configBasePath + "botConfig.json";
     private static string TwitchConfigPath => configBasePath + "twitchConfig.json";
     public static string DataConfigPath => configBasePath + "dataConfig.json";
-    private static string ServerConfigPath => configBasePath + "serverConfig.json";
+    public static string ServerConfigPath => configBasePath + "serverConfig.json";
     private static string EmoteConfigPath => configBasePath + "emoteConfig.json";
 
     public static bool LoadConfigFiles()
@@ -134,7 +136,17 @@ internal static class ConfigHelper
 
     public static ServerSetting GetServerSettings(ulong serverID)
     {
-        return _serverConfig.GetRequiredSection("Settings").GetRequiredSection(serverID.ToString()).Get<ServerSetting>();
+        try
+        {
+            var result = _serverConfig.GetRequiredSection("Settings").GetRequiredSection(serverID.ToString())
+                .Get<ServerSetting>();
+
+            return result;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public static OAuthConfig GetUserSettings(ulong userID)

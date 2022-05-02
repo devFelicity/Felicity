@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using Felicity.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using J = Newtonsoft.Json.JsonPropertyAttribute;
@@ -11,7 +14,8 @@ namespace Felicity.Configs;
 
 public partial class ServerConfig
 {
-    [J("Settings")] public Dictionary<string, ServerSetting> Settings { get; set; }
+    [J("Settings")]
+    public Dictionary<string, ServerSetting> Settings { get; set; } = new();
 }
 
 public partial class ServerSetting
@@ -24,6 +28,7 @@ public partial class ServerSetting
     [J("memberEvents")] public MemberEvents MemberEvents { get; set; } = new();
     [J("subscriptions")] public Dictionary<string, Subscription> Subscriptions { get; set; } = new();
     [J("destiny")] public Destiny Destiny { get; set; } = new();
+    [J("tmpVCs")] public List<ulong> TmpVCs { get; set; } = new();
 }
 
 public partial class Destiny
@@ -59,9 +64,9 @@ public partial class Subscription
 
 public partial class ServerConfig
 {
-    public static ServerConfig FromJson(string json)
+    public static ServerConfig FromJson()
     {
-        return JsonConvert.DeserializeObject<ServerConfig>(json, Converter.Settings);
+        return JsonConvert.DeserializeObject<ServerConfig>(File.ReadAllText(ConfigHelper.ServerConfigPath), Converter.Settings);
     }
 
     public static string ToJson(ServerConfig self)
