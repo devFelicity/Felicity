@@ -6,9 +6,11 @@ using Felicity.Services;
 using Quartz;
 using Quartz.Impl;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace Felicity;
 
-internal class Jobs
+internal static class Jobs
 {
     public static async Task StartJobs()
     {
@@ -35,12 +37,19 @@ internal class RegistrationJob : IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {
-        Console.WriteLine("Registration Job - " + DateTime.Now.ToString("T"));
+        var time = DateTime.Now;
+        Console.WriteLine($"Registration Job - {time:T}");
+
+        if (time.Minute is 0 or 15 or 30 or 45) 
+            StatusService.ChangeGame();
 
         foreach (var enumerateFile in Directory.EnumerateFiles("Users"))
         {
             var user = OAuthConfig.FromJson(await File.ReadAllTextAsync(enumerateFile));
-            if(user.DestinyMembership == null)
+            if (user.DestinyMembership != null)
+                continue;
+
+            if (user.AccessToken != null)
                 await OAuthService.PopulateDestinyMembership(enumerateFile, user);
         }
         
