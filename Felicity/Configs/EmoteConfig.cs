@@ -1,11 +1,42 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using J = Newtonsoft.Json.JsonPropertyAttribute;
+
 // ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 namespace Felicity.Configs;
 
-internal class EmoteConfig
+public partial class EmoteConfig
 {
-    public List<ulong> EmoteServers { get; internal set; } = new();
+    [J("Settings")] public EmoteSettings Settings { get; set; }
+}
 
-    public Dictionary<string, string> Emotes { get; internal set; } = new();
+public class EmoteSettings
+{
+    [J("ServerIDs")] public ulong[] ServerIDs { get; set; }
+    [J("Emotes")] public Dictionary<string, Emote> Emotes { get; set; }
+}
+
+public class Emote
+{
+    [J("type")] public string Type { get; set; }
+    [J("name")] public string Name { get; set; }
+    [J("discordID")] public ulong DiscordId { get; set; }
+}
+
+public partial class EmoteConfig
+{
+    public static EmoteConfig FromJson(string json)
+    {
+        return JsonConvert.DeserializeObject<EmoteConfig>(json, Converter.Settings);
+    }
+}
+
+public static class Serialize
+{
+    public static string ToJson(this EmoteConfig self)
+    {
+        return JsonConvert.SerializeObject(self, Converter.Settings);
+    }
 }

@@ -33,7 +33,7 @@ internal class Felicity
     private readonly InteractionService _interaction;
     private readonly IServiceProvider _services;
 
-    public Felicity()
+    private Felicity()
     {
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
@@ -93,7 +93,7 @@ internal class Felicity
         new Felicity().StartAsync().GetAwaiter().GetResult();
     }
 
-    public async Task StartAsync()
+    private async Task StartAsync()
     {
         if (ConfigHelper.LoadConfigFiles())
             return;
@@ -114,6 +114,10 @@ internal class Felicity
         // TODO: make use of bungiesharper for this
         API.FetchManifest();
         await Jobs.StartJobs();
+
+        EmoteHelper._client = _client;
+        StatusService._client = _client;
+        
         await OAuthService.Start(_client);
 
         await Task.Delay(-1);
