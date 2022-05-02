@@ -16,7 +16,6 @@ using Discord;
 using Discord.WebSocket;
 using Felicity.Configs;
 using Felicity.Helpers;
-using RestSharp;
 using ServerConfig = Ceen.Httpd.ServerConfig;
 
 namespace Felicity.Services;
@@ -92,17 +91,22 @@ internal static class OAuthService
         // ReSharper disable once InvertIf
         if (oauthValues.ExpiresAt < DateTime.Now)
         {
-            var client = new RestClient("https://www.bungie.net/");
-            var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            /*
+                var client = new RestClient("https://www.bungie.net/");
+                var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
+                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            request.AddHeader("Authorization",
-                $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
-            request.AddParameter("grant_type", "refresh_token");
-            request.AddParameter("refresh_token", oauthValues.RefreshToken);
+                request.AddHeader("Authorization",
+                    $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
+                request.AddParameter("grant_type", "refresh_token");
+                request.AddParameter("refresh_token", oauthValues.RefreshToken);
 
-            var response = await client.ExecuteAsync(request);
-            var refreshedUser = OAuthResponse.FromJson(response.Content);
+                var response = await client.ExecuteAsync(request);
+                var refreshedUser = OAuthResponse.FromJson(response.Content);
+            */
+
+            var refreshedUser = await APIService.GetApiClient().OAuth.RefreshOAuthToken(oauthValues.RefreshToken);
+
             UpdateUser(Convert.ToUInt64(discordId), refreshedUser);
 
             LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
@@ -111,7 +115,7 @@ internal static class OAuthService
         return OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
     }
 
-    public static void UpdateUser(ulong discordId, OAuthResponse oauthResponse, long destinyMembershipId = 0,
+    public static void UpdateUser(ulong discordId, TokenResponse oauthResponse, long destinyMembershipId = 0,
         BungieMembershipType destinyMembershipType = BungieMembershipType.None, List<long> destinyCharacterIDs = null)
     {
         var path = $"Users/{discordId}.json";
@@ -120,8 +124,10 @@ internal static class OAuthService
 
         userConfig.TokenType = oauthResponse.TokenType;
         userConfig.AccessToken = oauthResponse.AccessToken;
-        userConfig.ExpiresAt = DateTime.Now.AddSeconds(oauthResponse.ExpiresIn);
-        userConfig.RefreshExpiresAt = DateTime.Now.AddSeconds(oauthResponse.RefreshExpiresIn);
+        if (oauthResponse.ExpiresIn != null)
+            userConfig.ExpiresAt = DateTime.Now.AddSeconds((double) oauthResponse.ExpiresIn);
+        if (oauthResponse.RefreshExpiresIn != null)
+            userConfig.RefreshExpiresAt = DateTime.Now.AddSeconds((double) oauthResponse.RefreshExpiresIn);
         userConfig.RefreshToken = oauthResponse.RefreshToken;
         userConfig.MembershipId = Convert.ToInt64(oauthResponse.MembershipId);
 
@@ -185,10 +191,10 @@ internal static class OAuthService
                 $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
             LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
 
-            var oAuthResponse = new OAuthResponse
+            var oAuthResponse = new TokenResponse
             {
                 AccessToken = currentUser.AccessToken, ExpiresIn = 3500,
-                MembershipId = currentUser.MembershipId.ToString(), RefreshExpiresIn = 7775990,
+                MembershipId = currentUser.MembershipId, RefreshExpiresIn = 7775990,
                 RefreshToken = currentUser.RefreshToken, TokenType = currentUser.TokenType
             };
 
@@ -231,39 +237,31 @@ public class AuthorizationHandler : IHttpModule
             return false;
         }
 
-        var client = new RestClient("https://www.bungie.net/");
-        var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
-        request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+        /*
+            var client = new RestClient("https://www.bungie.net/");
+            var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        request.AddHeader("Authorization",
-            $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
-        request.AddParameter("grant_type", "authorization_code");
-        request.AddParameter("code", code);
+            request.AddHeader("Authorization",
+                $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
+            request.AddParameter("grant_type", "authorization_code");
+            request.AddParameter("code", code);
 
-        var response = await client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
+        */
 
-        if (response.IsSuccessful)
+        var response = APIService.GetApiClient().OAuth.GetOAuthToken(code).Result;
+
+        if (string.IsNullOrEmpty(response.ErrorDescription))
         {
             await context.Response.WriteAllAsync("Registration successful, you may now close this window.");
-            var newUser = OAuthResponse.FromJson(response.Content);
-            OAuthService.UpdateUser(Convert.ToUInt64(discordId), newUser);
+            OAuthService.UpdateUser(Convert.ToUInt64(discordId), response);
         }
         else
         {
-            await context.Response.WriteAllAsync(response.Content);
+            await context.Response.WriteAllAsync(response.ErrorDescription);
             return false;
         }
-        
-        // try
-        // {
-        //     
-        // }
-        // catch (Exception ex)
-        // {
-        //     var msg = $"{ex.GetType()}: {ex.Message}";
-        //     await Log.ErrorAsync(msg);
-        //     LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
-        // }
 
         return true;
     }

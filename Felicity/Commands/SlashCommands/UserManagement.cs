@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Discord.Interactions;
-using Felicity.Helpers;
+using Felicity.Services;
 using static Felicity.Services.OAuthService;
 
 // ReSharper disable UnusedType.Global
@@ -24,13 +24,13 @@ public class UserManagement : InteractionModuleBase<SocketInteractionContext>
                 var newUser = CreateUser(Context.User.Id);
                 await FollowupAsync(
                     "Please visit this link to complete your registration, the bot will DM you when your registration is complete.\n\n" +
-                    $"https://www.bungie.net/en/oauth/authorize?client_id={ConfigHelper.GetBotSettings().BungieClientId}&response_type=code&state={newUser.State}");
+                    APIService.GetApiClient().OAuth.GetOAuthAuthorizationUrl(newUser.State));
                 break;
             case UserLinkStatus.Incomplete:
                 var user = GetUser(Context.User.Id).Result;
                 await FollowupAsync(
-                    "You have an incomplete registration in progress, please visit this link to complete your registration:\n\n"
-                    + $"https://www.bungie.net/en/oauth/authorize?client_id={ConfigHelper.GetBotSettings().BungieClientId}&response_type=code&state={user.State}");
+                    "You have an incomplete registration in progress, please visit this link to complete your registration:\n\n" + 
+                    APIService.GetApiClient().OAuth.GetOAuthAuthorizationUrl(user.State));
                 break;
             case UserLinkStatus.Registered:
                 await FollowupAsync("You are already registered.", ephemeral: true);
@@ -45,7 +45,7 @@ public class UserManagement : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync(true);
 
-        var path = $"Configs/{Context.User.Id}.json";
+        var path = $"Users/{Context.User.Id}.json";
 
         if (File.Exists(path))
         {
