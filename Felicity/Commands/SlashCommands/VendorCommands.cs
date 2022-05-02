@@ -19,7 +19,7 @@ namespace Felicity.Commands.SlashCommands;
 [Group("vendor", "Group of commands related to vendors and their available items.")]
 public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
 {
-    [RequireOAuthPrecondition]
+    [RequireOAuth]
     [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]
     public async Task Xur()
     {
@@ -33,7 +33,7 @@ public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
         await FollowupAsync(embed: xurCache.BuildEmbed());
     }
 
-    [RequireOAuthPrecondition]
+    [RequireOAuth]
     [SlashCommand("mods", "Get list of mods currently available at vendors.")]
     public async Task Mods()
     {

@@ -29,13 +29,12 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
     [Command("addServer")]
     public async Task AddServer(ulong serverId)
     {
-        const string path = "Configs/ServerConfig.json";
-        var currentConfig = ServerConfig.FromJson(await File.ReadAllTextAsync(path));
+        var currentConfig = ServerConfig.FromJson();
 
         currentConfig.Settings ??= new Dictionary<string, ServerSetting>();
 
         currentConfig.Settings.Add(serverId.ToString(), new ServerSetting());
-        await File.WriteAllTextAsync(path, ServerConfig.ToJson(currentConfig));
+        await File.WriteAllTextAsync(ConfigHelper.ServerConfigPath, ServerConfig.ToJson(currentConfig));
 
         await ReplyAsync($"Wrote new server \"{serverId}\"");
     }
