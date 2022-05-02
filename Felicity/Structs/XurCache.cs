@@ -19,7 +19,7 @@ using N = Newtonsoft.Json.NullValueHandling;
 
 namespace Felicity.Structs;
 
-public partial class XurCache
+public class XurCache
 {
     [J("XurInventory")] public XurInventory XurInventory { get; set; } = new();
     [J("XurLocation")] public int XurLocation { get; set; }
@@ -149,7 +149,7 @@ public static class ProcessData
                 if (gunsmithLink)
                     result += $"[{weapon.Name}]({BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
                 else
-                    result += $"[{weapon.Name}]({BuildLightGGLink(weapon.WeaponId)}/)\n";
+                    result += $"[{weapon.Name}]({BuildLightGGLink(weapon.WeaponId)}/) | ";
 
                 foreach (var (_, value) in weapon.Perks)
                     result += EmoteHelper.GetEmote(value.IconPath, value.Perkname);
@@ -162,12 +162,13 @@ public static class ProcessData
 
     private static string BuildLightGGLink(uint itemId)
     {
-        return "https://light.gg/db/items/" + itemId;
+        return $"https://light.gg/db/items/{itemId}";
     }
 
     private static string BuildLightGGLink(string armorLegendarySet)
     {
-        var search = armorLegendarySet.Replace("suit", "").Replace("set", "").Replace("armor", "");
+        var search = armorLegendarySet.ToLower().Replace("suit", "")
+            .Replace("set", "").Replace("armor", "");
         return $"https://www.light.gg/db/all?page=1&f=12({search}),3";
     }
 
@@ -248,13 +249,9 @@ public static class ProcessData
             xurCache = FromJson(File.ReadAllText(path));
 
             if (xurCache.InventoryExpires < DateTime.UtcNow)
-            {
                 File.Delete(path);
-            }
             else
-            {
                 return xurCache;
-            }
         }
 
         var vendorData = APIService.GetApiClient().Api.Destiny2_GetVendor(destinyMembership.CharacterIds.First(),
