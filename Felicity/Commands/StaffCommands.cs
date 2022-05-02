@@ -10,6 +10,7 @@ using Felicity.Configs;
 using Felicity.Helpers;
 using Felicity.Services;
 
+// ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Felicity.Commands;

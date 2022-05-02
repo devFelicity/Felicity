@@ -13,10 +13,10 @@ using TwitchLib.Api.Services.Events.LiveStreamMonitor;
 
 namespace Felicity.Services;
 
-internal class TwitchService
+internal static class TwitchService
 {
-    public static TwitchAPI Api;
-    public static DiscordSocketClient Client;
+    private static TwitchAPI Api;
+    private static DiscordSocketClient Client;
     private static LiveStreamMonitorService monitorService;
 
     public static void Setup(DiscordSocketClient client)
@@ -37,7 +37,7 @@ internal class TwitchService
         monitorService.Start();
     }
 
-    public static void ConfigureMonitor()
+    private static void ConfigureMonitor()
     {
         var members = ConfigHelper.GetTwitchSettings().Users.Select(user => user.Value.Name).ToList();
         monitorService = new LiveStreamMonitorService(Api);
@@ -56,7 +56,7 @@ internal class TwitchService
         Log.Information("Restarted TwitchMonitor");
     }
 
-    public static async void OnStreamOnline(object sender, OnStreamOnlineArgs e)
+    private static async void OnStreamOnline(object sender, OnStreamOnlineArgs e)
     {
         Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
@@ -134,7 +134,7 @@ internal class TwitchService
         }
     }
 
-    public static void OnStreamOffline(object sender, OnStreamOfflineArgs e)
+    private static void OnStreamOffline(object sender, OnStreamOfflineArgs e)
     {
         Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
         var userFromConfig =

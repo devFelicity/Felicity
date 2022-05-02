@@ -5,7 +5,7 @@ using Felicity.Helpers;
 
 namespace Felicity.Services;
 
-internal class APIService
+internal static class APIService
 {
     internal static BungieApiClient GetApiClient()
     {

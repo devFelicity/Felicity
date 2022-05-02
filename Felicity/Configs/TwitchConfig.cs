@@ -1,4 +1,5 @@
-﻿// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
 
 using System.Collections.Generic;
 

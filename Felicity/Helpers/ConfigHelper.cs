@@ -1,17 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
+﻿using System.IO;
 using Discord;
 using Felicity.Configs;
-using Felicity.Services;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;
 
 namespace Felicity.Helpers;
 
-internal class ConfigHelper
+internal static class ConfigHelper
 {
     private const string configBasePath = "Configs/";
     private static IConfiguration _activeConfig;
@@ -21,11 +17,11 @@ internal class ConfigHelper
     private static IConfiguration _serverConfig;
     private static IConfiguration _twitchConfig;
     public static string ActiveConfigPath => configBasePath + "activeConfig.json";
-    public static string BotConfigPath => configBasePath + "botConfig.json";
-    public static string TwitchConfigPath => configBasePath + "twitchConfig.json";
+    private static string BotConfigPath => configBasePath + "botConfig.json";
+    private static string TwitchConfigPath => configBasePath + "twitchConfig.json";
     public static string DataConfigPath => configBasePath + "dataConfig.json";
-    public static string ServerConfigPath => configBasePath + "serverConfig.json";
-    public static string EmoteConfigPath => configBasePath + "emoteConfig.json";
+    private static string ServerConfigPath => configBasePath + "serverConfig.json";
+    private static string EmoteConfigPath => configBasePath + "emoteConfig.json";
 
     public static bool LoadConfigFiles()
     {
@@ -98,11 +94,11 @@ internal class ConfigHelper
                 JsonConvert.SerializeObject(new ActiveConfig(), Formatting.Indented));
             Log.Error("<ConfigHelper> No activeConfig.json file detected, creating new file.");
             closeProgram = true;
-        }
+        }*/
 
         if (File.Exists(EmoteConfigPath))
         {
-            emoteConfig = new ConfigurationBuilder().AddJsonFile(EmoteConfigPath).Build();
+            _emoteConfig = new ConfigurationBuilder().AddJsonFile(EmoteConfigPath, false, true).Build();
         }
         else
         {
@@ -110,7 +106,7 @@ internal class ConfigHelper
                 JsonConvert.SerializeObject(new EmoteConfig(), Formatting.Indented));
             Log.Error("<ConfigHelper> No emoteConfig.json file detected, creating new file.");
             closeProgram = true;
-        }*/
+        }
 
         return closeProgram;
     }
@@ -124,6 +120,11 @@ internal class ConfigHelper
     public static BotSettings GetBotSettings()
     {
         return _botConfig.GetRequiredSection("Settings").Get<BotSettings>();
+    }
+
+    public static EmoteSettings GetEmoteSettings()
+    {
+        return _emoteConfig.GetRequiredSection("Settings").Get<EmoteSettings>();
     }
 
     public static TwitchSettings GetTwitchSettings()
