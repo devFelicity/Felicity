@@ -217,15 +217,19 @@ internal class Felicity
 
     private async Task HandleInteraction(SocketInteraction arg)
     {
+        var context = new SocketInteractionContext(_client, arg);
+
         try
         {
-            var context = new SocketInteractionContext(_client, arg);
             await _interaction.ExecuteCommandAsync(context, _services);
         }
         catch (Exception ex)
         {
-            Log.Error($"{ex.GetType()}: {ex.Message}");
-
+            var errmsg = $"{ex.GetType()}: {ex.Message}";
+            Log.Error(errmsg);
+            LogHelper.LogToDiscord($"Error in {context.Guild.Name}: {errmsg}");
+            await context.Interaction.FollowupAsync(errmsg);
+            
             // If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
             // response, or at least let the user know that something went wrong during the command execution.
             if (arg.Type == InteractionType.ApplicationCommand)

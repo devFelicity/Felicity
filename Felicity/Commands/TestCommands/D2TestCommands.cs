@@ -10,6 +10,7 @@ using Discord;
 using Discord.Commands;
 using Felicity.Helpers;
 using Felicity.Services;
+using Felicity.Structs;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
