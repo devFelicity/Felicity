@@ -78,7 +78,7 @@ public class Perk
     [J("iconPath")] public string IconPath { get; set; }
 }
 
-public static class ProcessData
+public static class ProcessXurData
 {
     private static string ToJson(this XurCache self)
     {
