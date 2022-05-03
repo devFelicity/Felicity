@@ -35,7 +35,15 @@ internal static class StatusService
             newGame = gameList[rnd.Next(gameList.Count)];
         } while (newGame == LastGame);
 
-        await _client.SetActivityAsync(newGame);
+        try
+        {
+            await _client.SetActivityAsync(newGame);
+        }
+        catch
+        {
+            // ignored
+            // client isn't ready or disconnected temporarily, not a big deal.
+        }
 
         LastGame = newGame;
     }
