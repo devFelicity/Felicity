@@ -90,23 +90,18 @@ public static class ProcessXurData
         return JsonConvert.DeserializeObject<XurCache>(json, Converter.Settings);
     }
 
+    public static Embed BuildUnavailableEmbed()
+    {
+        return Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
+            "https://www.bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png",
+            "Xûr is not currently selling his wares").Build();
+    }
+
     public static Embed BuildEmbed(this XurCache self)
     {
-        var embed = new EmbedBuilder
-        {
-            Color = ConfigHelper.GetEmbedColor(),
-            Author = new EmbedAuthorBuilder
-            {
-                IconUrl = "https://www.bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png",
-                Name = "Xûr, Agent of the Nine"
-            },
-            Description = "Xûr is currently selling his wares on " + Format.Bold(GetXurLocation(self.XurLocation)),
-            Footer = new EmbedFooterBuilder
-            {
-                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}",
-                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
-            }
-        };
+        var embed = Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
+            "https://www.bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png",
+            "Xûr is currently selling his wares on " + Format.Bold(GetXurLocation(self.XurLocation)));
 
         var exoticWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Exotic);
         var legendaryWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Legendary, false);
@@ -371,5 +366,21 @@ public static class ProcessXurData
         File.WriteAllText("Data/xurCache.json", xurCache.ToJson());
 
         return xurCache;
+    }
+
+    public static bool IsXurHere()
+    {
+        var currentTime = DateTime.UtcNow;
+        return currentTime.DayOfWeek switch
+        {
+            DayOfWeek.Saturday => true,
+            DayOfWeek.Sunday => true,
+            DayOfWeek.Monday => true,
+            DayOfWeek.Tuesday => currentTime.Hour < 15,
+            DayOfWeek.Wednesday => false,
+            DayOfWeek.Thursday => false,
+            DayOfWeek.Friday => currentTime.Hour > 15,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

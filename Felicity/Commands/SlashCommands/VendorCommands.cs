@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using APIHelper;
@@ -25,12 +26,22 @@ public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
 
-        var oauth = Context.User.OAuth();
-        var destinyMembership = oauth.DestinyMembership;
+        if (ProcessXurData.IsXurHere())
+        {
+            var oauth = Context.User.OAuth();
+            var destinyMembership = oauth.DestinyMembership;
 
-        var xurCache = ProcessXurData.FetchInventory(oauth, destinyMembership);
+            var xurCache = ProcessXurData.FetchInventory(oauth, destinyMembership);
 
-        await FollowupAsync(embed: xurCache.BuildEmbed());
+            await FollowupAsync(embed: xurCache.BuildEmbed());
+        }
+        else
+        {
+            if(File.Exists("Data/xurCache.json"))
+                File.Delete("Data/xurCache.json");
+
+            await FollowupAsync(embed: ProcessXurData.BuildUnavailableEmbed());
+        }
     }
 
     [RequireOAuth]

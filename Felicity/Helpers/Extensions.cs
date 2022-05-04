@@ -25,6 +25,28 @@ internal static class Extensions
         return staff.BotStaff.Any(staffId => staffId == user.Id);
     }
 
+    public static EmbedBuilder GenerateMessageEmbed(string authorName, string authorIcon, string description, string authorUrl = "")
+    {
+        var embed = new EmbedBuilder
+        {
+            Color = ConfigHelper.GetEmbedColor(),
+            Author = new EmbedAuthorBuilder
+            {
+                IconUrl = authorIcon,
+                Name = authorName,
+                Url = authorUrl
+            },
+            Description = description,
+            Footer = new EmbedFooterBuilder
+            {
+                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}",
+                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
+            }
+        };
+
+        return embed;
+    }
+
     public static Embed GenerateLookupEmbed(this DestinyProfileResponse destinyProfile, string bungieName,
         long membershipId, BungieMembershipType membershipType)
     {
