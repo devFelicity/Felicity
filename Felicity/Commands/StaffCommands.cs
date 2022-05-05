@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Ceen;
 using Discord;
 using Discord.Commands;
-using Felicity.Configs;
 using Felicity.Helpers;
 using Felicity.Services;
+using Serilog;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -21,22 +18,25 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
     public async Task List()
     {
         var msg = Context.Client.Guilds.Aggregate(string.Empty,
-            (current, guild) => current + $"Name: {guild.Name} // ID: {guild.Id}\n");
+            (current, guild) =>
+                current + $"- {Format.Bold(guild.Name)} ({guild.Id}) [{Format.Italics(guild.Owner.ToString())}]\n");
 
         await ReplyAsync(msg);
     }
 
-    [Command("addServer")]
-    public async Task AddServer(ulong serverId)
+    [Command("leaveServer")]
+    public async Task LeaveServer(ulong serverId)
     {
-        var currentConfig = ServerConfig.FromJson();
+        var server = Context.Client.GetGuild(serverId);
 
-        currentConfig.Settings ??= new Dictionary<string, ServerSetting>();
+        if (server == null)
+        {
+            await ReplyAsync("Server not found.");
+            return;
+        }
 
-        currentConfig.Settings.Add(serverId.ToString(), new ServerSetting());
-        await File.WriteAllTextAsync(ConfigHelper.ServerConfigPath, ServerConfig.ToJson(currentConfig));
-
-        await ReplyAsync($"Wrote new server \"{serverId}\"");
+        await server.LeaveAsync();
+        await ReplyAsync($"Left server `{server.Name}`");
     }
 
     [Command("ban")]
@@ -73,7 +73,7 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         catch (Exception ex)
         {
             var log = $"{ex.GetType()}: {ex.Message}";
-            await Log.ErrorAsync(log);
+            Log.Error(log);
             await ReplyAsync(log);
         }
     }
