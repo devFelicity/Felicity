@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using APIHelper;
 using BungieSharper.Entities;
+using BungieSharper.Entities.Components;
 using BungieSharper.Entities.Destiny;
 using BungieSharper.Entities.Destiny.Definitions.Collectibles;
 using BungieSharper.Entities.User;
 using Ceen;
 using Discord;
 using Discord.Interactions;
+using Felicity.Enums;
 using Felicity.Helpers;
 using Felicity.Services;
 
@@ -36,7 +38,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
         {
             var linkedUser = OAuthService.GetUser(Context.User.Id).Result;
             var linkedProfile = APIService.GetApiClient().Api.Destiny2_GetLinkedProfiles(linkedUser.MembershipId,
-                BungieMembershipType.BungieNext, false, linkedUser.AccessToken).Result;
+                BungieMembershipType.BungieNext, true, linkedUser.AccessToken).Result;
 
             membershipId = linkedProfile.Profiles.First().MembershipId;
             membershipType = linkedProfile.Profiles.First().MembershipType;
@@ -83,7 +85,6 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
                 catch (Exception ex)
                 {
                     var msg = $"Failed to lookup: {bungieTag}\n{ex.GetType()}: {ex.Message}";
-                    await Log.ErrorAsync(msg);
                     LogHelper.LogToDiscord(msg);
 
                     await FollowupAsync(
@@ -99,13 +100,14 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
                 DestinyComponentType.Characters
             }).Result;
 
-        await FollowupAsync("", new[] {player.GenerateLookupEmbed(bungieName, membershipId, membershipType)});
+        await FollowupAsync(embed: player.GenerateLookupEmbed(bungieName, membershipId, membershipType));
     }
 
     [SlashCommand("accountshare", "Look up account shared emblems of a player.")]
     public async Task AccountShare(
-        [Summary("bungiename", "Bungie name of the requested user (name#1234)")]
-        string bungieTag)
+        [Summary("bungiename",
+            "Bungie name of the requested user (name#1234). If absent, registered profile will be used.")]
+        string bungieTag = "")
     {
         await DeferAsync();
 
@@ -145,6 +147,16 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
             {
                 DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
             });
+
+        if (profile.Result.ProfileCollectibles.Privacy == ComponentPrivacySetting.Private)
+        {
+            var privateEmbed = Extensions.GenerateMessageEmbed(bungieName,
+                RemoteAPI.apiBaseUrl + profile.Result.Profile.Data.UserInfo.IconPath,
+                "User has their collections set to private, unable to parse emblems.");
+
+            await FollowupAsync(embed: privateEmbed.Build());
+            return;
+        }
 
         var emblemCount = 0;
         var emblemList = new List<DestinyCollectibleDefinition>();
