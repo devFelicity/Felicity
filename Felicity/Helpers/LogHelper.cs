@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Transactions;
 using Discord;
 using Discord.WebSocket;
 
@@ -44,8 +45,22 @@ internal class LogHelper
         return Task.CompletedTask;
     }
 
-    public static void LogToDiscord(string message)
+    public static void LogToDiscord(string message, LogSeverity severity = LogSeverity.Info)
     {
         DiscordLogChannel.SendMessageAsync(message);
+
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        switch (severity)
+        {
+            case LogSeverity.Error:
+                Serilog.Log.Error(message);
+                break;
+            case LogSeverity.Warning:
+                Serilog.Log.Warning(message);
+                break;
+            case LogSeverity.Info:
+                Serilog.Log.Information(message);
+                break;
+        }
     }
 }
