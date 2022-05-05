@@ -162,22 +162,9 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
             if (string.IsNullOrEmpty(manifestCollectible.DisplayProperties.Name))
                 continue;
 
-            var emblemCatList = new List<long>
-            {
-                2451657441, // Seasonal
-                24961706, // Account
-                1166184619, // General
-                1801524334, // Competitive
-                4111024827, // Gambit
-                3958514834, // Strikes
-                631010939, // World
-                2220993106, // Trials
-                329982304 // Raids
-            };
-
             foreach (var manifestCollectibleParentNodeHash in manifestCollectible.ParentNodeHashes)
             {
-                if (!emblemCatList.Contains(manifestCollectibleParentNodeHash))
+                if (!EmblemCats.EmblemCatList.Contains((EmblemCat) manifestCollectibleParentNodeHash))
                     continue;
 
                 emblemCount++;

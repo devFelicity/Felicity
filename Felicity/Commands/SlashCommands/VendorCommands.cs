@@ -1,15 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
-using APIHelper;
-using BungieSharper.Entities.Destiny;
-using BungieSharper.Entities.Destiny.Entities.Vendors;
-using Discord;
 using Discord.Interactions;
-using Felicity.Enums;
 using Felicity.Helpers;
-using Felicity.Services;
 using Felicity.Structs;
 
 // ReSharper disable UnusedMember.Global
