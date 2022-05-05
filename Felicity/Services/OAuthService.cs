@@ -88,29 +88,14 @@ internal static class OAuthService
             return null;
         }
 
-        // ReSharper disable once InvertIf
-        if (oauthValues.ExpiresAt < DateTime.Now)
-        {
-            /*
-                var client = new RestClient("https://www.bungie.net/");
-                var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
-                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+        if (oauthValues.ExpiresAt >= DateTime.Now)
+            return OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
 
-                request.AddHeader("Authorization",
-                    $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
-                request.AddParameter("grant_type", "refresh_token");
-                request.AddParameter("refresh_token", oauthValues.RefreshToken);
+        var refreshedUser = await APIService.GetApiClient().OAuth.RefreshOAuthToken(oauthValues.RefreshToken);
 
-                var response = await client.ExecuteAsync(request);
-                var refreshedUser = OAuthResponse.FromJson(response.Content);
-            */
+        UpdateUser(Convert.ToUInt64(discordId), refreshedUser);
 
-            var refreshedUser = await APIService.GetApiClient().OAuth.RefreshOAuthToken(oauthValues.RefreshToken);
-
-            UpdateUser(Convert.ToUInt64(discordId), refreshedUser);
-
-            LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
-        }
+        LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
 
         return OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
     }
@@ -189,7 +174,7 @@ internal static class OAuthService
 
             var bungieTag =
                 $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
-            LogHelper.LogToDiscord($"Registered `{discordId}` to {bungieTag}.");
+            LogHelper.LogToDiscord($"Registered `{DiscordClient.GetUserAsync(Convert.ToUInt64(discordId)).Result}` to {bungieTag}.");
 
             var oAuthResponse = new TokenResponse
             {
@@ -211,8 +196,7 @@ internal static class OAuthService
         catch (Exception ex)
         {
             var msg = $"{ex.GetType()}: {ex.Message}";
-            await Log.ErrorAsync(msg);
-            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg));
+            LogHelper.LogToDiscord($"Error registering user `{discordId}`\n" + Format.Code(msg), LogSeverity.Error);
         }
     }
 }
