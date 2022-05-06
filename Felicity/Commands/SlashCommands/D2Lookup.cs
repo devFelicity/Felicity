@@ -107,7 +107,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
     public async Task AccountShare(
         [Summary("bungiename",
             "Bungie name of the requested user (name#1234). If absent, registered profile will be used.")]
-        string bungieTag = "")
+        string bungieTag)
     {
         await DeferAsync();
 
@@ -146,26 +146,35 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
             membershipType, new[]
             {
                 DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
-            });
+            }).Result;
 
-        if (profile.Result.ProfileCollectibles.Privacy == ComponentPrivacySetting.Private)
+        /*
+         * Not sure why this is marked as unreachable, privacy is ALWAYS private.
+         * But if Data is not populated, it'll just crash.
+         */
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        // ReSharper disable HeuristicUnreachableCode
+        if (profile.ProfileCollectibles.Data == null)
         {
             var privateEmbed = Extensions.GenerateMessageEmbed(bungieName,
-                RemoteAPI.apiBaseUrl + profile.Result.Profile.Data.UserInfo.IconPath,
-                "User has their collections set to private, unable to parse emblems.");
+                RemoteAPI.apiBaseUrl + profile.Profile.Data.UserInfo.IconPath,
+                "User has their collections set to private, unable to parse emblems.",
+                "https://www.bungie.net/7/en/User/Profile/254/" + profile.Profile.Data.UserInfo.MembershipId);
 
             await FollowupAsync(embed: privateEmbed.Build());
             return;
         }
+        // ReSharper restore HeuristicUnreachableCode
 
         var emblemCount = 0;
         var emblemList = new List<DestinyCollectibleDefinition>();
 
-        var equippedEmblemList = profile.Result.Characters.Data.Select(destinyCharacterComponent =>
+        var equippedEmblemList = profile.Characters.Data.Select(destinyCharacterComponent =>
                 ManifestConnection.GetInventoryItemById(unchecked((int) destinyCharacterComponent.Value.EmblemHash)))
             .ToList();
 
-        foreach (var (key, value) in profile.Result.ProfileCollectibles.Data.Collectibles)
+        foreach (var (key, value) in profile.ProfileCollectibles.Data.Collectibles)
         {
             var manifestCollectible = ManifestConnection.GetItemCollectibleId(unchecked((int) Convert.ToInt64(key)));
             if (manifestCollectible.Redacted)
@@ -208,12 +217,13 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
             {
                 Name = bungieName,
                 Url = "https://www.bungie.net/7/en/User/Profile/254/" +
-                      profile.Result.Profile.Data.UserInfo.MembershipId
+                      profile.Profile.Data.UserInfo.MembershipId
             },
             Color = Color.Purple,
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Parsed {emblemCount} emblems."
+                Text = $"{Strings.FelicityVersion} | Parsed {emblemCount} emblems.",
+                IconUrl = Images.FelicityLogo
             }
         };
 
