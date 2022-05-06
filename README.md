@@ -7,6 +7,6 @@
 - Coming soon, sorry.
 
 # The Team
-[Leaf](https://whaskell.pw) - Owner, developer.
-[Icarus](https://twitter.com/icarusaim) - Feature contributor. (*unreleased*)
+[Leaf](https://whaskell.pw) - Owner, developer.  
+[Icarus](https://twitter.com/icarusaim) - Feature contributor. (*unreleased*)  
 [Zempp](https://twitter.com/zxmppr) - Feature contributor. (*unreleased*)
