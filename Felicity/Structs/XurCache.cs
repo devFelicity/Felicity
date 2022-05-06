@@ -93,14 +93,14 @@ public static class ProcessXurData
     public static Embed BuildUnavailableEmbed()
     {
         return Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
-            "https://www.bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png",
+            Images.XurVendorLogo,
             "Xûr is not currently selling his wares").Build();
     }
 
     public static Embed BuildEmbed(this XurCache self)
     {
         var embed = Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
-            "https://www.bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png",
+            Images.XurVendorLogo,
             "Xûr is currently selling his wares on " + Format.Bold(GetXurLocation(self.XurLocation)));
 
         var exoticWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Exotic);

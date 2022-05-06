@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Felicity.Enums;
 using Felicity.Helpers;
 
 // ReSharper disable UnusedMember.Global
@@ -31,8 +32,8 @@ public class FunCommands : InteractionModuleBase<SocketInteractionContext>
             Color = ConfigHelper.GetEmbedColor(),
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}",
-                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
+                Text = Strings.FelicityVersion,
+                IconUrl = Images.FelicityLogo
             }
         };
 

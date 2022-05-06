@@ -51,7 +51,7 @@ public static class ProcessModData
             Color = ConfigHelper.GetEmbedColor(),
             Author = new EmbedAuthorBuilder
             {
-                IconUrl = "https://bungie.net/common/destiny2_content/icons/23599621d4c63076c647384028d96ca4.png",
+                IconUrl = Images.ModVendorIcon,
                 Name = "Mod Vendors"
             },
             Description = checkInventory
@@ -59,8 +59,8 @@ public static class ProcessModData
                 : "You can use `/vendor mods` to view unacquired mods from this list.\nAda-1 and Banshee-44 can both be found in the Tower.",
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0} | Links go to light.gg",
-                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
+                Text = $"{Strings.FelicityVersion} | Links go to light.gg.",
+                IconUrl = Images.FelicityLogo
             }
         };
 

@@ -6,6 +6,7 @@ using BungieSharper.Entities.Destiny.Responses;
 using Discord;
 using Discord.WebSocket;
 using Felicity.Configs;
+using Felicity.Enums;
 using Felicity.Services;
 
 // ReSharper disable UnusedMember.Global
@@ -39,8 +40,8 @@ internal static class Extensions
             Description = description,
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}",
-                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
+                Text = Strings.FelicityVersion,
+                IconUrl = Images.FelicityLogo
             }
         };
 
@@ -66,8 +67,8 @@ internal static class Extensions
             Title = bungieName,
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}",
-                IconUrl = "https://whaskell.pw/images/felicity_circle.jpg"
+                Text = Strings.FelicityVersion,
+                IconUrl = Images.FelicityLogo
             },
             Description =
                 $"{Format.Code($"/invite {bungieName}")} | " +
