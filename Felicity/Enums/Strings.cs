@@ -6,13 +6,13 @@ internal static class Strings
 {
     public static readonly string FelicityVersion = $"Felicity {ConfigHelper.GetBotSettings().Version:##.0}";
 
-    public static string GetMementoImage(string mementoName)
+    public static string GetMementoImage(MementoType mementoName)
     {
         return mementoName switch
         {
-            "Gambit" => "https://bungie.net/common/destiny2_content/icons/045e66a538f70024c194b01a5cf8652a.jpg",
-            "Trials" => "https://bungie.net/common/destiny2_content/icons/c2e0148851bd8aec5d04d413b897dcbd.jpg",
-            "Nightfall" => "https://bungie.net/common/destiny2_content/icons/bf21c13f03a29aa0067f85c84593a594.jpg",
+            MementoType.Gambit => "https://bungie.net/common/destiny2_content/icons/045e66a538f70024c194b01a5cf8652a.jpg",
+            MementoType.Trials => "https://bungie.net/common/destiny2_content/icons/c2e0148851bd8aec5d04d413b897dcbd.jpg",
+            MementoType.Nightfall => "https://bungie.net/common/destiny2_content/icons/bf21c13f03a29aa0067f85c84593a594.jpg",
             _ => ""
         };
     }
