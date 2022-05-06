@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using Discord;
 using Discord.WebSocket;
+using Felicity.Configs;
+using Felicity.Enums;
 using Felicity.Helpers;
+using Newtonsoft.Json;
 using Serilog;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
@@ -18,6 +21,7 @@ internal static class TwitchService
     private static TwitchAPI Api;
     private static DiscordSocketClient Client;
     private static LiveStreamMonitorService monitorService;
+    private static readonly List<ActiveStream> activeStreams = new();
 
     public static void Setup(DiscordSocketClient client)
     {
@@ -28,30 +32,57 @@ internal static class TwitchService
         {
             Settings =
             {
-                AccessToken = ConfigHelper.GetTwitchSettings().AccessToken,
-                ClientId = ConfigHelper.GetTwitchSettings().ClientId
+                AccessToken = ConfigHelper.GetBotSettings().TwitchAccessToken,
+                ClientId = ConfigHelper.GetBotSettings().TwitchClientId
             }
         };
-
-        ConfigureMonitor();
-        monitorService.Start();
     }
 
-    private static void ConfigureMonitor()
+    public static void ConfigureMonitor()
     {
-        var members = ConfigHelper.GetTwitchSettings().Users.Select(user => user.Value.Name).ToList();
+        var serverSettings = ServerConfig.FromJson();
+        if (serverSettings == null)
+            return;
+
+        // key = serverid, value = settings
+        foreach (var serverSetting in serverSettings.Settings)
+        {
+            if (serverSetting.Value.TwitchStreams.Count <= 0) continue;
+
+            // key = twitch name
+            // value = settings
+            foreach (var twitchStream in serverSetting.Value.TwitchStreams)
+            {
+                var newStream = new ActiveStream {TwitchName = twitchStream.Key};
+                newStream.TwitchStreams.Add(Convert.ToUInt64(serverSetting.Key), new TwitchStream
+                {
+                    Mention = twitchStream.Value.Mention,
+                    MentionEveryone = twitchStream.Value.MentionEveryone,
+                    UserId = twitchStream.Value.UserId,
+                    ChannelId = twitchStream.Value.ChannelId
+                });
+
+                if(!activeStreams.Contains(newStream))
+                    activeStreams.Add(newStream);
+            }
+        }
+
+        var streamNames = new List<string>();
+        foreach (var activeStream in activeStreams.Where(activeStream => !streamNames.Contains(activeStream.TwitchName)))
+            streamNames.Add(activeStream.TwitchName);
+
         monitorService = new LiveStreamMonitorService(Api);
         monitorService.OnStreamOnline += OnStreamOnline;
         monitorService.OnStreamOffline += OnStreamOffline;
-        monitorService.SetChannelsByName(members);
-        Log.Information($"Listening to Twitch streams from: {string.Join(", ", members)}");
+        monitorService.SetChannelsByName(streamNames);
+        Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamNames)}");
+        monitorService.Start();
     }
 
     public static void RestartMonitor()
     {
         monitorService.Stop();
         ConfigureMonitor();
-        monitorService.Start();
 
         Log.Information("Restarted TwitchMonitor");
     }
@@ -60,18 +91,7 @@ internal static class TwitchService
     {
         Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-        var currentUser =
-            (from user in ConfigHelper.GetTwitchSettings().Users
-                where string.Equals(user.Value.Name, e.Stream.UserName, StringComparison.CurrentCultureIgnoreCase)
-                select user.Value).FirstOrDefault();
-
-        if (currentUser == null)
-        {
-            Log.Error("User not found in Twitch config.");
-            return;
-        }
-
-        var filePath = $"Configs/{currentUser.Name.ToLower()}-{e.Stream.Id}.txt";
+        var filePath = $"Configs/{e.Channel.ToLower()}-{e.Stream.Id}.txt";
 
         if (File.Exists(filePath))
         {
@@ -92,63 +112,62 @@ internal static class TwitchService
             ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
             Footer = new EmbedFooterBuilder
             {
-                IconUrl = "https://whaskell.pw/images/felicity.jpg",
-                Text = "Felicity // whaskell.pw"
+                IconUrl = Images.FelicityLogo,
+                Text = Strings.FelicityVersion
             },
             Fields = new List<EmbedFieldBuilder>
             {
                 new()
                 {
                     Name = "Game",
-                    Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
+                    Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
                     IsInline = true
                 },
                 new()
                 {
-                    Name = "Started", 
-                    Value = $"<t:{timeStarted}:R>", 
+                    Name = "Started",
+                    Value = $"<t:{timeStarted}:R>",
                     IsInline = true
                 }
             }
         };
 
-        try
-        {
-            var mention = "";
-            if (currentUser.MentionEveryone)
-                mention = "@everyone ";
-            else if (currentUser.Mention != 0)
-                mention = $"<@&{currentUser.Mention}> ";
+        var currentStream = activeStreams.First(x => x.TwitchName == e.Channel.ToLower());
 
-            var message = await Client.GetGuild(currentUser.ServerId).GetTextChannel(currentUser.ChannelId)
-                .SendMessageAsync(
-                    $"<@{currentUser.UserId}> is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
-                    false, embed.Build());
+        var messageIds = new Dictionary<ulong, ulong>();
 
-            await File.WriteAllTextAsync(filePath, message.Id.ToString());
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Error in Twitch OnStreamOnline");
-            Log.Error($"{ex.GetType()}: {ex.Message}");
-        }
+        foreach (var activeStream in currentStream.TwitchStreams)
+            try
+            {
+                var mention = "";
+                if (activeStream.Value.MentionEveryone)
+                    mention = "@everyone ";
+                else if (activeStream.Value.Mention != 0)
+                    mention = $"<@&{activeStream.Value.Mention}> ";
+
+                var mentionUser = activeStream.Value.UserId == 0 ? e.Channel : $"<@{activeStream.Value.UserId}>";
+
+                var message = await Client.GetGuild(activeStream.Key).GetTextChannel(activeStream.Value.ChannelId)
+                    .SendMessageAsync(
+                        $"{mentionUser} is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
+                        false, embed.Build());
+
+                messageIds.Add(activeStream.Value.ChannelId, message.Id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error in Twitch OnStreamOnline");
+                Log.Error($"{ex.GetType()}: {ex.Message}");
+            }
+
+        await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(messageIds));
     }
 
     private static void OnStreamOffline(object sender, OnStreamOfflineArgs e)
     {
         Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
-        var userFromConfig =
-            (from user in ConfigHelper.GetTwitchSettings().Users
-                where string.Equals(user.Value.Name, e.Channel, StringComparison.CurrentCultureIgnoreCase)
-                select user.Value).FirstOrDefault();
 
-        if (userFromConfig == null)
-        {
-            Log.Error("Twitch stream user not found in config.");
-            return;
-        }
-
-        var filePath = $"Configs/{userFromConfig.Name.ToLower()}-{e.Stream.Id}.txt";
+        var filePath = $"Configs/{e.Channel.ToLower()}-{e.Stream.Id}.txt";
 
         if (!File.Exists(filePath))
         {
@@ -165,17 +184,13 @@ internal static class TwitchService
             return;
         }
 
-        var messageId = ulong.Parse(File.ReadAllText(filePath));
-        var message = ((SocketTextChannel) Client.GetChannel(userFromConfig.ChannelId)).GetMessageAsync(messageId)
-            .Result;
-
         var vodList = Api.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1).Result;
         if (vodList.Videos.Length != 0)
         {
             var vod = vodList.Videos.First();
             var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
 
-            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
             var embed = new EmbedBuilder
             {
@@ -186,45 +201,55 @@ internal static class TwitchService
                 ThumbnailUrl = channelInfo.ProfileImageUrl,
                 Footer = new EmbedFooterBuilder
                 {
-                    IconUrl = "https://whaskell.pw/images/felicity.jpg",
-                    Text = "Felicity // whaskell.pw"
+                    IconUrl = Images.FelicityLogo,
+                    Text = Strings.FelicityVersion
                 },
                 Fields = new List<EmbedFieldBuilder>
                 {
                     new()
                     {
-                        Name = "Started", Value = $"<t:{unixTimestamp}:f>", 
+                        Name = "Started", Value = $"<t:{unixTimestamp}:f>",
                         IsInline = true
                     },
                     new()
                     {
-                        Name = "Duration", Value = vod.Duration, 
+                        Name = "Duration", Value = vod.Duration,
                         IsInline = true
                     },
                     new()
                     {
                         Name = "Game",
-                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName, 
+                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
                         IsInline = true
                     }
                 }
             };
 
-            try
-            {
-                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
-                {
-                    properties.Content = $"<@{userFromConfig.UserId}> was live: <{vodUrl}>";
-                    properties.Embed = embed.Build();
-                });
+            var messageIdList = JsonConvert.DeserializeObject<Dictionary<ulong, ulong>>(File.ReadAllText(filePath));
 
-                File.Delete(filePath);
-            }
-            catch (Exception ex)
+            if (messageIdList != null)
             {
-                Log.Error("Error in Twitch OnStreamOffline");
-                Log.Error($"{ex.GetType()}: {ex.Message}");
+                foreach (var (channelId, messageId) in messageIdList)
+                {
+                    var message = ((SocketTextChannel) Client.GetChannel(channelId)).GetMessageAsync(messageId)
+                        .Result;
+                    try
+                    {
+                        (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                        {
+                            properties.Content = $"{Format.Bold(e.Channel)} was live: <{vodUrl}>";
+                            properties.Embed = embed.Build();
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Error in Twitch OnStreamOffline");
+                        Log.Error($"{ex.GetType()}: {ex.Message}");
+                    }
+                }
             }
+
+            File.Delete(filePath);
         }
         else
         {
@@ -238,8 +263,8 @@ internal static class TwitchService
                     ThumbnailUrl = channelInfo.ProfileImageUrl,
                     Footer = new EmbedFooterBuilder
                     {
-                        IconUrl = "https://whaskell.pw/images/felicity.jpg",
-                        Text = "Felicity // whaskell.pw"
+                        IconUrl = Images.FelicityLogo,
+                        Text = Strings.FelicityVersion
                     },
                     Fields = new List<EmbedFieldBuilder>
                     {
@@ -262,11 +287,21 @@ internal static class TwitchService
                     }
                 };
 
-                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                var messageIdList = JsonConvert.DeserializeObject<Dictionary<ulong, ulong>>(File.ReadAllText(filePath));
+                if (messageIdList != null)
                 {
-                    properties.Content = $"<@{userFromConfig.UserId}> was live:";
-                    properties.Embed = embed.Build();
-                });
+                    foreach (var (channelId, messageId) in messageIdList)
+                    {
+                        var message = ((SocketTextChannel)Client.GetChannel(channelId)).GetMessageAsync(messageId)
+                            .Result;
+
+                        (message as IUserMessage)?.ModifyAsync(delegate (MessageProperties properties)
+                        {
+                            properties.Content = $"{Format.Bold(e.Channel)} was live:";
+                            properties.Embed = embed.Build();
+                        });
+                    }
+                }
 
                 File.Delete(filePath);
             }
@@ -276,5 +311,17 @@ internal static class TwitchService
                 Log.Error($"{ex.GetType()}: {ex.Message}");
             }
         }
+    }
+
+    public static bool UserExists(string twitchName)
+    {
+        var test = Api.Helix.Users.GetUsersAsync(logins: new List<string> {twitchName}).Result;
+        return test.Users.Length > 0;
+    }
+
+    private class ActiveStream
+    {
+        public string TwitchName { get; init; }
+        public Dictionary<ulong, TwitchStream> TwitchStreams { get; } = new();
     }
 }

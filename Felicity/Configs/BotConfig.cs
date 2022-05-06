@@ -14,6 +14,8 @@ public class BotSettings
     public string BungieApiKey { get; set; } = "";
     public string BungieClientId { get; set; } = "";
     public string BungieClientSecret { get; set; } = "";
+    public string TwitchAccessToken { get; set; } = "";
+    public string TwitchClientId { get; set; } = "";
     public string PfxSecret { get; set; } = "";
     public int TimeBetweenRefresh { get; set; } = 5;
     public double Version { get; set; } = 4.0;

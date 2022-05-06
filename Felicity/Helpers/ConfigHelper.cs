@@ -16,11 +16,9 @@ internal static class ConfigHelper
     private static IConfiguration _dataConfig;
     private static IConfiguration _emoteConfig;
     private static IConfiguration _serverConfig;
-    private static IConfiguration _twitchConfig;
 
     public static string ActiveConfigPath => configBasePath + "activeConfig.json";
     private static string BotConfigPath => configBasePath + "botConfig.json";
-    private static string TwitchConfigPath => configBasePath + "twitchConfig.json";
     public static string DataConfigPath => configBasePath + "dataConfig.json";
     public static string ServerConfigPath => configBasePath + "serverConfig.json";
     private static string EmoteConfigPath => configBasePath + "emoteConfig.json";
@@ -45,19 +43,6 @@ internal static class ConfigHelper
         {
             File.WriteAllText(BotConfigPath, JsonConvert.SerializeObject(new BotConfig(), Formatting.Indented));
             Log.Error("<ConfigHelper> No botConfig.json file detected, creating new file.");
-            closeProgram = true;
-        }
-
-        if (File.Exists(TwitchConfigPath))
-        {
-            _twitchConfig = new ConfigurationBuilder()
-                .AddJsonFile(TwitchConfigPath, false, true)
-                .Build();
-        }
-        else
-        {
-            File.WriteAllText(TwitchConfigPath, JsonConvert.SerializeObject(new TwitchConfig(), Formatting.Indented));
-            Log.Error("<ConfigHelper> No twitchConfig.json file detected, creating new file.");
             closeProgram = true;
         }
 
@@ -127,11 +112,6 @@ internal static class ConfigHelper
     public static EmoteSettings GetEmoteSettings()
     {
         return _emoteConfig.GetRequiredSection("Settings").Get<EmoteSettings>();
-    }
-
-    public static TwitchSettings GetTwitchSettings()
-    {
-        return _twitchConfig.GetRequiredSection("Settings").Get<TwitchSettings>();
     }
 
     public static ServerSetting GetServerSettings(ulong serverID)

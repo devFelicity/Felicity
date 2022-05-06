@@ -27,8 +27,18 @@ public partial class ServerSetting
     [J("boostCountChannel")] public ulong BoostCountChannel { get; set; }
     [J("memberEvents")] public MemberEvents MemberEvents { get; set; } = new();
     [J("subscriptions")] public Dictionary<string, Subscription> Subscriptions { get; set; } = new();
+    [J("twitchStreams")] public Dictionary<string, TwitchStream> TwitchStreams { get; set; } = new();
     [J("destiny")] public Destiny Destiny { get; set; } = new();
     [J("tmpVCs")] public List<ulong> TmpVCs { get; set; } = new();
+
+}
+
+public class TwitchStream
+{
+    [J("ChannelId")] public ulong ChannelId { get; set; }
+    [J("UserId")] public ulong UserId { get; set; }
+    [J("Mention")] public ulong Mention { get; set; }
+    [J("MentionEveryone")] public bool MentionEveryone { get; set; }
 }
 
 public partial class Destiny
