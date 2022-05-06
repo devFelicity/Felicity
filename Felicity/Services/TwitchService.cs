@@ -62,13 +62,14 @@ internal static class TwitchService
                     ChannelId = twitchStream.Value.ChannelId
                 });
 
-                if(!activeStreams.Contains(newStream))
+                if (!activeStreams.Contains(newStream))
                     activeStreams.Add(newStream);
             }
         }
 
         var streamNames = new List<string>();
-        foreach (var activeStream in activeStreams.Where(activeStream => !streamNames.Contains(activeStream.TwitchName)))
+        foreach (var activeStream in
+                 activeStreams.Where(activeStream => !streamNames.Contains(activeStream.TwitchName)))
             streamNames.Add(activeStream.TwitchName);
 
         monitorService = new LiveStreamMonitorService(Api);
@@ -132,27 +133,29 @@ internal static class TwitchService
             }
         };
 
-        var currentStream = activeStreams.First(x => x.TwitchName == e.Channel.ToLower());
-
         var messageIds = new Dictionary<ulong, ulong>();
-
-        foreach (var activeStream in currentStream.TwitchStreams)
+        foreach (var currentActiveStream in activeStreams
+                     .Where(activeStream => activeStream.TwitchName == e.Channel.ToLower())
+                     .SelectMany(activeStream => activeStream.TwitchStreams))
             try
             {
                 var mention = "";
-                if (activeStream.Value.MentionEveryone)
+                if (currentActiveStream.Value.MentionEveryone)
                     mention = "@everyone ";
-                else if (activeStream.Value.Mention != 0)
-                    mention = $"<@&{activeStream.Value.Mention}> ";
+                else if (currentActiveStream.Value.Mention != 0)
+                    mention = $"<@&{currentActiveStream.Value.Mention}> ";
 
-                var mentionUser = activeStream.Value.UserId == 0 ? e.Channel : $"<@{activeStream.Value.UserId}>";
+                var mentionUser = currentActiveStream.Value.UserId == 0
+                    ? e.Channel
+                    : $"<@{currentActiveStream.Value.UserId}>";
 
-                var message = await Client.GetGuild(activeStream.Key).GetTextChannel(activeStream.Value.ChannelId)
+                var message = await Client.GetGuild(currentActiveStream.Key)
+                    .GetTextChannel(currentActiveStream.Value.ChannelId)
                     .SendMessageAsync(
                         $"{mentionUser} is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
                         false, embed.Build());
 
-                messageIds.Add(activeStream.Value.ChannelId, message.Id);
+                messageIds.Add(currentActiveStream.Value.ChannelId, message.Id);
             }
             catch (Exception ex)
             {
@@ -190,7 +193,8 @@ internal static class TwitchService
             var vod = vodList.Videos.First();
             var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
 
-            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).ToUniversalTime().Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).ToUniversalTime().Subtract(new DateTime(1970, 1, 1))
+                .TotalSeconds;
 
             var embed = new EmbedBuilder
             {
@@ -228,7 +232,6 @@ internal static class TwitchService
             var messageIdList = JsonConvert.DeserializeObject<Dictionary<ulong, ulong>>(File.ReadAllText(filePath));
 
             if (messageIdList != null)
-            {
                 foreach (var (channelId, messageId) in messageIdList)
                 {
                     var message = ((SocketTextChannel) Client.GetChannel(channelId)).GetMessageAsync(messageId)
@@ -247,7 +250,6 @@ internal static class TwitchService
                         Log.Error($"{ex.GetType()}: {ex.Message}");
                     }
                 }
-            }
 
             File.Delete(filePath);
         }
@@ -289,19 +291,17 @@ internal static class TwitchService
 
                 var messageIdList = JsonConvert.DeserializeObject<Dictionary<ulong, ulong>>(File.ReadAllText(filePath));
                 if (messageIdList != null)
-                {
                     foreach (var (channelId, messageId) in messageIdList)
                     {
-                        var message = ((SocketTextChannel)Client.GetChannel(channelId)).GetMessageAsync(messageId)
+                        var message = ((SocketTextChannel) Client.GetChannel(channelId)).GetMessageAsync(messageId)
                             .Result;
 
-                        (message as IUserMessage)?.ModifyAsync(delegate (MessageProperties properties)
+                        (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
                         {
                             properties.Content = $"{Format.Bold(e.Channel)} was live:";
                             properties.Embed = embed.Build();
                         });
                     }
-                }
 
                 File.Delete(filePath);
             }
