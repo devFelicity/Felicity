@@ -24,6 +24,7 @@ public class BotSettings
     public int DurationToWaitForNextMessage { get; set; } = 20;
     public ulong[] BotStaff { get; set; }
     public ulong[] BotSupporters { get; set; }
+    public ulong[] BannedUsers { get; set; }
     public ulong ManagementChannel { get; set; }
     public EmbedColorGroup EmbedColor { get; set; } = new();
 }

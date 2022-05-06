@@ -219,6 +219,12 @@ internal class Felicity
     {
         var context = new SocketInteractionContext(_client, arg);
 
+        if (ConfigHelper.GetBotSettings().BannedUsers.Contains(context.User.Id))
+        {
+            LogHelper.LogToDiscord($"Banned user `{context.User}` tried to run a command.");
+            return;
+        }
+
         try
         {
             await _interaction.ExecuteCommandAsync(context, _services);
