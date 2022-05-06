@@ -38,8 +38,6 @@ internal class RegistrationJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         var time = DateTime.Now;
-        Console.WriteLine($"Registration Job - {time:T}");
-
         if (time.Minute is 0 or 15 or 30 or 45) 
             StatusService.ChangeGame();
 
