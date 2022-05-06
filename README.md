@@ -3,8 +3,10 @@
 [![License](https://img.shields.io/badge/license-AGPLv3-teal.svg)](https://choosealicense.com/licenses/agpl-3.0/)
 [![Build](https://github.com/axsLeaf/FelicityOne/actions/workflows/dotnet.yml/badge.svg)](https://github.com/axsLeaf/FelicityOne/actions/workflows/dotnet.yml)
 
-# TODO
-Fill this page :)
+# Documentation
+- Coming soon, sorry.
 
 # The Team
-Made by [Leaf](https://whaskell.pw).
+[Leaf](https://whaskell.pw) - Owner, developer.
+[Icarus](https://twitter.com/icarusaim) - Feature contributor. (*unreleased*)
+[Zempp](https://twitter.com/zxmppr) - Feature contributor. (*unreleased*)
