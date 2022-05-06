@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using APIHelper;
@@ -114,10 +115,8 @@ internal class Felicity
         // TODO: make use of bungiesharper for this
         API.FetchManifest();
         await Jobs.StartJobs();
-
         EmoteHelper._client = _client;
         StatusService._client = _client;
-        
         await OAuthService.Start(_client);
 
         await Task.Delay(-1);
@@ -131,26 +130,92 @@ internal class Felicity
         _client.MessageReceived += HandleMessageAsync;
         _client.InteractionCreated += HandleInteraction;
 
+        _client.UserJoined += HandleJoin;
+        _client.UserLeft += HandleLeft;
+        _client.UserBanned += HandleBan;
+        _client.JoinedGuild += HandleJoinedGuild;
+        _client.LeftGuild += HandleLeftGuild;
+
+        _client.UserVoiceStateUpdated += HandleVC;
+
         _client.Ready += async () =>
         {
-            /*var guild = _client.GetGuild(764586645684355092);
-            await guild.DeleteApplicationCommandsAsync();*/
+            TwitchService.Setup(_client);
 
             //await _client.Rest.DeleteAllGlobalCommandsAsync();
+            if (_debug)
+            {
+                await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
+                await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
+            }
+            else
+            {
+                var guild = _client.GetGuild(960484926950637608);
+                await guild.DeleteApplicationCommandsAsync();
 
-            await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
-            
-            // await _interaction.RegisterCommandsGloballyAsync();
-            
-            if (!_debug) 
-                TwitchService.Setup(_client);
+                await _interaction.RegisterCommandsGloballyAsync();
+                TwitchService.ConfigureMonitor();
+            }
 
             Log.Information($"Connected as {_client.CurrentUser.Username}#{_client.CurrentUser.DiscriminatorValue}");
+            LogHelper.DiscordLogChannel =
+                (SocketTextChannel) _client.GetChannel(ConfigHelper.GetBotSettings().ManagementChannel);
+
+            StatusService.ChangeGame();
         };
 
         _interaction.SlashCommandExecuted += SlashCommandExecuted;
 
         _client.SelectMenuExecuted += SelectMenuHandler;
+    }
+
+    private static Task HandleJoinedGuild(SocketGuild arg)
+    {
+        if (ConfigHelper.GetBotSettings().BannedUsers.Contains(arg.OwnerId))
+        {
+            LogHelper.LogToDiscord($"Bot was added to server owned by a banned user: `{arg.Owner}`");
+            arg.LeaveAsync();
+        }
+
+        LogHelper.LogToDiscord($"Bot was added to `{arg.Name}` owned by `{arg.Owner}`.");
+        return Task.CompletedTask;
+    }
+
+    private static Task HandleLeftGuild(SocketGuild arg)
+    {
+        LogHelper.LogToDiscord($"Bot was removed from `{arg.Name}` owned by `{arg.Owner}`.");
+        return Task.CompletedTask;
+    }
+
+
+    private static async Task HandleJoin(SocketGuildUser arg)
+    {
+        var serverSettings = ConfigHelper.GetServerSettings(arg.Guild.Id);
+        if (serverSettings != null)
+            if (serverSettings.MemberEvents.MemberJoined)
+                await arg.Guild.GetTextChannel(serverSettings.MemberEvents.LogChannel).SendMessageAsync(
+                    embed: Extensions.GenerateMessageEmbed(arg.Username, arg.GetAvatarUrl(),
+                        $"{arg} has joined the server!").Build());
+    }
+
+    private static async Task HandleLeft(SocketGuild arg1, SocketUser arg2)
+    {
+        var serverSettings = ConfigHelper.GetServerSettings(arg1.Id);
+        if (serverSettings != null)
+            if (serverSettings.MemberEvents.MemberLeft)
+                await arg1.GetTextChannel(serverSettings.MemberEvents.LogChannel).SendMessageAsync(
+                    embed: Extensions.GenerateMessageEmbed(arg2.Username, arg2.GetAvatarUrl(),
+                        $"{arg2} has left the server!").Build());
+    }
+
+    private static async Task HandleBan(SocketUser arg1, SocketGuild arg2)
+    {
+        var serverSettings = ConfigHelper.GetServerSettings(arg2.Id);
+        if (serverSettings != null)
+            if (serverSettings.MemberEvents.MemberBanned)
+                await arg2.GetTextChannel(serverSettings.MemberEvents.LogChannel).SendMessageAsync(
+                    embed: Extensions.GenerateMessageEmbed(arg1.Username, arg1.GetAvatarUrl(),
+                        $"{arg1} has been banned from the server!").Build());
     }
 
     private static Task SlashCommandExecuted(SlashCommandInfo info, IInteractionContext context,
@@ -159,8 +224,12 @@ internal class Felicity
         if (result.IsSuccess)
             return Task.CompletedTask;
 
-        if (result.Error != null)
-            Log.Error($"{result.Error.GetType()}: {result.ErrorReason}");
+        if (result.Error == null)
+            return Task.CompletedTask;
+
+        var msg = $"{result.Error.GetType()}: {result.ErrorReason}";
+        LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{msg}", LogSeverity.Error);
+        context.Interaction.FollowupAsync(msg);
 
         return Task.CompletedTask;
     }
@@ -189,16 +258,17 @@ internal class Felicity
                 return;
             }
 
-            if (isStaff)
             {
                 await TryHandleCommandAsync(msg, argPos).ConfigureAwait(false);
             }
             else
             {
-                var embed = new EmbedBuilder()
-                    .WithDescription(
-                        "All text-based commands, similar to this one, have been migrated to Slash Commands. Use /help for more info.")
-                    .WithColor(ConfigHelper.GetEmbedColor());
+                var embed = new EmbedBuilder
+                {
+                    Description =
+                        "All text-based commands, similar to this one, have been migrated to Slash Commands. Use /help for more info.",
+                    Color = ConfigHelper.GetEmbedColor()
+                };
                 await msg.ReplyAsync(embed: embed.Build());
             }
         }
@@ -231,15 +301,16 @@ internal class Felicity
         }
         catch (Exception ex)
         {
-            var errmsg = $"{ex.GetType()}: {ex.Message}";
-            Log.Error(errmsg);
-            LogHelper.LogToDiscord($"Error in {context.Guild.Name}: {errmsg}");
-            await context.Interaction.FollowupAsync(errmsg);
-            
+            /*LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{msg}", LogSeverity.Error);
+            await context.Interaction.FollowupAsync(msg);*/
+
+            var msg = $"{ex.GetType()}: {ex.Message}";
+            Log.Error(msg);
+
             // If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
             // response, or at least let the user know that something went wrong during the command execution.
             if (arg.Type == InteractionType.ApplicationCommand)
-                await arg.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+                await arg.GetOriginalResponseAsync().ContinueWith(async msgtask => await msgtask.Result.DeleteAsync());
         }
     }
 }
