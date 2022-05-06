@@ -81,8 +81,7 @@ internal static class OAuthService
             catch (Exception ex)
             {
                 var msg = $"{ex.GetType()}: {ex.Message}";
-                await Log.ErrorAsync(msg);
-                LogHelper.LogToDiscord($"Failed to message {Format.Code($"{discordUser} ({discordId})")}:\n{msg}");
+                LogHelper.LogToDiscord($"Failed to message {Format.Code($"{discordUser} ({discordId})")}:\n{msg}", LogSeverity.Error);
             }
 
             return null;
@@ -95,7 +94,7 @@ internal static class OAuthService
 
         UpdateUser(Convert.ToUInt64(discordId), refreshedUser);
 
-        LogHelper.LogToDiscord($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
+        Serilog.Log.Information($"Refreshed OAuth token for {Format.Code(discordUser.ToString())}");
 
         return OAuthConfig.FromJson(await File.ReadAllTextAsync(path));
     }
@@ -220,19 +219,6 @@ public class AuthorizationHandler : IHttpModule
             await context.Response.WriteAllAsync("Invalid user.");
             return false;
         }
-
-        /*
-            var client = new RestClient("https://www.bungie.net/");
-            var request = new RestRequest("Platform/App/OAuth/Token/", Method.Post);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-
-            request.AddHeader("Authorization",
-                $"Basic {Hash.Base64Encode($"{ConfigHelper.GetBotSettings().BungieClientId}:{ConfigHelper.GetBotSettings().BungieClientSecret}")}");
-            request.AddParameter("grant_type", "authorization_code");
-            request.AddParameter("code", code);
-
-            var response = await client.ExecuteAsync(request);
-        */
 
         var response = APIService.GetApiClient().OAuth.GetOAuthToken(code).Result;
 
