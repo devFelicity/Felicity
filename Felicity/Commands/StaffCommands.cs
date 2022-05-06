@@ -17,7 +17,8 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
     [Command("listServers")]
     public async Task List()
     {
-        var msg = Context.Client.Guilds.Aggregate(string.Empty,
+        var serverList = Context.Client.Guilds.OrderBy(x => x.Name);
+        var msg = serverList.Aggregate(string.Empty,
             (current, guild) =>
                 current + $"- {Format.Bold(guild.Name)} ({guild.Id}) [{Format.Italics(guild.Owner.ToString())}]\n");
 
