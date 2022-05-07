@@ -227,10 +227,8 @@ internal class Felicity
         if (result.Error == null)
             return Task.CompletedTask;
 
-        var msg = $"{result.Error.GetType()}: {result.ErrorReason}";
-        LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{msg}", LogSeverity.Error);
-        context.Interaction.FollowupAsync(msg);
-
+        LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{result.Error.GetType()}: {result.ErrorReason}", LogSeverity.Error);
+        
         return Task.CompletedTask;
     }
 
