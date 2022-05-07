@@ -139,6 +139,9 @@ internal static class TwitchService
                      .SelectMany(activeStream => activeStream.TwitchStreams))
             try
             {
+                if (messageIds.ContainsKey(currentActiveStream.Value.ChannelId))
+                    continue;
+
                 var mention = "";
                 if (currentActiveStream.Value.MentionEveryone)
                     mention = "@everyone ";
