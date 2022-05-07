@@ -64,8 +64,8 @@ public static class ProcessModData
             }
         };
 
-        var adaMods = GetMods(self, Vendors.Ada1, checkInventory, oauth, destinyMembership);
-        var bansheeMods = GetMods(self, Vendors.Banshee44, checkInventory, oauth, destinyMembership);
+        var adaMods = GetMods(self, VendorIds.Ada1, checkInventory, oauth, destinyMembership);
+        var bansheeMods = GetMods(self, VendorIds.Banshee44, checkInventory, oauth, destinyMembership);
 
         embed.AddField("Ada-1", adaMods, true);
         embed.AddField("Banshee-44", bansheeMods, true);
@@ -73,7 +73,7 @@ public static class ProcessModData
         return embed.Build();
     }
 
-    private static string GetMods(ModCache self, Vendors vendor, bool checkInventory, OAuthConfig oauth,
+    private static string GetMods(ModCache self, VendorIds vendor, bool checkInventory, OAuthConfig oauth,
         DestinyMembership destinyMembership)
     {
         var result = "";
@@ -136,15 +136,15 @@ public static class ProcessModData
             ModInventory = new Dictionary<string, List<Mod>>()
         };
 
-        modCache = PopulateMods(modCache, Vendors.Ada1, vendorData.Sales.Data);
-        modCache = PopulateMods(modCache, Vendors.Banshee44, vendorData.Sales.Data);
+        modCache = PopulateMods(modCache, VendorIds.Ada1, vendorData.Sales.Data);
+        modCache = PopulateMods(modCache, VendorIds.Banshee44, vendorData.Sales.Data);
 
         File.WriteAllText(path, modCache.ToJson());
 
         return modCache;
     }
 
-    private static ModCache PopulateMods(ModCache modCache, Vendors vendor,
+    private static ModCache PopulateMods(ModCache modCache, VendorIds vendor,
         IReadOnlyDictionary<uint, PersonalDestinyVendorSaleItemSetComponent> salesData)
     {
         modCache.ModInventory.Add(((uint) vendor).ToString(), new List<Mod>());

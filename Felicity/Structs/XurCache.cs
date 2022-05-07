@@ -183,12 +183,13 @@ public static class ProcessXurData
                exoticArmorStats.Discipline + exoticArmorStats.Intellect + exoticArmorStats.Strength;
     }
 
-    private static string GetXurLocation(int selfXurLocation)
+    private static string GetXurLocation(int xurLocation)
     {
-        return selfXurLocation switch
+        return xurLocation switch
         {
-            1 => "the EDZ.",
-            2 => "Nessus.",
+            0 => "the Tower (Hangar)",
+            1 => "the EDZ (Winding Cove)",
+            2 => "Nessus (Watcher's Grave)",
             _ => "an unknown location."
         };
     }
@@ -251,7 +252,7 @@ public static class ProcessXurData
 
         var vendorData = APIService.GetApiClient().Api.Destiny2_GetVendor(destinyMembership.CharacterIds.First(),
                 destinyMembership.MembershipId,
-                destinyMembership.MembershipType, (uint) Vendors.Xur, new[]
+                destinyMembership.MembershipType, (uint) VendorIds.Xur, new[]
                 {
                     DestinyComponentType.ItemStats, DestinyComponentType.ItemSockets,
                     DestinyComponentType.Vendors, DestinyComponentType.VendorCategories,
