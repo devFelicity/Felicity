@@ -1,6 +1,6 @@
 ﻿namespace Felicity.Enums;
 
-internal enum Vendors : uint
+internal enum VendorIds : uint
 {
     Ada1 = 350061650,
     AmandaHalliday = 460529231,
@@ -21,6 +21,7 @@ internal enum Vendors : uint
     Shaxx = 3603221665,
     Starhorse = 3431983428,
     TessEveris = 3361454721,
+    RelicConduit = 3642056527,
     Variks = 2531198101,
     VoidFragments = 3296235050,
     VoidGrenades = 1663272602,
@@ -42,6 +43,7 @@ internal enum Vendors : uint
     VoidWarlockMelees = 2933806284,
     VoidWarlockMovement = 776690932,
     VoidWarlockSupers = 2060371059,
+    WarTable = 4287814313,
     Xur = 2190858386,
     XurEternity = 3442679730,
     Zavala = 69482069
