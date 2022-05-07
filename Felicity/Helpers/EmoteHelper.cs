@@ -21,7 +21,8 @@ internal static class EmoteHelper
                 continue;
 
             var imageBytes = new HttpClient().GetByteArrayAsync($"{RemoteAPI.apiBaseUrl}{imageUrl}").Result;
-            return server.CreateEmoteAsync(name, new Image(new MemoryStream(imageBytes))).Result;
+            var emote = server.CreateEmoteAsync(name, new Image(new MemoryStream(imageBytes))).Result;
+            return emote;
         }
 
         return null;
@@ -29,7 +30,7 @@ internal static class EmoteHelper
 
     public static GuildEmote GetEmote(string imageUrl, string name)
     {
-        name = name.Replace(" ", "").Replace("-", "");
+        name = name.Replace(" ", "").Replace("-", "").Replace("'", "");
 
         foreach (var serverID in ConfigHelper.GetEmoteSettings().ServerIDs)
         {
