@@ -46,23 +46,9 @@ public static class ProcessModData
     public static Embed BuildEmbed(this ModCache self, OAuthConfig oauth, DestinyMembership destinyMembership,
         bool checkInventory = false)
     {
-        var embed = new EmbedBuilder
-        {
-            Color = ConfigHelper.GetEmbedColor(),
-            Author = new EmbedAuthorBuilder
-            {
-                IconUrl = Images.ModVendorIcon,
-                Name = "Mod Vendors"
-            },
-            Description = checkInventory
-                ? "Ada-1 and Banshee-44 can both be found in the Tower.\n* = not owned."
-                : "You can use `/vendor mods` to view unacquired mods from this list.\nAda-1 and Banshee-44 can both be found in the Tower.",
-            Footer = new EmbedFooterBuilder
-            {
-                Text = $"{Strings.FelicityVersion} | Links go to light.gg.",
-                IconUrl = Images.FelicityLogo
-            }
-        };
+        var embed = Extensions.GenerateVendorEmbed("Mod Vendors", "", checkInventory
+            ? "Ada-1 and Banshee-44 can both be found in the Tower.\n[*] = not owned."
+            : "You can use `/vendor mods` to view unacquired mods from this list.\nAda-1 and Banshee-44 can both be found in the Tower.");
 
         var adaMods = GetMods(self, VendorIds.Ada1, checkInventory, oauth, destinyMembership);
         var bansheeMods = GetMods(self, VendorIds.Banshee44, checkInventory, oauth, destinyMembership);
@@ -95,7 +81,7 @@ public static class ProcessModData
                         destinyVendorSaleItemComponent.Value.ItemHash == mod.Id)
                     .Where(destinyVendorSaleItemComponent =>
                         destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success).Aggregate(missing,
-                        (current, _) => current + "*");
+                        (current, _) => "[*] " + current);
 
             result = result + $"[{mod.Name}](https://www.light.gg/db/items/{mod.Id}){missing}\n" +
                      $"- {Format.Italics(mod.Description)}\n\n";

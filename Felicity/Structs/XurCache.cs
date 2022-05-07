@@ -99,7 +99,7 @@ public static class ProcessXurData
 
     public static Embed BuildEmbed(this XurCache self)
     {
-        var embed = Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
+        var embed = Extensions.GenerateVendorEmbed("Xûr, Agent of the Nine",
             Images.XurVendorLogo,
             "Xûr is currently selling his wares on " + Format.Bold(GetXurLocation(self.XurLocation)));
 
@@ -110,7 +110,7 @@ public static class ProcessXurData
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
         {
             exoticArmors +=
-                $"[{exoticArmor.ArmorName}]({BuildLightGGLink(exoticArmor.ArmorId)}) [{TotalStats(exoticArmor.Stats)}]\n";
+                $"[{exoticArmor.ArmorName}]({WeaponHelper.BuildLightGGLink(exoticArmor.ArmorId)}) [{WeaponHelper.TotalStats(exoticArmor.Stats)}]\n";
             exoticArmors += $"{EmoteHelper.GetEmote("", "Mobility")} {exoticArmor.Stats.Mobility:00} ";
             exoticArmors += $"{EmoteHelper.GetEmote("", "Resilience")} {exoticArmor.Stats.Resilience:00} ";
             exoticArmors += $"{EmoteHelper.GetEmote("", "Recovery")} {exoticArmor.Stats.Recovery:00} ";
@@ -124,7 +124,7 @@ public static class ProcessXurData
         embed.AddField("\u200b", '\u200b');
         embed.AddField("Legendary Weapons", legendaryWeapons, true);
         embed.AddField("Legendary Armor",
-            $"[{self.XurInventory.Armor.LegendarySet}]({BuildLightGGLink(self.XurInventory.Armor.LegendarySet)})",
+            $"[{self.XurInventory.Armor.LegendarySet}]({WeaponHelper.BuildLightGGLink(self.XurInventory.Armor.LegendarySet)})",
             true);
 
         return embed.Build();
@@ -137,14 +137,14 @@ public static class ProcessXurData
         foreach (var weapon in weapons)
             if (weapon.Perks.Count == 0)
             {
-                result += $"[{weapon.Name}]({BuildLightGGLink(weapon.WeaponId)}/)\n\n";
+                result += $"[{weapon.Name}]({WeaponHelper.BuildLightGGLink(weapon.WeaponId)}/)\n\n";
             }
             else
             {
                 if (gunsmithLink)
-                    result += $"[{weapon.Name}]({BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
+                    result += $"[{weapon.Name}]({WeaponHelper.BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
                 else
-                    result += $"[{weapon.Name}]({BuildLightGGLink(weapon.WeaponId)}/) | ";
+                    result += $"[{weapon.Name}]({WeaponHelper.BuildLightGGLink(weapon.WeaponId)}/) | ";
 
                 foreach (var (_, value) in weapon.Perks)
                     result += EmoteHelper.GetEmote(value.IconPath, value.Perkname);
@@ -153,34 +153,6 @@ public static class ProcessXurData
             }
 
         return result;
-    }
-
-    private static string BuildLightGGLink(uint itemId)
-    {
-        return $"https://light.gg/db/items/{itemId}";
-    }
-
-    private static string BuildLightGGLink(string armorLegendarySet)
-    {
-        var search = armorLegendarySet.ToLower().Replace("suit", "")
-            .Replace("set", "").Replace("armor", "");
-        return $"https://www.light.gg/db/all?page=1&f=12({search}),3";
-    }
-
-    private static string BuildGunsmithLink(uint exoticWeaponWeaponId, Dictionary<string, Perk> exoticWeaponPerks)
-    {
-        var result = $"https://d2gunsmith.com/w/{exoticWeaponWeaponId}?s=";
-
-        foreach (var value in exoticWeaponPerks.Values)
-            result += value.PerkId + ",";
-
-        return result.TrimEnd(',');
-    }
-
-    private static int TotalStats(Stats exoticArmorStats)
-    {
-        return exoticArmorStats.Mobility + exoticArmorStats.Resilience + exoticArmorStats.Recovery +
-               exoticArmorStats.Discipline + exoticArmorStats.Intellect + exoticArmorStats.Strength;
     }
 
     private static string GetXurLocation(int xurLocation)

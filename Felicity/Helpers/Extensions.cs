@@ -118,4 +118,26 @@ internal static class Extensions
 
         return $"https://{reportType}.report/{platform}/{membershipId}";
     }
+
+    public static EmbedBuilder GenerateVendorEmbed(string authorName, string thumbnailUrl, string description)
+    {
+        var embed = new EmbedBuilder
+        {
+            Color = ConfigHelper.GetEmbedColor(),
+            Author = new EmbedAuthorBuilder
+            {
+                Name = authorName,
+                IconUrl = Images.ModVendorIcon
+            },
+            Description = description,
+            ThumbnailUrl = thumbnailUrl,
+            Footer = new EmbedFooterBuilder
+            {
+                Text = Strings.FelicityVersion,
+                IconUrl = Images.FelicityLogo
+            }
+        };
+
+        return embed;
+    }
 }
