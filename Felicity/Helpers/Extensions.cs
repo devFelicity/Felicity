@@ -127,10 +127,9 @@ internal static class Extensions
             Author = new EmbedAuthorBuilder
             {
                 Name = authorName,
-                IconUrl = Images.ModVendorIcon
+                IconUrl = thumbnailUrl
             },
             Description = description,
-            ThumbnailUrl = thumbnailUrl,
             Footer = new EmbedFooterBuilder
             {
                 Text = Strings.FelicityVersion,
