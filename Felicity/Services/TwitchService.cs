@@ -106,7 +106,7 @@ internal static class TwitchService
 
         var embed = new EmbedBuilder
         {
-            Color = Color.Purple,
+            Color = Color.Green,
             ThumbnailUrl = channelInfo?.ProfileImageUrl,
             Title = e.Stream.Title,
             Url = $"https://twitch.tv/{e.Stream.UserName}",
@@ -201,7 +201,7 @@ internal static class TwitchService
 
             var embed = new EmbedBuilder
             {
-                Color = Color.Purple,
+                Color = Color.Red,
                 Title = vod.Title,
                 Url = vodUrl,
                 ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
