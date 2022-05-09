@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Transactions;
 using Discord;
 using Discord.WebSocket;
 
 namespace Felicity.Helpers;
 
-internal class LogHelper
+internal static class LogHelper
 {
     public static SocketTextChannel DiscordLogChannel { get; set; }
 
