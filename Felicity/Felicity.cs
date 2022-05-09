@@ -185,7 +185,7 @@ internal class Felicity
 
     private static Task HandleLeftGuild(SocketGuild arg)
     {
-        LogHelper.LogToDiscord($"Bot was removed from `{arg.Name}` owned by `{arg.Owner}`.");
+        LogHelper.LogToDiscord($"Bot was removed from `{arg.Name}`.");
         return Task.CompletedTask;
     }
 
