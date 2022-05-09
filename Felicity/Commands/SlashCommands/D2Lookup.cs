@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using APIHelper;
 using BungieSharper.Entities;
-using BungieSharper.Entities.Components;
 using BungieSharper.Entities.Destiny;
 using BungieSharper.Entities.Destiny.Definitions.Collectibles;
 using BungieSharper.Entities.User;

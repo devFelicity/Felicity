@@ -1,4 +1,5 @@
 ﻿using Felicity.Helpers;
+// ReSharper disable UnusedMember.Global
 
 namespace Felicity.Enums;
 
