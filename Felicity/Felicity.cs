@@ -275,8 +275,9 @@ internal class Felicity
         if (result.Error == null)
             return Task.CompletedTask;
 
-        LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{result.Error.GetType()}: {result.ErrorReason}", LogSeverity.Error);
-        
+        LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{result.Error.GetType()}: {result.ErrorReason}",
+            LogSeverity.Error);
+
         return Task.CompletedTask;
     }
 
@@ -285,12 +286,10 @@ internal class Felicity
         await interaction.RespondAsync("Not yet implemented");
     }
 
-    private static Task HandleMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2, ISocketMessageChannel arg3)
+    private static Task HandleMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2,
+        ISocketMessageChannel arg3)
     {
-        if (arg3.Id == 973173481162285106)
-        {
-            ProcessCPData.Populate(arg2);
-        }
+        if (arg3.Id == 973173481162285106) ProcessCPData.Populate(arg2);
 
         return Task.CompletedTask;
     }
@@ -306,7 +305,7 @@ internal class Felicity
         if (arg.Author.IsBot || arg.Author.IsWebhook) return;
         if (arg.Content.Length <= 0) return;
         if (arg.Author.Id == _client.CurrentUser.Id) return;
-        
+
         if (arg is not SocketUserMessage msg) return;
 
         var argPos = 0;
@@ -364,9 +363,6 @@ internal class Felicity
         }
         catch (Exception ex)
         {
-            /*LogHelper.LogToDiscord($"Error in `{context.Guild.Name}`:\n{msg}", LogSeverity.Error);
-            await context.Interaction.FollowupAsync(msg);*/
-
             var msg = $"{ex.GetType()}: {ex.Message}";
             Log.Error(msg);
 
