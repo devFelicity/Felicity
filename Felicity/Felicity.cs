@@ -8,6 +8,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Felicity.Commands.MessageCommands;
 using Felicity.Helpers;
 using Felicity.Services;
 using Felicity.Structs;
@@ -130,6 +131,7 @@ internal class Felicity
 
         _client.MessageReceived += HandleMessageAsync;
         _client.InteractionCreated += HandleInteraction;
+        _client.MessageCommandExecuted += HandleMessageCommandAsync;
 
         _client.UserJoined += HandleJoin;
         _client.UserLeft += HandleLeft;
@@ -164,11 +166,55 @@ internal class Felicity
                 (SocketTextChannel) _client.GetChannel(ConfigHelper.GetBotSettings().ManagementChannel);
 
             StatusService.ChangeGame();
+
+            try
+            {
+                /*var commands = await _client.GetGlobalApplicationCommandsAsync();
+                foreach (var socketApplicationCommand in commands)
+                {
+                    await socketApplicationCommand.DeleteAsync();
+                }*/
+                
+                var guild = _client.GetGuild(960484926950637608);
+                var guildComms = guild.GetApplicationCommandsAsync().Result;
+
+                var needRegister = false;
+
+                foreach (var socketApplicationCommand in guildComms)
+                {
+                    if (socketApplicationCommand.Name == "resourcehub")
+                        continue;
+
+                    needRegister = true;
+                }
+
+                if(needRegister)
+                    await guild.CreateApplicationCommandAsync(new MessageCommandProperties {Name = "resourcehub"});
+
+                Log.Information("Registered Message Commands.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception while registering message commands\n{ex.GetType()}: {ex.Message}");
+            }
         };
 
         _interaction.SlashCommandExecuted += SlashCommandExecuted;
 
         _client.SelectMenuExecuted += SelectMenuHandler;
+    }
+
+    private static Task HandleMessageCommandAsync(SocketMessageCommand arg)
+    {
+        if (arg.CommandName != "resourcehub")
+        {
+            arg.RespondAsync("Unknown command.");
+        }
+
+        arg.RespondAsync($"Hey {arg.Data.Message.Author.Mention}, {arg.User.Mention} has requested you check out this info below:",
+            embed: MessageCommands.ResourceHub());
+
+        return Task.CompletedTask;
     }
 
     private static Task HandleJoinedGuild(SocketGuild arg)
