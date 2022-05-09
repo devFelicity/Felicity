@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Felicity.Structs;
 
 namespace Felicity.Helpers;
@@ -35,7 +36,7 @@ internal static class WeaponHelper
     {
         var search = armorLegendarySet.ToLower().Replace("suit", "")
             .Replace("set", "").Replace("armor", "");
-        return $"https://www.light.gg/db/all?page=1&f=12({search}),3";
+        return $"https://www.light.gg/db/all?page=1&f=12({HttpUtility.UrlEncode(search.TrimEnd(' '))}),3";
     }
 
     public static string BuildGunsmithLink(uint exoticWeaponWeaponId, Dictionary<string, Perk> exoticWeaponPerks)
