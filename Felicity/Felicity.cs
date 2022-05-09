@@ -10,6 +10,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Helpers;
 using Felicity.Services;
+using Felicity.Structs;
 using Fergun.Interactive;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -135,6 +136,7 @@ internal class Felicity
         _client.UserBanned += HandleBan;
         _client.JoinedGuild += HandleJoinedGuild;
         _client.LeftGuild += HandleLeftGuild;
+        _client.MessageUpdated += HandleMessageUpdated;
 
         _client.UserVoiceStateUpdated += HandleVC;
 
@@ -237,11 +239,28 @@ internal class Felicity
         await interaction.RespondAsync("Not yet implemented");
     }
 
+    private static Task HandleMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2, ISocketMessageChannel arg3)
+    {
+        if (arg3.Id == 973173481162285106)
+        {
+            ProcessCPData.Populate(arg2);
+        }
+
+        return Task.CompletedTask;
+    }
+
     private async Task HandleMessageAsync(SocketMessage arg)
     {
-        if (arg.Author.IsWebhook || arg.Author.IsBot) return;
+        if (arg.Channel.Id == 973173481162285106)
+        {
+            ProcessCPData.Populate(arg);
+            return;
+        }
+
+        if (arg.Author.IsBot || arg.Author.IsWebhook) return;
         if (arg.Content.Length <= 0) return;
         if (arg.Author.Id == _client.CurrentUser.Id) return;
+        
         if (arg is not SocketUserMessage msg) return;
 
         var argPos = 0;
