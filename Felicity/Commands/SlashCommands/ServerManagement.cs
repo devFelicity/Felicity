@@ -203,12 +203,12 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
 
 public class TwitchStreamAutocomplete : AutocompleteHandler
 {
-#pragma warning disable CS1998
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
-#pragma warning restore CS1998
         IAutocompleteInteraction autocompleteInteraction,
         IParameterInfo parameter, IServiceProvider services)
     {
+        await Task.Delay(0);
+
         var serverSettings = ConfigHelper.GetServerSettings(context.Guild.Id);
 
         if (serverSettings == null)

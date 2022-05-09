@@ -68,12 +68,12 @@ public class MementoCommands : InteractionModuleBase<SocketInteractionContext>
 
 public class MementoWeaponAutocomplete : AutocompleteHandler
 {
-#pragma warning disable CS1998
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
-#pragma warning restore CS1998
         IAutocompleteInteraction autocompleteInteraction,
         IParameterInfo parameter, IServiceProvider services)
     {
+        await Task.Delay(0);
+
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
             where autocompleteOption.Name == "source"
             select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
