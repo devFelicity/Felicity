@@ -17,13 +17,13 @@ using Felicity.Services;
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
 [Group("lookup", "Various lookup commands for Destiny 2.")]
-public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
+public class Lookup : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("guardian", "Look up a profile of a player.")]
-    public async Task Guardian(
+    public async Task En_LookupGuardian(
         [Summary("bungiename", "Bungie name of the requested user (name#1234)")]
         string bungieTag = "")
     {
@@ -103,7 +103,7 @@ public class D2Lookup : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("accountshare", "Look up account shared emblems of a player.")]
-    public async Task AccountShare(
+    public async Task En_LookupAccountShare(
         [Summary("bungiename",
             "Bungie name of the requested user (name#1234). If absent, registered profile will be used.")]
         string bungieTag)

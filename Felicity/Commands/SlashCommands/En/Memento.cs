@@ -11,13 +11,13 @@ using Felicity.Enums;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
-public class MementoCommands : InteractionModuleBase<SocketInteractionContext>
+public class Memento : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("memento", "Curious to see how a memento will look?")]
     [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Parameter is used in autocomplete but not in command itself.")]
-    public async Task Memento(
+    public async Task En_Memento(
         [Summary("mementotype", "What type of memento are you looking for?")]
         MementoType mementoType,
         [Summary("source", "Where does the weapon you want to check out come from?")]

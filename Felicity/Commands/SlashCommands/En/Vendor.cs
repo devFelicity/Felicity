@@ -13,14 +13,14 @@ using Felicity.Structs;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
 [RequireOAuth]
 [Group("vendor", "Group of commands related to vendors and their available items.")]
-public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
+public class Vendor : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]
-    public async Task Xur()
+    public async Task En_Xur()
     {
         await DeferAsync();
 
@@ -43,7 +43,7 @@ public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("saint14", "Fetch Saint-14 (Trials of Osiris) reputation rewards for the week.")]
-    public async Task Saint()
+    public async Task En_Saint14()
     {
         await DeferAsync();
 
@@ -131,7 +131,7 @@ public class VendorCommands : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("mods", "Get list of mods currently available at vendors.")]
-    public async Task Mods()
+    public async Task En_Mods()
     {
         await DeferAsync();
 

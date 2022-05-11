@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Discord.WebSocket;
 using Felicity.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -19,6 +20,7 @@ public partial class ServerConfig
 
 public partial class ServerSetting
 {
+    [J("language")] public Lang Language { get; set; } = Lang.Undefined;
     [J("moderatorRole")] public ulong ModeratorRole { get; set; }
     [J("announcementChannel")] public ulong AnnouncementChannel { get; set; }
     [J("staffChannel")] public ulong StaffChannel { get; set; }
@@ -71,8 +73,42 @@ public partial class Subscription
     [J("channelId")] public ulong ChannelId { get; set; }
 }
 
+public enum Lang
+{
+    En,
+    De,
+    Es,
+    Fr,
+    It,
+    Ja,
+    Ko,
+    Nl,
+    Pl,
+    PtBr,
+    Ru,
+    ZhChs,
+    ZhCht,
+    Undefined
+}
+
 public partial class ServerConfig
 {
+    public static string GetTextChannel(SocketGuild contextGuild, ulong channelId)
+    {
+        var channel = contextGuild.GetTextChannel(channelId);
+        return channel == null ? "None." : channel.Mention;
+    }
+
+    public static ServerConfig GetServerSettings(ulong guildId)
+    {
+        var serverSettings = FromJson();
+        if (serverSettings.Settings.ContainsKey(guildId.ToString()))
+            return serverSettings;
+
+        serverSettings.Settings.Add(guildId.ToString(), new ServerSetting());
+        return serverSettings;
+    }
+
     public static ServerConfig FromJson()
     {
         return JsonConvert.DeserializeObject<ServerConfig>(File.ReadAllText(ConfigHelper.ServerConfigPath), Converter.Settings);

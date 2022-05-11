@@ -40,4 +40,19 @@
     <ProjectReference Include="..\D2Api\APIHelper\APIHelper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\SlashCommands\De\" />
+    <Folder Include="Commands\SlashCommands\EsMx\" />
+    <Folder Include="Commands\SlashCommands\Es\" />
+    <Folder Include="Commands\SlashCommands\Fr\" />
+    <Folder Include="Commands\SlashCommands\It\" />
+    <Folder Include="Commands\SlashCommands\Ja\" />
+    <Folder Include="Commands\SlashCommands\Ko\" />
+    <Folder Include="Commands\SlashCommands\Pl\" />
+    <Folder Include="Commands\SlashCommands\PtBr\" />
+    <Folder Include="Commands\SlashCommands\Ru\" />
+    <Folder Include="Commands\SlashCommands\ZhChs\" />
+    <Folder Include="Commands\SlashCommands\ZhCht\" />
+  </ItemGroup>
+
 </Project>

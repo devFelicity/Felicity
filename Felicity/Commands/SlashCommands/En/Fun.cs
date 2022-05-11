@@ -7,12 +7,12 @@ using Felicity.Helpers;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
-public class FunCommands : InteractionModuleBase<SocketInteractionContext>
+public class Fun : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("fristy", "Have you ever heard of the cute FristyFox?")]
-    public async Task Fristy()
+    public async Task En_Fristy()
     {
         await DeferAsync();
 

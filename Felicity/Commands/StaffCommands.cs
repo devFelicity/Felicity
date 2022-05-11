@@ -25,6 +25,15 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         await ReplyAsync(msg);
     }
 
+    [Command("spam")]
+    public async Task Spam(IUser user, int times)
+    {
+        for (var i = 0; i < times; i++)
+        {
+            await ReplyAsync(user.Mention);
+        }
+    }
+
     [Command("leaveServer")]
     public async Task LeaveServer(ulong serverId)
     {

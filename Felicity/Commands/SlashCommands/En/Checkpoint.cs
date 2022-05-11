@@ -8,19 +8,19 @@ using Felicity.Structs;
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
 [Group("checkpoint", "Get join codes for various in-game checkpoints.")]
-public class CPCommands : InteractionModuleBase<SocketInteractionContext>
+public class Checkpoint : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("support", "Get an invite to the checkpoint server.")]
-    public async Task CPServer()
+    public async Task En_CheckpointSupport()
     {
         await RespondAsync(embed: ProcessCPData.BuildServerEmbed());
     }
 
     [SlashCommand("search", "Search available checkpoints.")]
-    public async Task CPSearch(
+    public async Task En_CheckpointSearch(
         [Autocomplete(typeof(CheckpointAutocomplete))]
         [Summary("activity", "Activity you want to get a checkpoint for.")]
         string activity

@@ -8,9 +8,9 @@ using static Felicity.Services.OAuthService;
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
-public class UserManagement : InteractionModuleBase<SocketInteractionContext>
+public class User : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("register", "Register your bungie profile to the bot.")]
     public async Task Register()

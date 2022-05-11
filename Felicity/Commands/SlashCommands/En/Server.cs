@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
 using Felicity.Configs;
 using Felicity.Helpers;
 using Felicity.Services;
@@ -13,18 +12,18 @@ using Felicity.Services;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 
-namespace Felicity.Commands.SlashCommands;
+namespace Felicity.Commands.SlashCommands.En;
 
 [RequireBotModerator]
 [Group("server", "Collection of server management commands for setting up your server.")]
-public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
+public class Server : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("announcechannel", "Which channel should Felicity send announcements related to bot services?")]
-    public async Task ServerAnnouncement(ITextChannel channel)
+    public async Task En_ServerAnnounce(ITextChannel channel)
     {
         await DeferAsync(true);
 
-        var serverSettings = GetServerSettings(Context.Guild.Id);
+        var serverSettings = ServerConfig.GetServerSettings(Context.Guild.Id);
         serverSettings.Settings[Context.Guild.Id.ToString()].AnnouncementChannel = channel.Id;
 
         await File.WriteAllTextAsync(ConfigHelper.ServerConfigPath, ServerConfig.ToJson(serverSettings));
@@ -33,11 +32,11 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("modrole", "Which role should be allowed to change Felicity behavior?")]
-    public async Task ModeratorRole(IRole role)
+    public async Task En_ServerModRole(IRole role)
     {
         await DeferAsync(true);
 
-        var serverSettings = GetServerSettings(Context.Guild.Id);
+        var serverSettings = ServerConfig.GetServerSettings(Context.Guild.Id);
         serverSettings.Settings[Context.Guild.Id.ToString()].ModeratorRole = role.Id;
 
         await File.WriteAllTextAsync(ConfigHelper.ServerConfigPath, ServerConfig.ToJson(serverSettings));
@@ -46,11 +45,11 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("modchannel", "Which channel should Felicity send STAFF-ONLY announcements to?")]
-    public async Task ModeratorChannel(ITextChannel channel)
+    public async Task En_ServerModChannel(ITextChannel channel)
     {
         await DeferAsync(true);
 
-        var serverSettings = GetServerSettings(Context.Guild.Id);
+        var serverSettings = ServerConfig.GetServerSettings(Context.Guild.Id);
         serverSettings.Settings[Context.Guild.Id.ToString()].StaffChannel = channel.Id;
 
         await File.WriteAllTextAsync(ConfigHelper.ServerConfigPath, ServerConfig.ToJson(serverSettings));
@@ -59,7 +58,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("memberevents", "Where should Felicity send server member events to?")]
-    public async Task MemberEvents(
+    public async Task En_ServerMemberEvents(
         [Summary("memberchannel", "Which channel do I send to?")]
         ITextChannel channel,
         [Summary("memberjoined", "Should I send messages when a member joins?")]
@@ -74,7 +73,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync(true);
 
-        var serverSettings = GetServerSettings(Context.Guild.Id);
+        var serverSettings = ServerConfig.GetServerSettings(Context.Guild.Id);
         serverSettings.Settings[Context.Guild.Id.ToString()].MemberEvents = new MemberEvents
         {
             LogChannel = channel.Id,
@@ -90,7 +89,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("overview", "Check up on your servers settings.")]
-    public async Task Overview()
+    public async Task En_ServerOverview()
     {
         await DeferAsync(true);
 
@@ -110,9 +109,9 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
             msg += "None.\n";
 
         msg +=
-            $"Global announcements: {GetTextChannel(Context.Guild, serverSettings.AnnouncementChannel)}, Staff-only announcements: {GetTextChannel(Context.Guild, serverSettings.StaffChannel)}\n";
+            $"Global announcements: {ServerConfig.GetTextChannel(Context.Guild, serverSettings.AnnouncementChannel)}, Staff-only announcements: {ServerConfig.GetTextChannel(Context.Guild, serverSettings.StaffChannel)}\n";
         msg +=
-            $"Member events:\n- Channel: {GetTextChannel(Context.Guild, serverSettings.MemberEvents.LogChannel)}\n" +
+            $"Member events:\n- Channel: {ServerConfig.GetTextChannel(Context.Guild, serverSettings.MemberEvents.LogChannel)}\n" +
             $"- Events: Join: **{serverSettings.MemberEvents.MemberJoined}**, Leave: **{serverSettings.MemberEvents.MemberLeft}**, " +
             $"Kicked: **{serverSettings.MemberEvents.MemberKicked}**, Banned: **{serverSettings.MemberEvents.MemberBanned}**";
 
@@ -123,7 +122,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
     public class TwitchNotifications : InteractionModuleBase<SocketInteractionContext>
     {
         [SlashCommand("add", "Add a Twitch stream to the server.")]
-        public async Task TwitchNotification(
+        public async Task En_ServerTwitchAdd(
             [Summary("twitchname", "Stream name you'd like to subscribe to.")]
             string twitchName,
             [Summary("channel", "Channel you'd like me to post notifications to.")]
@@ -145,7 +144,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
                 return;
             }
 
-            var serverSettings = GetServerSettings(Context.Guild.Id);
+            var serverSettings = ServerConfig.GetServerSettings(Context.Guild.Id);
             serverSettings.Settings[Context.Guild.Id.ToString()].TwitchStreams ??= new Dictionary<string, TwitchStream>();
 
             var newStream = new TwitchStream
@@ -167,7 +166,7 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
         }
 
         [SlashCommand("remove", "Remove an existing Twitch stream from the server.")]
-        public async Task RemoveTwitchStream(
+        public async Task En_ServerTwitchRemove(
             [Autocomplete(typeof(TwitchStreamAutocomplete))]
             [Summary("twitchname", "Stream name you'd like to unsubscribe from.")]
             string twitchName)
@@ -182,22 +181,6 @@ public class ServerManagement : InteractionModuleBase<SocketInteractionContext>
 
             await FollowupAsync($"Successfully removed {Format.Bold(twitchName)}'s stream from server.", ephemeral: true);
         }
-    }
-
-    private static string GetTextChannel(SocketGuild contextGuild, ulong channelId)
-    {
-        var channel = contextGuild.GetTextChannel(channelId);
-        return channel == null ? "None." : channel.Mention;
-    }
-
-    private static ServerConfig GetServerSettings(ulong guildId)
-    {
-        var serverSettings = ServerConfig.FromJson();
-        if (serverSettings.Settings.ContainsKey(guildId.ToString()))
-            return serverSettings;
-
-        serverSettings.Settings.Add(guildId.ToString(), new ServerSetting());
-        return serverSettings;
     }
 }
 

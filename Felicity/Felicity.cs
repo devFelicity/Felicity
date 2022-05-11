@@ -9,6 +9,7 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Commands.MessageCommands;
+using Felicity.Configs;
 using Felicity.Helpers;
 using Felicity.Services;
 using Felicity.Structs;
@@ -146,18 +147,67 @@ internal class Felicity
         {
             TwitchService.Setup(_client);
 
-            //await _client.Rest.DeleteAllGlobalCommandsAsync();
+            await _client.Rest.DeleteAllGlobalCommandsAsync();
+
             if (_debug)
             {
                 await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
                 await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
+
+                // TODO: use this to make lists of commands then register each command to each server depending on server language setting
+                
             }
             else
             {
-                var guild = _client.GetGuild(960484926950637608);
-                await guild.DeleteApplicationCommandsAsync();
+                var testGuild = _client.GetGuild(960484926950637608);
+                await testGuild.DeleteApplicationCommandsAsync();
 
-                await _interaction.RegisterCommandsGloballyAsync();
+                SlashCommandInfo languageCommand = null;
+                foreach (var command in _interaction.SlashCommands)
+                {
+                    if(command.MethodName == "SetLanguage")
+                        languageCommand = command;
+                }
+
+                foreach (var serverSetting in ServerConfig.FromJson().Settings)
+                {
+                    switch (serverSetting.Value.Language)
+                    {
+                        case Lang.En:
+                            break;
+                        case Lang.De:
+                            break;
+                        case Lang.Es:
+                            break;
+                        case Lang.Fr:
+                            break;
+                        case Lang.It:
+                            break;
+                        case Lang.Ja:
+                            break;
+                        case Lang.Ko:
+                            break;
+                        case Lang.Nl:
+                            break;
+                        case Lang.Pl:
+                            break;
+                        case Lang.PtBr:
+                            break;
+                        case Lang.Ru:
+                            break;
+                        case Lang.ZhChs:
+                            break;
+                        case Lang.ZhCht:
+                            break;
+                        case Lang.Undefined:
+                            break;
+                    }
+                }
+
+                
+
+                // await _interaction.RegisterCommandsGloballyAsync();
+
                 TwitchService.ConfigureMonitor();
             }
 
@@ -235,6 +285,13 @@ internal class Felicity
         return Task.CompletedTask;
     }
 
+    private Task HandleVC(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    {
+        if (arg3.VoiceChannel?.Guild.Id == 965739860033941534 || arg2.VoiceChannel?.Guild.Id == 965739860033941534)
+            TmpVCService.GoAFarmers(_client, arg1, arg3);
+
+        return Task.CompletedTask;
+    }
 
     private static async Task HandleJoin(SocketGuildUser arg)
     {
@@ -320,6 +377,7 @@ internal class Felicity
                 return;
             }
 
+            if (isStaff || arg.Channel.Id.Equals(965752962498584688))
             {
                 await TryHandleCommandAsync(msg, argPos).ConfigureAwait(false);
             }
