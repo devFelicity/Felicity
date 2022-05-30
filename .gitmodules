@@ -1,4 +1,0 @@
-[submodule "D2Api"]
-	path = D2Api
-	url = https://github.com/axsLeaf/D2Api.git
-	branch = develop
