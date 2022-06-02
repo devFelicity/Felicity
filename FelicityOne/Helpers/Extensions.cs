@@ -42,8 +42,50 @@ internal static class Extensions
             Description = description,
             Footer = new EmbedFooterBuilder
             {
-                Text = ConfigService.GetBotSettings().Version,
+                Text = Strings.FelicityVersion,
                 IconUrl = Images.FelicityLogo
+            }
+        };
+
+        return embed;
+    }
+
+    public static EmbedBuilder GenerateUserEmbed(SocketUser guildUser)
+    {
+        var embed = new EmbedBuilder
+        {
+            Color = ConfigService.GetEmbedColor(),
+            Author = new EmbedAuthorBuilder
+            {
+                IconUrl = guildUser.GetDefaultAvatarUrl(),
+                Name = guildUser.Username
+            },
+            Description = $"{Format.Bold(guildUser.Username)} left the server!",
+            Footer = new EmbedFooterBuilder
+            {
+                Text = Strings.FelicityVersion,
+                IconUrl = Images.FelicityLogo
+            },
+            Fields = new List<EmbedFieldBuilder>
+            {
+                new()
+                {
+                    IsInline = true,
+                    Name = "Account Created",
+                    Value = guildUser.CreatedAt.ToString("d")
+                },
+                new()
+                {
+                    IsInline = true,
+                    Name = "User ID",
+                    Value = guildUser.Id
+                },
+                new()
+                {
+                    IsInline = true,
+                    Name = "Bungie Name",
+                    Value = GetBungieName(guildUser)
+                }
             }
         };
 

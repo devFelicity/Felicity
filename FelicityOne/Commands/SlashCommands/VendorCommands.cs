@@ -40,7 +40,7 @@ public class Vendor : InteractionModuleBase<SocketInteractionContext>
             var xurCache = ProcessXurData.FetchInventory(lg, oauth, destinyMembership);
 
             if (xurCache != null)
-                await FollowupAsync(embed: xurCache.BuildEmbed(lg));
+                await FollowupAsync(embed: xurCache.BuildEmbed());
             else
                 Log.Error("Unable to parse Xûr inventory.");
         }

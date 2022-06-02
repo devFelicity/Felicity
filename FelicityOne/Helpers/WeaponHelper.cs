@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using FelicityOne.Caches;
+// ReSharper disable UnusedMember.Global
 
 namespace FelicityOne.Helpers;
 

@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+// ReSharper disable UnusedMember.Global
 
 namespace FelicityOne.Helpers;
 

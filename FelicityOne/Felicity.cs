@@ -100,6 +100,8 @@ internal class Felicity
         EmoteHelper.DiscordClient = _client;
         StatusService.DiscordClient = _client;
 
+        await Jobs.StartJobs();
+
         await OAuthService.Start(_client);
     }
 
@@ -182,10 +184,8 @@ internal class Felicity
     {
         var context = new SocketInteractionContext(_client, arg);
 
-        var banned = false;
-
-        foreach (var unused in ConfigService.GetBotSettings().BannedUsers
-                     .Where(bannedUser => bannedUser.Id == arg.User.Id)) banned = true;
+        var banned = ConfigService.GetBotSettings().BannedUsers
+            .Any(bannedUser => bannedUser.Id == arg.User.Id);
 
         if (banned)
         {
