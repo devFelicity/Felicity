@@ -9,6 +9,7 @@ using FelicityOne.Enums;
 using FelicityOne.Helpers;
 using FelicityOne.Services;
 using Serilog;
+using Serilog.Context;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -130,9 +131,16 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         catch (Exception ex)
         {
             var msg = $"Failed to lookup: {bungieTag}\n{ex.GetType()}: {ex.Message}";
-            Log.Error(ex, msg);
 
-            await FollowupAsync("Failed to lookup player profile.");
+            if (ex.InnerException is not FormatException)
+            {
+                ex.Data.Add("command", "lookup accountshare");
+                ex.Data.Add("parameter", bungieTag);
+                Log.Error(msg, ex);
+            }
+
+            await FollowupAsync(msg);
+
             return;
         }
 
