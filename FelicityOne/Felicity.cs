@@ -216,7 +216,7 @@ internal class Felicity
         using (LogContext.PushProperty("context",
                    new
                    {
-                       Command = context.Interaction.Data, Invoker = context.User, Server = context.Guild,
+                       Command = ConfigHelper.ToJson(context.Interaction.Data), Invoker = context.User, Server = context.Guild,
                        Result = result
                    }))
         {
