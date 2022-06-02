@@ -1,5 +1,6 @@
 ﻿using Discord;
 using FelicityOne.Configs;
+using FelicityOne.Enums;
 using FelicityOne.Helpers;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -66,6 +67,8 @@ internal static class ConfigService
             Console.WriteLine($"No {EmoteConfigPath} found.");
             closeProgram = true;
         }
+
+        KnownMementos.PopulateMementos();
 
         return closeProgram;
     }

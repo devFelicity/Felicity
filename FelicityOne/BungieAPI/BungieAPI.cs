@@ -9,7 +9,7 @@ namespace FelicityOne;
 
 internal static class BungieAPI
 {
-    private const string BaseUrl = "https://bungie.net";
+    public const string BaseUrl = "https://bungie.net";
     private static BungieApiClient? _apiClient;
 
     public static BungieApiClient GetApiClient()

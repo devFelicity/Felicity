@@ -84,14 +84,14 @@ public static class ProcessXurData
             "Xûr is not currently selling his wares").Build();
     }
 
-    public static Embed BuildEmbed(this XurCache self, Lang lang)
+    public static Embed BuildEmbed(this XurCache self)
     {
         var embed = Extensions.GenerateVendorEmbed("Xûr, Agent of the Nine",
             Images.XurVendorLogo,
             "Xûr is currently selling his wares on " + Format.Bold(GetXurLocation(self.XurLocation)));
 
-        var exoticWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Exotic, true, lang);
-        var legendaryWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Legendary, false, lang);
+        var exoticWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Exotic, true);
+        var legendaryWeapons = PopulateWeaponPerks(self.XurInventory.Weapons.Legendary, false);
 
         var exoticArmors = "";
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
@@ -117,7 +117,7 @@ public static class ProcessXurData
         return embed.Build();
     }
 
-    private static string PopulateWeaponPerks(List<Weapon> weapons, bool gunsmithLink, Lang lang)
+    private static string PopulateWeaponPerks(List<Weapon> weapons, bool gunsmithLink)
     {
         var result = "";
 

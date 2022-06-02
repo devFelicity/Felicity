@@ -58,7 +58,6 @@ public partial class MemberEvents
     [J("memberJoined")] public bool MemberJoined { get; set; }
     [J("memberLeft")] public bool MemberLeft { get; set; }
     [J("memberKicked")] public bool MemberKicked { get; set; }
-    [J("memberBanned")] public bool MemberBanned { get; set; }
 }
 
 public partial class Subscription

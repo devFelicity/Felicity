@@ -84,7 +84,7 @@ public static class ProcessCPData
 
             activeCpList.Add(new Checkpoint
             {
-                Name = messageLines[i].Split("> ")[1].Replace("**", ""),
+                Name = messageLines[i].Split("**")[1].Split("**")[0].Replace("**", ""),
                 Join = messageLines[i + 1].Split('`')[1].Split('`')[0]
             });
         }

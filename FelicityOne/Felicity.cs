@@ -101,8 +101,6 @@ internal class Felicity
         StatusService.DiscordClient = _client;
 
         await OAuthService.Start(_client);
-
-        await Task.Delay(-1);
     }
 
     private async Task InitializeListeners()
@@ -132,7 +130,7 @@ internal class Felicity
             LogService.DiscordLogChannel =
                 (SocketTextChannel) _client.GetChannel(ConfigService.GetBotSettings().ManagementChannel);
 
-            // TwitchService.Setup(_client);
+            TwitchService.Setup(_client);
 
             await _client.Rest.DeleteAllGlobalCommandsAsync();
 
@@ -148,7 +146,7 @@ internal class Felicity
 
                 await _interaction.RegisterCommandsGloballyAsync();
 
-                // TwitchService.ConfigureMonitor();
+                TwitchService.ConfigureMonitor();
             }
 
             StatusService.ChangeGame();
