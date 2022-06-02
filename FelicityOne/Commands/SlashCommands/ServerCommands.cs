@@ -166,8 +166,9 @@ public class Server : InteractionModuleBase<SocketInteractionContext>
         {
             await DeferAsync();
 
-            var serverSettings = ConfigHelper.FromJson<ServerConfig>(ConfigService.ServerConfigPath);
+            var serverSettings = ConfigHelper.FromJson<ServerConfig>(await File.ReadAllTextAsync(ConfigService.ServerConfigPath));
             serverSettings.Settings[Context.Guild.Id.ToString()].TwitchStreams.Remove(twitchName);
+
             await File.WriteAllTextAsync(ConfigService.ServerConfigPath, ConfigHelper.ToJson(serverSettings));
 
             TwitchService.RestartMonitor();

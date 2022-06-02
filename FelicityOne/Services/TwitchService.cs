@@ -9,6 +9,7 @@ using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Services;
 using TwitchLib.Api.Services.Events.LiveStreamMonitor;
+#pragma warning disable CS8622
 
 #pragma warning disable CS8618
 
@@ -71,8 +72,8 @@ internal static class TwitchService
             streamNames.Add(activeStream.TwitchName);
 
         monitorService = new LiveStreamMonitorService(Api);
-        monitorService.OnStreamOnline += OnStreamOnline!;
-        monitorService.OnStreamOffline += OnStreamOffline!;
+        monitorService.OnStreamOnline += OnStreamOnline;
+        monitorService.OnStreamOffline += OnStreamOffline;
         monitorService.SetChannelsByName(streamNames);
         Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamNames)}");
         monitorService.Start();

@@ -140,6 +140,8 @@ internal class Felicity
             {
                 await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
                 await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
+
+                TwitchService.ConfigureMonitor();
             }
             else
             {
@@ -216,7 +218,7 @@ internal class Felicity
         using (LogContext.PushProperty("context",
                    new
                    {
-                       Command = ConfigHelper.ToJson(context.Interaction.Data), Invoker = context.User, Server = context.Guild,
+                       Command = new { info.Name, Parameters = string.Join(',', info.Parameters) }, Invoker = context.User, Server = context.Guild,
                        Result = result
                    }))
         {
