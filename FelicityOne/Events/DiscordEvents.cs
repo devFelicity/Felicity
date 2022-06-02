@@ -52,12 +52,10 @@ internal static class DiscordEvents
         {
             Author = new EmbedAuthorBuilder
             {
-                Name = arg.Name,
-                IconUrl = arg.IconUrl
+                Name = "Felicity was added to a server."
             },
-            Title = "Felicity was added to a server.",
-            ThumbnailUrl = arg.IconUrl,
-            Description = arg.Description,
+            Color = ConfigService.GetEmbedColor(),
+            Title = arg.Name,
             Footer = new EmbedFooterBuilder
             {
                 Text = Strings.FelicityVersion,
@@ -73,12 +71,6 @@ internal static class DiscordEvents
                 },
                 new()
                 {
-                    Name = "Members",
-                    Value = arg.Users.Count,
-                    IsInline = true
-                },
-                new()
-                {
                     Name = "Banned?",
                     Value = banned,
                     IsInline = true
@@ -86,7 +78,14 @@ internal static class DiscordEvents
             }
         };
 
-        if (banned) arg.LeaveAsync();
+        if (arg.IconUrl != null)
+            embed.ThumbnailUrl = arg.IconUrl;
+
+        if (arg.Description != null)
+            embed.Description = arg.Description;
+
+        if (banned)
+            arg.LeaveAsync();
 
         LogService.DiscordLogChannel.SendMessageAsync(embed: embed.Build());
 
@@ -99,25 +98,14 @@ internal static class DiscordEvents
         {
             Author = new EmbedAuthorBuilder
             {
-                Name = arg.Name,
-                IconUrl = arg.IconUrl
+                Name = "Felicity was removed from a server."
             },
-            Title = "Felicity was removed from a server.",
-            ThumbnailUrl = arg.IconUrl,
-            Description = arg.Description,
+            Color = ConfigService.GetEmbedColor(),
+            Title = arg.Name,
             Footer = new EmbedFooterBuilder
             {
                 Text = Strings.FelicityVersion,
                 IconUrl = Images.FelicityLogo
-            },
-            Fields = new List<EmbedFieldBuilder>
-            {
-                new()
-                {
-                    Name = "Owner",
-                    Value = arg.Owner,
-                    IsInline = true
-                }
             }
         };
 

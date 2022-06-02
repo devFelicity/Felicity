@@ -27,7 +27,7 @@ internal class Felicity
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
             GatewayIntents = (GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildScheduledEvents) |
-                             GatewayIntents.GuildMembers,
+                             GatewayIntents.GuildMembers | GatewayIntents.GuildPresences,
             AlwaysDownloadUsers = true
         });
         _commands = new CommandService();
@@ -67,6 +67,8 @@ internal class Felicity
         }
         else
         {
+            Console.WriteLine(ASCIIName);
+
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .MinimumLevel.Debug()
@@ -139,7 +141,7 @@ internal class Felicity
             if (IsDebug())
             {
                 await _interaction.RegisterCommandsToGuildAsync(960484926950637608);
-                await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
+                // await _interaction.RegisterCommandsToGuildAsync(764586645684355092);
 
                 TwitchService.ConfigureMonitor();
             }
