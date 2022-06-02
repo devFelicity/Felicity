@@ -9,7 +9,6 @@ using FelicityOne.Enums;
 using FelicityOne.Helpers;
 using FelicityOne.Services;
 using Serilog;
-using Serilog.Context;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -171,13 +170,13 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         var manifestCollectibleIDs =
             profile.ProfileCollectibles.Data.Collectibles.Select(collectible => collectible.Key).ToList();
 
+        var lang = Context.Guild.Language();
+
         var manifestInventoryItems =
-            BungieAPI.GetManifestDefinition<DestinyInventoryItemDefinition>(
-                ConfigService.GetServerSettings(Context.Guild.Id).Language, manifestInventoryItemIDs);
+            BungieAPI.GetManifestDefinition<DestinyInventoryItemDefinition>(lang, manifestInventoryItemIDs);
 
         var manifestCollectibles =
-            BungieAPI.GetManifestDefinition<DestinyCollectibleDefinition>(
-                ConfigService.GetServerSettings(Context.Guild.Id).Language, manifestCollectibleIDs);
+            BungieAPI.GetManifestDefinition<DestinyCollectibleDefinition>(lang, manifestCollectibleIDs);
 
         foreach (var collectible in from collectible in manifestCollectibles
                  where !collectible.Redacted

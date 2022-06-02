@@ -16,6 +16,12 @@ internal static class Extensions
         return OAuthService.GetUser(user.Id).Result;
     }
 
+    public static Lang Language(this SocketGuild guild)
+    {
+        var settings = ConfigService.GetServerSettings(guild.Id);
+        return settings?.Language ?? Lang.En;
+    }
+
     public static bool IsStaff(this SocketUser user)
     {
         var staff = ConfigService.GetBotSettings();
