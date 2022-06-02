@@ -29,6 +29,6 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v3.0.0
       with:
-          path: Felicity/bin/Release/net6.0/linux-x64/publish
+          path: FelicityOne/bin/Release/net6.0/linux-x64/publish
           if-no-files-found: warn
           retention-days: 30
