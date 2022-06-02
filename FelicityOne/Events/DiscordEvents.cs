@@ -48,9 +48,6 @@ internal static class DiscordEvents
         var config = ConfigService.GetBotSettings();
         var banned = config.BannedUsers.Any(bannedUser => bannedUser.Id == arg.Id);
 
-        var serverInvites = arg.GetInvitesAsync().Result;
-        var invite = serverInvites.Count != 0 ? serverInvites.First().Url : arg.GetVanityInviteAsync().Result.Url;
-
         var embed = new EmbedBuilder
         {
             Author = new EmbedAuthorBuilder
@@ -59,7 +56,6 @@ internal static class DiscordEvents
                 IconUrl = arg.IconUrl
             },
             Title = "Felicity was added to a server.",
-            Url = invite,
             ThumbnailUrl = arg.IconUrl,
             Description = arg.Description,
             Footer = new EmbedFooterBuilder
