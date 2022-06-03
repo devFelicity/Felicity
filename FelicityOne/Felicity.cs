@@ -220,7 +220,7 @@ internal class Felicity
         using (LogContext.PushProperty("context",
                    new
                    {
-                       Command = new { info.Name, Parameters = string.Join(',', info.Parameters) }, Invoker = context.User, Server = context.Guild,
+                       Command = new { info.Name, Parameters = string.Join(',', info.Parameters.ToList()) }, Invoker = context.User, Server = context.Guild,
                        Result = result
                    }))
         {

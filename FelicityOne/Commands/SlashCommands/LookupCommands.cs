@@ -33,6 +33,10 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         if (string.IsNullOrEmpty(bungieTag))
         {
             var linkedUser = OAuthService.GetUser(Context.User.Id).Result;
+
+            if (linkedUser == null!) 
+                await FollowupAsync("You aren't registered and didn't provide a bungie name.");
+
             var linkedProfile = BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(linkedUser.MembershipId,
                 BungieMembershipType.BungieNext, authToken: linkedUser.AccessToken).Result;
 
