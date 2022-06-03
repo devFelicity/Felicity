@@ -122,7 +122,7 @@ internal class Felicity
         _client.UserLeft += DiscordEvents.HandleLeft;
         _client.UserVoiceStateUpdated += DiscordEvents.HandleVC;
 
-        // _client.PresenceUpdated += DiscordEvents.HandlePresenceUpdated;
+        _client.PresenceUpdated += DiscordEvents.HandlePresenceUpdated;
 
         _client.JoinedGuild += DiscordEvents.HandleJoinedGuild;
         _client.LeftGuild += DiscordEvents.HandleLeftGuild;

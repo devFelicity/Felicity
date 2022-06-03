@@ -143,7 +143,11 @@ internal static class Extensions
     private static string GetBungieName(SocketUser user)
     {
         var oauth = user.OAuth();
-        return oauth.DestinyMembership.BungieName;
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if(oauth != null)
+            return oauth.DestinyMembership.BungieName;
+        return "Not registered.";
     }
 
     public static Embed GenerateLookupEmbed(this DestinyProfileResponse destinyProfile, string bungieName,

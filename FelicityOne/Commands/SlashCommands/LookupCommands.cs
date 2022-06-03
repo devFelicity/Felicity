@@ -2,6 +2,7 @@
 using BungieSharper.Entities.Destiny;
 using BungieSharper.Entities.Destiny.Definitions;
 using BungieSharper.Entities.Destiny.Definitions.Collectibles;
+using BungieSharper.Entities.Destiny.Responses;
 using BungieSharper.Entities.User;
 using Discord;
 using Discord.Interactions;
@@ -33,10 +34,19 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         {
             var linkedUser = OAuthService.GetUser(Context.User.Id).Result;
             var linkedProfile = BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(linkedUser.MembershipId,
-                BungieMembershipType.BungieNext, true, linkedUser.AccessToken).Result;
+                BungieMembershipType.BungieNext, authToken: linkedUser.AccessToken).Result;
 
-            membershipId = linkedProfile.Profiles.First().MembershipId;
-            membershipType = linkedProfile.Profiles.First().MembershipType;
+            var latestProfile = new DestinyProfileUserInfoCard();
+            var lastPlayed = new DateTime(1970, 1, 1);
+
+            foreach (var profile in linkedProfile.Profiles)
+            {
+                if (profile.DateLastPlayed > lastPlayed)
+                    latestProfile = profile;
+            }
+
+            membershipId = latestProfile.MembershipId;
+            membershipType = latestProfile.MembershipType;
             bungieName =
                 $"{linkedProfile.BnetMembership.BungieGlobalDisplayName}#{linkedProfile.BnetMembership.BungieGlobalDisplayNameCode}";
         }
@@ -65,17 +75,11 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
                     var name = bungieTag.Split("#").First();
                     var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-                    var userInfoCard = BungieAPI.GetApiClient().Api.Destiny2_SearchDestinyPlayerByBungieName(
-                        BungieMembershipType.All,
-                        new ExactSearchRequest
-                        {
-                            DisplayName = name,
-                            DisplayNameCode = code
-                        }).Result.First();
+                    var goodProfile = GetLatestProfile(name, code);
 
-                    membershipId = userInfoCard.MembershipId;
-                    membershipType = userInfoCard.MembershipType;
-                    bungieName = $"{userInfoCard.BungieGlobalDisplayName}#{userInfoCard.BungieGlobalDisplayNameCode}";
+                    membershipId = goodProfile.MembershipId;
+                    membershipType = goodProfile.MembershipType;
+                    bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
                 }
                 catch (Exception ex)
                 {
@@ -115,17 +119,11 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
             var name = bungieTag.Split("#").First();
             var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-            var userInfoCard = BungieAPI.GetApiClient().Api.Destiny2_SearchDestinyPlayerByBungieName(
-                BungieMembershipType.All,
-                new ExactSearchRequest
-                {
-                    DisplayName = name,
-                    DisplayNameCode = code
-                }).Result.First();
+            var goodProfile = GetLatestProfile(name, code);
 
-            membershipId = userInfoCard.MembershipId;
-            membershipType = userInfoCard.MembershipType;
-            bungieName = $"{userInfoCard.BungieGlobalDisplayName}#{userInfoCard.BungieGlobalDisplayNameCode}";
+            membershipId = goodProfile.MembershipId;
+            membershipType = goodProfile.MembershipType;
+            bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
         }
         catch (Exception ex)
         {
@@ -240,5 +238,28 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         }
 
         await FollowupAsync(embed: embed.Build());
+    }
+
+    private static DestinyProfileUserInfoCard GetLatestProfile(string name, short code)
+    {
+        var userInfoCard = BungieAPI.GetApiClient().Api.Destiny2_SearchDestinyPlayerByBungieName(
+            BungieMembershipType.All,
+            new ExactSearchRequest
+            {
+                DisplayName = name,
+                DisplayNameCode = code
+            }).Result.First();
+            
+        var goodProfile = BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(userInfoCard.MembershipId, userInfoCard.MembershipType).Result;
+
+        var latestProfile = new DestinyProfileUserInfoCard();
+
+        foreach (var potentialProfile in goodProfile.Profiles)
+        {
+            if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
+                latestProfile = potentialProfile;
+        }
+
+        return latestProfile;
     }
 }

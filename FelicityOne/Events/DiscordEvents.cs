@@ -37,12 +37,6 @@ internal static class DiscordEvents
                     embed: Extensions.GenerateUserEmbed(arg2).Build());
     }
 
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-    public static Task HandleVC(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
-    {
-        return Task.CompletedTask;
-    }
-
     public static Task HandleJoinedGuild(SocketGuild arg)
     {
         var config = ConfigService.GetBotSettings();
@@ -117,6 +111,18 @@ internal static class DiscordEvents
     public static Task HandleInviteCreated(SocketInvite arg)
     {
         Console.WriteLine($"{arg.Inviter} created invite {Format.Code(arg.Code)} in {arg.Guild.Name}");
+        return Task.CompletedTask;
+    }
+
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+    public static Task HandlePresenceUpdated(SocketUser arg1, SocketPresence arg2, SocketPresence arg3)
+    {
+        return Task.CompletedTask;
+    }
+
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+    public static Task HandleVC(SocketUser arg1, SocketVoiceState arg2, SocketVoiceState arg3)
+    {
         return Task.CompletedTask;
     }
 }
