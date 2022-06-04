@@ -109,7 +109,7 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("accountshare", "Look up account shared emblems of a player.")]
     public async Task LookupAccountShare(
         [Summary("bungiename",
-            "Bungie name of the requested user (name#1234). If absent, registered profile will be used.")]
+            "Bungie name of the requested user (name#1234).")]
         string bungieTag)
     {
         await DeferAsync();
