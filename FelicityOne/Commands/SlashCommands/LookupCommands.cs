@@ -3,7 +3,6 @@ using BungieSharper.Entities.Destiny;
 using BungieSharper.Entities.Destiny.Definitions;
 using BungieSharper.Entities.Destiny.Definitions.Collectibles;
 using BungieSharper.Entities.Destiny.Responses;
-using BungieSharper.Entities.User;
 using Discord;
 using Discord.Interactions;
 using FelicityOne.Enums;
@@ -79,7 +78,7 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
                     var name = bungieTag.Split("#").First();
                     var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-                    var goodProfile = GetLatestProfile(name, code);
+                    var goodProfile = Extensions.GetLatestProfile(name, code);
 
                     membershipId = goodProfile.MembershipId;
                     membershipType = goodProfile.MembershipType;
@@ -123,7 +122,7 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
             var name = bungieTag.Split("#").First();
             var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-            var goodProfile = GetLatestProfile(name, code);
+            var goodProfile = Extensions.GetLatestProfile(name, code);
 
             membershipId = goodProfile.MembershipId;
             membershipType = goodProfile.MembershipType;
@@ -242,28 +241,5 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         }
 
         await FollowupAsync(embed: embed.Build());
-    }
-
-    private static DestinyProfileUserInfoCard GetLatestProfile(string name, short code)
-    {
-        var userInfoCard = BungieAPI.GetApiClient().Api.Destiny2_SearchDestinyPlayerByBungieName(
-            BungieMembershipType.All,
-            new ExactSearchRequest
-            {
-                DisplayName = name,
-                DisplayNameCode = code
-            }).Result.First();
-            
-        var goodProfile = BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(userInfoCard.MembershipId, userInfoCard.MembershipType).Result;
-
-        var latestProfile = new DestinyProfileUserInfoCard();
-
-        foreach (var potentialProfile in goodProfile.Profiles)
-        {
-            if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
-                latestProfile = potentialProfile;
-        }
-
-        return latestProfile;
     }
 }

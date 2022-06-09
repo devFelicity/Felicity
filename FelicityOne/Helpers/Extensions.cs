@@ -1,6 +1,7 @@
 ﻿using BungieSharper.Entities;
 using BungieSharper.Entities.Destiny.Entities.Characters;
 using BungieSharper.Entities.Destiny.Responses;
+using BungieSharper.Entities.User;
 using Discord;
 using Discord.WebSocket;
 using FelicityOne.Configs;
@@ -46,11 +47,7 @@ internal static class Extensions
                 Url = authorUrl
             },
             Description = description,
-            Footer = new EmbedFooterBuilder
-            {
-                Text = Strings.FelicityVersion,
-                IconUrl = Images.FelicityLogo
-            }
+            Footer = GenerateEmbedFooter()
         };
 
         return embed;
@@ -67,11 +64,7 @@ internal static class Extensions
                 Name = guildUser.Username
             },
             Description = $"{Format.Bold(guildUser.Username)} left the server!",
-            Footer = new EmbedFooterBuilder
-            {
-                Text = Strings.FelicityVersion,
-                IconUrl = Images.FelicityLogo
-            },
+            Footer = GenerateEmbedFooter(),
             Fields = new List<EmbedFieldBuilder>
             {
                 new()
@@ -109,11 +102,7 @@ internal static class Extensions
                 Name = guildUser.DisplayName
             },
             Description = $"{Format.Bold(guildUser.Username)} joined the server!",
-            Footer = new EmbedFooterBuilder
-            {
-                Text = Strings.FelicityVersion,
-                IconUrl = Images.FelicityLogo
-            },
+            Footer = GenerateEmbedFooter(),
             Fields = new List<EmbedFieldBuilder>
             {
                 new()
@@ -145,7 +134,7 @@ internal static class Extensions
         var oauth = user.OAuth();
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if(oauth != null)
+        if (oauth != null)
             return oauth.DestinyMembership.BungieName;
         return "Not registered.";
     }
@@ -167,11 +156,7 @@ internal static class Extensions
         {
             Color = ConfigService.GetEmbedColor(),
             Title = bungieName,
-            Footer = new EmbedFooterBuilder
-            {
-                Text = ConfigService.GetBotSettings().Version,
-                IconUrl = Images.FelicityLogo
-            },
+            Footer = GenerateEmbedFooter(),
             Description =
                 $"{Format.Code($"/invite {bungieName}")} | " +
                 $"{Format.Code($"/join {bungieName}")}",
@@ -232,13 +217,57 @@ internal static class Extensions
                 IconUrl = thumbnailUrl
             },
             Description = description,
-            Footer = new EmbedFooterBuilder
-            {
-                Text = ConfigService.GetBotSettings().Version,
-                IconUrl = Images.FelicityLogo
-            }
+            Footer = GenerateEmbedFooter()
         };
 
         return embed;
+    }
+
+    public static DestinyProfileUserInfoCard GetLatestProfile(string name, short code)
+    {
+        var userInfoCard = BungieAPI.GetApiClient().Api.Destiny2_SearchDestinyPlayerByBungieName(
+            BungieMembershipType.All,
+            new ExactSearchRequest
+            {
+                DisplayName = name,
+                DisplayNameCode = code
+            }).Result.First();
+
+        var goodProfile = BungieAPI.GetApiClient().Api
+            .Destiny2_GetLinkedProfiles(userInfoCard.MembershipId, userInfoCard.MembershipType).Result;
+
+        var latestProfile = new DestinyProfileUserInfoCard();
+
+        foreach (var potentialProfile in goodProfile.Profiles)
+            if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
+                latestProfile = potentialProfile;
+
+        return latestProfile;
+    }
+
+    public static DestinyProfileUserInfoCard GetLatestProfile(long membershipId, BungieMembershipType membershipType,
+        string authToken = "")
+    {
+        var goodProfile = authToken == ""
+            ? BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(membershipId, membershipType).Result
+            : BungieAPI.GetApiClient().Api
+                .Destiny2_GetLinkedProfiles(membershipId, membershipType, authToken: authToken).Result;
+
+        var latestProfile = new DestinyProfileUserInfoCard();
+
+        foreach (var potentialProfile in goodProfile.Profiles)
+            if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
+                latestProfile = potentialProfile;
+
+        return latestProfile;
+    }
+
+    public static EmbedFooterBuilder GenerateEmbedFooter()
+    {
+        return new EmbedFooterBuilder
+        {
+            Text = Strings.FelicityVersion,
+            IconUrl = Images.FelicityLogo
+        };
     }
 }
