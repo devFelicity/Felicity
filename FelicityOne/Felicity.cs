@@ -7,6 +7,7 @@ using FelicityOne.Caches;
 using FelicityOne.Events;
 using FelicityOne.Helpers;
 using FelicityOne.Services;
+using Fergun.Interactive;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Context;
@@ -34,7 +35,8 @@ internal class Felicity
         _interaction = new InteractionService(_client);
         _services = new ServiceCollection()
             .AddSingleton(_client)
-            // .AddSingleton<InteractiveService>()
+            .AddSingleton(new InteractiveConfig { ReturnAfterSendingPaginator = true })
+            .AddSingleton<InteractiveService>()
             .AddSingleton<InteractionService>()
             .BuildServiceProvider();
     }
