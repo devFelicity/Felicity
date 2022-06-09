@@ -115,14 +115,14 @@ internal static class OAuthService
         if (destinyMembershipId != 0)
         {
             var userInfo = BungieAPI.GetApiClient().Api
-                .Destiny2_GetProfile(userConfig.MembershipId, destinyMembershipType, new[]
+                .Destiny2_GetProfile(destinyMembershipId, destinyMembershipType, new[]
                 {
                     DestinyComponentType.Profiles
                 }).Result.Profile.Data.UserInfo;
 
             userConfig.DestinyMembership = new DestinyMembership
             {
-                BungieName = userInfo.BungieGlobalDisplayName + userInfo.BungieGlobalDisplayNameCode,
+                BungieName = userInfo.BungieGlobalDisplayName + "#" + userInfo.BungieGlobalDisplayNameCode,
                 CharacterIds = destinyCharacterIDs.ToArray(),
                 MembershipId = destinyMembershipId,
                 MembershipType = destinyMembershipType
@@ -145,19 +145,19 @@ internal static class OAuthService
 
     public static async Task PopulateDestinyMembership(string discordId, OAuthConfig currentUser)
     {
-        if (currentUser.DestinyMembership.MembershipId == 0)
-            return;
-
+        if (currentUser.DestinyMembership != null!)
+            if (currentUser.DestinyMembership.MembershipId == 0)
+                return;
+            
         discordId = Regex.Match(discordId, @"\d+").Value;
 
         try
         {
-            var linkedProfiles = await BungieAPI.GetApiClient().Api
-                .Destiny2_GetLinkedProfiles(Convert.ToInt64(currentUser.MembershipId), BungieMembershipType.BungieNext,
-                    authToken: currentUser.AccessToken);
-
-            var destinyMembershipId = linkedProfiles.Profiles.First().MembershipId;
-            var destinyMembershipType = linkedProfiles.Profiles.First().MembershipType;
+            var linkedProfile = Extensions.GetLatestProfile(currentUser.MembershipId, BungieMembershipType.BungieNext,
+                currentUser.AccessToken);
+                
+            var destinyMembershipId = linkedProfile.MembershipId;
+            var destinyMembershipType = linkedProfile.MembershipType;
             var destinyCharacterIDs = new List<long>();
 
             var profile = BungieAPI.GetApiClient().Api.Destiny2_GetProfile(destinyMembershipId, destinyMembershipType,
@@ -171,7 +171,7 @@ internal static class OAuthService
                 destinyCharacterIDs.Add(key);
 
             var bungieTag =
-                $"{linkedProfiles.BnetMembership.BungieGlobalDisplayName}#{linkedProfiles.BnetMembership.BungieGlobalDisplayNameCode}";
+                $"{linkedProfile.BungieGlobalDisplayName}#{linkedProfile.BungieGlobalDisplayNameCode}";
             LogService.SendLogDiscord(
                 $"Registered `{DiscordClient.GetUserAsync(Convert.ToUInt64(discordId)).Result}` to {bungieTag}.");
 
