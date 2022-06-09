@@ -1,13 +1,18 @@
-﻿using BungieSharper.Entities.Destiny.Definitions;
+﻿using BungieSharper.Entities.Destiny;
+using BungieSharper.Entities.Destiny.Definitions;
 using BungieSharper.Entities.Destiny.Definitions.ActivityModifiers;
+using BungieSharper.Entities.Destiny.Definitions.Records;
 using Discord;
 using Discord.Commands;
 using FelicityOne.Caches;
 using FelicityOne.Enums;
 using FelicityOne.Helpers;
+using FelicityOne.Services;
 using Fergun.Interactive;
 using Fergun.Interactive.Pagination;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
@@ -75,7 +80,7 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         /* Champion Foes
          *
          * 40182179
-         * 197794292https://www.youtube.com/
+         * 197794292
          * 438106166
          * 1598783516
          * 1806568190
@@ -125,8 +130,6 @@ public class StaffCommands : ModuleBase<SocketCommandContext>
         await ReplyAsync(embed: embed.Build());
     }
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public InteractiveService Interactive { get; set; }
 
     [Command("pageTest", RunMode = RunMode.Async)]
