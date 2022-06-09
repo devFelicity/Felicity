@@ -30,7 +30,7 @@ public static class ProcessCPData
 
     public static void Populate(IMessage socketMessage)
     {
-        if (!socketMessage.Content.Contains("𝐂𝐇𝐄𝐂𝐊𝐏𝐎𝐈𝐍𝐓 𝐒𝐇𝐀𝐑𝐈𝐍𝐆"))
+        if (!socketMessage.Content.Contains("Active Checkpoints and Join Codes"))
             return;
 
         var messageLines = socketMessage.Content.Split(new[] {'\n'});
@@ -73,7 +73,7 @@ public static class ProcessCPData
         for (var i = savedCpStart; i < savedCpEnd; i++)
             savedCpList.Add(new Checkpoint
             {
-                Name = messageLines[i].Split("> ")[1].Replace("**", ""),
+                Name = messageLines[i].Split(">")[1].Replace("**", "").TrimEnd(' ', '\t'),
                 Join = null!
             });
 
@@ -84,7 +84,7 @@ public static class ProcessCPData
 
             activeCpList.Add(new Checkpoint
             {
-                Name = messageLines[i].Split("**")[1].Split("**")[0].Replace("**", ""),
+                Name = messageLines[i].Split(">")[1].Split("**")[0].Replace("**", "").TrimEnd(' ', '\t'),
                 Join = messageLines[i + 1].Split('`')[1].Split('`')[0]
             });
         }
