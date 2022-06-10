@@ -27,12 +27,7 @@ public class Vendor : InteractionModuleBase<SocketInteractionContext>
             var oauth = Context.User.OAuth();
             var destinyMembership = oauth.DestinyMembership;
 
-            var lg = Lang.En;
-
-            var config = Context.Guild.Config();
-
-            if (config != null)
-                lg = config.Language;
+            var lg = Context.Guild.Language();
 
             if (!File.Exists($"Data/xurCache-{lg}.json"))
                 await FollowupAsync("Populating vendor data, this might take some time...");
@@ -87,7 +82,7 @@ public class Vendor : InteractionModuleBase<SocketInteractionContext>
             "These rewards change perks based on weekly reset.");
 
         var i = 0;
-        var lg = Context.Guild.Config().Language;
+        var lg = Context.Guild.Language();
 
         foreach (var repReward in repRewards)
         {
@@ -147,11 +142,7 @@ public class Vendor : InteractionModuleBase<SocketInteractionContext>
         var oauth = Context.User.OAuth();
         var destinyMembership = oauth.DestinyMembership;
 
-        var lg = Lang.En;
-        var config = Context.Guild.Config();
-
-        if (config != null)
-            lg = config.Language;
+        var lg = Context.Guild.Language();
 
         if (!File.Exists($"Data/modCache-{lg}.json"))
             await FollowupAsync("Populating vendor data, this might take some time...");

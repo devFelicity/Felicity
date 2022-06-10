@@ -29,11 +29,6 @@ internal static class Extensions
         return staff.BotStaff.Any(staffId => staffId.Id == user.Id);
     }
 
-    public static ServerSetting? Config(this SocketGuild guild)
-    {
-        return ConfigService.GetServerSettings(guild.Id);
-    }
-
     public static EmbedBuilder GenerateMessageEmbed(string authorName, string authorIcon, string description,
         string authorUrl = "")
     {
