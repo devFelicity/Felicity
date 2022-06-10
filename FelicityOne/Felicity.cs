@@ -232,8 +232,8 @@ internal class Felicity
             if (result.Error == InteractionCommandError.UnmetPrecondition)
                 return Task.CompletedTask;
 
-            context.Interaction.FollowupAsync("Command failed to execute, logs have been forwarded to staff.");
-            context.Interaction.RespondAsync("Command failed to execute, logs have been forwarded to staff.");
+            context.Interaction.FollowupAsync("Command failed to execute, logs have been forwarded to staff.\nFor support, please join the support server in my About Me section.");
+            context.Interaction.RespondAsync("Command failed to execute, logs have been forwarded to staff.\nFor support, please join the support server in my About Me section.");
         }
 
         return Task.CompletedTask;
