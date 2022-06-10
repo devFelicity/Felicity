@@ -37,7 +37,7 @@ internal static class DiscordEvents
                     embed: Extensions.GenerateUserEmbed(arg2).Build());
     }
 
-    public static Task HandleJoinedGuild(SocketGuild arg)
+    public static async Task HandleJoinedGuild(SocketGuild arg)
     {
         var config = ConfigService.GetBotSettings();
         var banned = config.BannedUsers.Any(bannedUser => bannedUser.Id == arg.Id);
@@ -79,14 +79,12 @@ internal static class DiscordEvents
             embed.Description = arg.Description;
 
         if (banned)
-            arg.LeaveAsync();
+            await arg.LeaveAsync();
 
-        LogService.DiscordLogChannel.SendMessageAsync(embed: embed.Build());
-
-        return Task.CompletedTask;
+        await LogService.DiscordLogChannel.SendMessageAsync(embed: embed.Build());
     }
 
-    public static Task HandleLeftGuild(SocketGuild arg)
+    public static async Task HandleLeftGuild(SocketGuild arg)
     {
         var embed = new EmbedBuilder
         {
@@ -103,9 +101,7 @@ internal static class DiscordEvents
             }
         };
 
-        LogService.DiscordLogChannel.SendMessageAsync(embed: embed.Build());
-
-        return Task.CompletedTask;
+        await LogService.DiscordLogChannel.SendMessageAsync(embed: embed.Build());
     }
 
     public static Task HandleInviteCreated(SocketInvite arg)
