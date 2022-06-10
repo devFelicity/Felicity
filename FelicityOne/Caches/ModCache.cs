@@ -2,6 +2,7 @@
 using BungieSharper.Entities.Destiny.Definitions;
 using BungieSharper.Entities.Destiny.Responses;
 using Discord;
+using DotNetBungieAPI.HashReferences;
 using FelicityOne.Configs;
 using FelicityOne.Enums;
 using FelicityOne.Helpers;
@@ -36,8 +37,8 @@ public static class ProcessModData
             ? "Ada-1 and Banshee-44 can both be found in the Tower.\n[*] = not owned."
             : "You can use `/vendor mods` to view unacquired mods from this list.\nAda-1 and Banshee-44 can both be found in the Tower.");
 
-        var adaMods = GetMods(self, VendorIds.Ada1, checkInventory, oauth, destinyMembership);
-        var bansheeMods = GetMods(self, VendorIds.Banshee44, checkInventory, oauth, destinyMembership);
+        var adaMods = GetMods(self, DefinitionHashes.Vendors.Ada1_350061650, checkInventory, oauth, destinyMembership);
+        var bansheeMods = GetMods(self, DefinitionHashes.Vendors.Banshee44_672118013, checkInventory, oauth, destinyMembership);
 
         embed.AddField("Ada-1", adaMods, true);
         embed.AddField("Banshee-44", bansheeMods, true);
@@ -45,20 +46,20 @@ public static class ProcessModData
         return embed.Build();
     }
 
-    private static string GetMods(ModCache self, VendorIds vendor, bool checkInventory, OAuthConfig oauth,
+    private static string GetMods(ModCache self, uint vendor, bool checkInventory, OAuthConfig oauth,
         DestinyMembership destinyMembership)
     {
         var result = "";
 
         var vendorData = BungieAPI.GetApiClient().Api.Destiny2_GetVendor(destinyMembership.CharacterIds.First(),
                 destinyMembership.MembershipId,
-                destinyMembership.MembershipType, (uint) vendor, new[]
+                destinyMembership.MembershipType, vendor, new[]
                 {
                     DestinyComponentType.VendorSales
                 }, oauth.AccessToken)
             .Result;
 
-        foreach (var mod in self.ModInventory[((uint) vendor).ToString()])
+        foreach (var mod in self.ModInventory[vendor.ToString()])
         {
             var missing = "";
             if (checkInventory)
@@ -108,21 +109,21 @@ public static class ProcessModData
             ModInventory = new Dictionary<string, List<Mod>>()
         };
 
-        modCache = PopulateMods(lg, modCache, VendorIds.Ada1, vendorData.Sales.Data);
-        modCache = PopulateMods(lg, modCache, VendorIds.Banshee44, vendorData.Sales.Data);
+        modCache = PopulateMods(lg, modCache, DefinitionHashes.Vendors.Ada1_350061650, vendorData.Sales.Data);
+        modCache = PopulateMods(lg, modCache, DefinitionHashes.Vendors.Banshee44_672118013, vendorData.Sales.Data);
 
         File.WriteAllText(path, ConfigHelper.ToJson(modCache));
 
         return modCache;
     }
 
-    private static ModCache PopulateMods(Lang lg, ModCache modCache, VendorIds vendor,
+    private static ModCache PopulateMods(Lang lg, ModCache modCache, uint vendor,
         IReadOnlyDictionary<uint, PersonalDestinyVendorSaleItemSetComponent> salesData)
     {
-        modCache.ModInventory.Add(((uint) vendor).ToString(), new List<Mod>());
+        modCache.ModInventory.Add(vendor.ToString(), new List<Mod>());
 
         var manifestItems = BungieAPI.GetManifestDefinition<DestinyInventoryItemDefinition>(lg,
-            salesData[(uint) vendor].SaleItems.Values.Select(saleItem => saleItem.ItemHash).ToList());
+            salesData[vendor].SaleItems.Values.Select(saleItem => saleItem.ItemHash).ToList());
 
         var manifestPerks = BungieAPI.GetManifestDefinition<DestinySandboxPerkDefinition>(lg,
             (from inventoryItem in manifestItems
@@ -132,7 +133,7 @@ public static class ProcessModData
         var i = 0;
         var j = 0;
 
-        foreach (var (_, value) in salesData[(uint) vendor].SaleItems)
+        foreach (var (_, value) in salesData[vendor].SaleItems)
         {
             var item = manifestItems[i];
 
@@ -144,7 +145,7 @@ public static class ProcessModData
 
             var modInfo = manifestPerks[j];
 
-            modCache.ModInventory[((uint) vendor).ToString()].Add(new Mod
+            modCache.ModInventory[vendor.ToString()].Add(new Mod
             {
                 Name = modInfo.DisplayProperties.Name,
                 Description = modInfo.DisplayProperties.Description,

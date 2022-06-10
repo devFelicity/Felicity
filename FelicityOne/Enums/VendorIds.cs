@@ -1,4 +1,5 @@
-﻿// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 namespace FelicityOne.Enums;
 
 internal enum VendorIds : uint

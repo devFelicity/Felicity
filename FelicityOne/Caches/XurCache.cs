@@ -5,14 +5,13 @@ using BungieSharper.Entities.Destiny.Definitions.Presentation;
 using BungieSharper.Entities.Destiny.Entities.Items;
 using BungieSharper.Entities.Destiny.Entities.Vendors;
 using Discord;
+using DotNetBungieAPI.HashReferences;
 using FelicityOne.Configs;
 using FelicityOne.Enums;
 using FelicityOne.Helpers;
 using Serilog;
 using J = Newtonsoft.Json.JsonPropertyAttribute;
 using N = Newtonsoft.Json.NullValueHandling;
-
-#pragma warning disable CS8618
 
 namespace FelicityOne.Caches;
 
@@ -226,7 +225,7 @@ public static class ProcessXurData
         var vendorData = BungieAPI.GetApiClient()
             .Api.Destiny2_GetVendor(destinyMembership.CharacterIds.First(),
                 destinyMembership.MembershipId,
-                destinyMembership.MembershipType, (uint) VendorIds.Xur, new[]
+                destinyMembership.MembershipType, DefinitionHashes.Vendors.Xûr_2190858386, new[]
                 {
                     DestinyComponentType.ItemStats, DestinyComponentType.ItemSockets,
                     DestinyComponentType.Vendors, DestinyComponentType.VendorCategories,

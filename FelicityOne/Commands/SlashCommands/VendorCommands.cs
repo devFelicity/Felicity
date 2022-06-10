@@ -2,6 +2,7 @@
 using BungieSharper.Entities.Destiny.Definitions;
 using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.HashReferences;
 using FelicityOne.Caches;
 using FelicityOne.Enums;
 using FelicityOne.Events;
@@ -57,7 +58,7 @@ public class Vendor : InteractionModuleBase<SocketInteractionContext>
 
         var vendorData = BungieAPI.GetApiClient().Api.Destiny2_GetVendor(destinyMembership.CharacterIds.First(),
                 destinyMembership.MembershipId,
-                destinyMembership.MembershipType, (uint) VendorIds.Saint14, new[]
+                destinyMembership.MembershipType, DefinitionHashes.Vendors.Saint14, new[]
                 {
                     DestinyComponentType.ItemPerks, DestinyComponentType.ItemSockets,
                     DestinyComponentType.Vendors, DestinyComponentType.VendorCategories,
