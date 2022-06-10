@@ -3,6 +3,7 @@ using BungieSharper.Entities.Destiny.Definitions.Records;
 using Discord;
 using Discord.Interactions;
 using FelicityOne.Enums;
+using FelicityOne.Events;
 using FelicityOne.Helpers;
 using FelicityOne.Services;
 
@@ -11,6 +12,7 @@ using FelicityOne.Services;
 
 namespace FelicityOne.Commands.SlashCommands;
 
+[RequireOAuth]
 public class CraftingCommands : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
