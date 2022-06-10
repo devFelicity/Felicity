@@ -15,10 +15,23 @@ public class RequireOAuth : PreconditionAttribute
     {
         var oauth = ((SocketUser) context.User).OAuth();
 
-        if (oauth != null) return Task.FromResult(PreconditionResult.FromSuccess());
+        string msg;
 
-        const string msg =
-            "This command requires you to be registered to provide user information to the API.\nPlease /register and try again.";
+        if (oauth != null)
+        {
+            if (oauth.DestinyMembership != null)
+            {
+                return Task.FromResult(PreconditionResult.FromSuccess());
+            }
+
+            msg = "Your registration is not yet complete, please wait for a DM from the bot.";
+        }
+        else
+        {
+            msg =
+                "This command requires you to be registered to provide user information to the API.\nPlease /register and try again.";
+        }
+
         context.Interaction.RespondAsync(msg);
 
         return Task.FromResult(PreconditionResult.FromError(msg));
