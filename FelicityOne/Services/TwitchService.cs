@@ -101,7 +101,7 @@ internal static class TwitchService
 
         var channelInfo = Api.Helix.Users.GetUsersAsync(new List<string> {e.Stream.UserId}).Result.Users
             .FirstOrDefault();
-        var timeStarted = (int) e.Stream.StartedAt.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        var timeStarted = e.Stream.StartedAt.GetTimestamp();
 
         var embed = new EmbedBuilder
         {
@@ -195,8 +195,7 @@ internal static class TwitchService
             var vod = vodList.Videos.First();
             var vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
 
-            var unixTimestamp = (int) DateTime.Parse(vod.CreatedAt).ToUniversalTime().Subtract(new DateTime(1970, 1, 1))
-                .TotalSeconds;
+            var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
 
             var embed = new EmbedBuilder
             {

@@ -80,8 +80,9 @@ public static class ProcessXurData
     public static Embed BuildUnavailableEmbed()
     {
         return Extensions.GenerateMessageEmbed("Xûr, Agent of the Nine",
-            Images.XurVendorLogo,
-            "Xûr is not currently selling his wares").Build();
+                Images.XurVendorLogo,
+                $"Xûr is not currently selling his wares.\nHe will arrive <t:{EndGameGl.GetNextWeeklyReset((int) DayOfWeek.Friday).GetTimestamp()}:R>.")
+            .Build();
     }
 
     public static Embed BuildEmbed(this XurCache self)
@@ -134,9 +135,7 @@ public static class ProcessXurData
                     result += $"[{weapon.Name}]({WeaponHelper.BuildLightGGLink(weapon.WeaponId)}/) | ";
 
                 foreach (var (_, value) in weapon.Perks)
-                {
                     result += EmoteHelper.GetEmote(value.IconPath, value.Perkname, value.PerkId);
-                }
 
                 result += "\n";
             }
@@ -238,7 +237,7 @@ public static class ProcessXurData
 
         if (vendorData.Sales.Data.Keys.Count == 0)
         {
-            Log.Fatal("Xur inventory lookup failed.");
+            Log.Error("Xur inventory lookup failed.");
             return null;
         }
 
@@ -369,10 +368,10 @@ public static class ProcessXurData
             DayOfWeek.Saturday => true,
             DayOfWeek.Sunday => true,
             DayOfWeek.Monday => true,
-            DayOfWeek.Tuesday => currentTime.Hour < 15,
+            DayOfWeek.Tuesday => currentTime.Hour < 17,
             DayOfWeek.Wednesday => false,
             DayOfWeek.Thursday => false,
-            DayOfWeek.Friday => currentTime.Hour > 15,
+            DayOfWeek.Friday => currentTime.Hour > 17,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
