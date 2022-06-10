@@ -1,13 +1,10 @@
-﻿using BungieSharper.Entities.Destiny;
-using BungieSharper.Entities.Destiny.Definitions;
+﻿using BungieSharper.Entities.Destiny.Definitions;
 using BungieSharper.Entities.Destiny.Definitions.ActivityModifiers;
-using BungieSharper.Entities.Destiny.Definitions.Records;
 using Discord;
 using Discord.Commands;
 using FelicityOne.Caches;
 using FelicityOne.Enums;
 using FelicityOne.Helpers;
-using FelicityOne.Services;
 using Fergun.Interactive;
 using Fergun.Interactive.Pagination;
 
@@ -20,6 +17,13 @@ namespace FelicityOne.Commands;
 
 public class StaffCommands : ModuleBase<SocketCommandContext>
 {
+    [Command("clear", RunMode = RunMode.Async)]
+    public async Task Clear(int count = 100)
+    {
+        var messages = Context.Channel.GetMessagesAsync(count).FlattenAsync().Result;
+        foreach (var message in messages) await message.DeleteAsync();
+    }
+
     [Command("listServers")]
     public async Task List()
     {
