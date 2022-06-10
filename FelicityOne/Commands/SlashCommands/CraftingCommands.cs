@@ -16,7 +16,7 @@ namespace FelicityOne.Commands.SlashCommands;
 public class CraftingCommands : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
-    public async Task Recipes()
+    public async Task Recipes([Summary("complete", "Show completed recipes?")] bool complete = true)
     {
         await DeferAsync();
 
@@ -57,13 +57,18 @@ public class CraftingCommands : InteractionModuleBase<SocketInteractionContext>
             {
                 var recordDefinition = manifestEntries.Find(definition => definition.Hash == weaponId);
 
+                var record = request.ProfileRecords.Data.Records[weaponId];
+                var obj = record.Objectives.First();
+
+                if(obj.Complete && !complete)
+                    continue;
+
                 field.Value += $"\n{recordDefinition.DisplayProperties.Name}: ";
 
-                var record = request.ProfileRecords.Data.Records[weaponId];
-
-                var obj = record.Objectives.First();
                 field.Value += obj.Complete ? "✅" : $"{obj.Progress}/{obj.CompletionValue}";
             }
+
+            if (string.IsNullOrEmpty((string?) field.Value)) continue;
 
             embed.AddField(field);
 
