@@ -370,7 +370,7 @@ public static class ProcessXurData
             DayOfWeek.Tuesday => currentTime.Hour < 17,
             DayOfWeek.Wednesday => false,
             DayOfWeek.Thursday => false,
-            DayOfWeek.Friday => currentTime.Hour > 17,
+            DayOfWeek.Friday => currentTime.Hour >= 17,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
