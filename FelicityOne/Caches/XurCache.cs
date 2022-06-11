@@ -236,7 +236,7 @@ public static class ProcessXurData
 
         if (vendorData.Sales.Data.Keys.Count == 0)
         {
-            Log.Error("Xur inventory lookup failed.");
+            Log.Error("Xûr inventory lookup failed.");
             return null;
         }
 
