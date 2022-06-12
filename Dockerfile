@@ -17,4 +17,5 @@ RUN dotnet publish "FelicityOne.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV DOTNET_EnableDiagnostics=0
 ENTRYPOINT ["dotnet", "FelicityOne.dll"]
