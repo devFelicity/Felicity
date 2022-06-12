@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using System.Text;
+using BungieSharper.Entities.Content;
+using Discord;
 using Discord.Interactions;
 using FelicityOne.Helpers;
 using FelicityOne.Services;
@@ -11,9 +13,30 @@ namespace FelicityOne.Commands.SlashCommands;
 public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("twab", "Where TWAB?")]
-    public async Task Twab()
+    public async Task Twab(
+        [Summary("query", "Search TWABs for a phrase or word. If null, latest TWAB will be returned.")]
+        string search =
+            "")
     {
         await DeferAsync();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            var searchEmbed = new EmbedBuilder
+            {
+                Title = $"TWAB search for `{search}`.",
+                Color = ConfigService.GetEmbedColor(),
+                Footer = Extensions.GenerateEmbedFooter()
+            };
+
+            var results = SearchTWAB(search);
+            if (results.Count != 0)
+                searchEmbed.Fields = results;
+
+            await FollowupAsync(embed: searchEmbed.Build());
+
+            return;
+        }
 
         var lg = Context.Language().ToString().ToLower();
 
@@ -53,5 +76,86 @@ public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
         };
 
         await FollowupAsync(embed: embed.Build());
+    }
+
+    private static List<EmbedFieldBuilder> SearchTWAB(string search)
+    {
+        var twabList = new List<ContentItemPublicContract>();
+
+        var done = false;
+        var i = 1;
+
+        do
+        {
+            var twabPage = BungieAPI.GetApiClient().Api
+                .Content_SearchContentByTagAndType("en", "news-weekly-update", "news", i).Result;
+            foreach (var page in twabPage.Results)
+            {
+                var alreadyPresent = false;
+
+                foreach (var unused in twabList.Where(contentItemPublicContract =>
+                             contentItemPublicContract.ContentId == page.ContentId))
+                    alreadyPresent = true;
+
+                if (alreadyPresent) continue;
+
+                if (!page.Properties["Title"].ToString()!.ToLower().Contains("week")) continue;
+
+                if (!twabList.Contains(page))
+                    twabList.Add(page);
+            }
+
+            if (twabPage.HasMore)
+            {
+                i++;
+                continue;
+            }
+
+            done = true;
+        } while (!done);
+
+        var foundTwabs = twabList.Where(twabLink =>
+            twabLink.Properties["Content"].ToString()!.ToLower().Contains(search.ToLower()));
+
+        var sb = new StringBuilder();
+        var counter = 0;
+
+        var embedFields = new List<EmbedFieldBuilder>();
+
+        foreach (var result in foundTwabs)
+        {
+            counter++;
+            var currentLength = sb.Length;
+
+            var title = string.IsNullOrEmpty(result.Properties["Subtitle"].ToString())
+                ? result.Properties["Title"].ToString()
+                : result.Properties["Subtitle"].ToString();
+
+            var newResult =
+                $"> {counter}. [{title}](https://bungie.net/en/Explore/Detail/News/{result.ContentId})";
+
+            if (currentLength + newResult.Length > 1024)
+            {
+                embedFields.Add(new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Results",
+                    Value = sb.ToString()
+                });
+                sb.Clear();
+            }
+
+            sb.AppendLine(newResult);
+        }
+
+        if (sb.Length > 0)
+            embedFields.Add(new EmbedFieldBuilder
+            {
+                IsInline = true,
+                Name = "Results",
+                Value = sb.ToString()
+            });
+
+        return embedFields;
     }
 }
