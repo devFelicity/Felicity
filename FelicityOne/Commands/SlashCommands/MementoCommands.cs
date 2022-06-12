@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Interactions;
 using FelicityOne.Enums;
+using FelicityOne.Services;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -50,9 +51,18 @@ public class Mementos : InteractionModuleBase<SocketInteractionContext>
             _ => "Unknown"
         };
 
+        var embedColor = mementoType switch
+        {
+            MementoType.Gambit => Color.Green,
+            MementoType.Nightfall => Color.Orange,
+            MementoType.Trials => Color.Gold,
+            _ => ConfigService.GetEmbedColor()
+        };
+
         var embed = new EmbedBuilder
         {
             Title = "Memento Preview",
+            Color = embedColor,
             Fields = new List<EmbedFieldBuilder>
             {
                 new() {IsInline = true, Name = "Memento", Value = mementoType},
