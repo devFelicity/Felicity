@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FelicityOne": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

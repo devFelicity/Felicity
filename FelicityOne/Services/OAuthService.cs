@@ -26,7 +26,7 @@ internal static class OAuthService
         var config = new ServerConfig()
             .AddRoute("/authorize", new AuthorizationHandler());
 
-        config.SSLCertificate = new X509Certificate2("certificate.pfx", ConfigService.GetBotSettings().PfxSecret);
+        config.SSLCertificate = new X509Certificate2("Data/certificate.pfx", ConfigService.GetBotSettings().PfxSecret);
 
         var task = HttpServer.ListenAsync(
             new IPEndPoint(IPAddress.Any, 8000),
