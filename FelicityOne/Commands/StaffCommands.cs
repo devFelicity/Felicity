@@ -17,6 +17,17 @@ namespace FelicityOne.Commands;
 
 public class StaffCommands : ModuleBase<SocketCommandContext>
 {
+    [Command("metrics")]
+    public async Task Metrics()
+    {
+        var serverList = Context.Client.Guilds;
+
+        var memberCount = serverList.Sum(socketGuild => socketGuild.Users.Count);
+
+        await ReplyAsync(
+            $"Bot is present in {serverList.Count} servers, serving a total of {memberCount} non-unique users.");
+    }
+
     [Command("clear", RunMode = RunMode.Async)]
     public async Task Clear(int count = 100)
     {
