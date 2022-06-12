@@ -171,7 +171,7 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         var manifestCollectibleIDs =
             profile.ProfileCollectibles.Data.Collectibles.Select(collectible => collectible.Key).ToList();
 
-        var lang = Context.Guild.Language();
+        var lang = Context.Language();
 
         var manifestInventoryItems =
             BungieAPI.GetManifestDefinition<DestinyInventoryItemDefinition>(lang, manifestInventoryItemIDs);

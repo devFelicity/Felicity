@@ -3,6 +3,7 @@ using BungieSharper.Entities.Destiny.Entities.Characters;
 using BungieSharper.Entities.Destiny.Responses;
 using BungieSharper.Entities.User;
 using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FelicityOne.Configs;
 using FelicityOne.Enums;
@@ -22,9 +23,11 @@ internal static class Extensions
         return OAuthService.GetUser(user.Id).Result;
     }
 
-    public static Lang Language(this SocketGuild guild)
+    public static Lang Language(this SocketInteractionContext context)
     {
-        var settings = ConfigService.GetServerSettings(guild.Id);
+        if (context.Guild == null) return Lang.En;
+
+        var settings = ConfigService.GetServerSettings(context.Guild.Id);
         return settings?.Language ?? Lang.En;
     }
 

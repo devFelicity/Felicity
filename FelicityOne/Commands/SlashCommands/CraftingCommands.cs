@@ -43,7 +43,7 @@ public class CraftingCommands : InteractionModuleBase<SocketInteractionContext>
             manifestList.AddRange(keyPair.Value);
 
         var manifestEntries =
-            BungieAPI.GetManifestDefinition<DestinyRecordDefinition>(Context.Guild.Language(), manifestList);
+            BungieAPI.GetManifestDefinition<DestinyRecordDefinition>(Context.Language(), manifestList);
 
         foreach (var keyPair in Craftables.craftableList)
         {
