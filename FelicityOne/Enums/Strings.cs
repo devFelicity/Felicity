@@ -7,7 +7,12 @@ namespace FelicityOne.Enums;
 
 internal static class Strings
 {
-    public static readonly string FelicityVersion = $"Felicity {ConfigService.GetBotSettings().Version} | tryfelicity.one";
+    public static readonly string FelicityVersion = $"Felicity {GetVersion()} | tryfelicity.one";
+
+    private static string GetVersion()
+    {
+        return Felicity.IsDebug() ? "dev-env" : ConfigService.GetBotSettings().Version;
+    }
 
     public static string GetMementoImage(MementoType mementoName)
     {
