@@ -1,4 +1,4 @@
-name: Build Felicity
+name: Build and Publish
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
+defaults:
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
       - name: Build image and push to Docker Hub and GitHub Container Registry
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./FelicityOne/
           tags: |
             axsleaf/felicity:latest 
           push: ${{ github.ref == 'refs/heads/main' }}
