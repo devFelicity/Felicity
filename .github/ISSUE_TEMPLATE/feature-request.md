@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest a feature or mechanic.
+about: Suggest a feature or command.
 title: ''
 labels: enhancement
 assignees: axsLeaf
