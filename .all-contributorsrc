@@ -18,6 +18,16 @@
         "code",
         "financial"
       ]
+    },
+    {
+      "login": "EndGameGl",
+      "name": "MeGl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54992889?v=4",
+      "profile": "https://github.com/EndGameGl",
+      "contributions": [
+        "code",
+        "mentoring"
+      ]
     }
   ],
   "projectName": "FelicityOne",
