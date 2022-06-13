@@ -6,6 +6,7 @@ on:
 
 jobs:
   changelog:
+    name: "Verify Changelog"
     runs-on: ubuntu-latest
     steps:
     - uses: dangoslen/changelog-enforcer@v3
