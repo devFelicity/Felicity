@@ -71,5 +71,5 @@ jobs:
         with:
           url: ${{ secrets.DISCORDHOOK_URL }}
           method: "POST"
-          body: '{ "embeds": [{ "title": "Updating to v${{ steps.changelog_reader.outputs.version }}", "description": "${{ toJSON(steps.changelog_reader.outputs.changes) }}", "color": 15423743 }] }'
+          body: '{ "embeds": [{ "title": "Updating to v${{ steps.changelog_reader.outputs.version }}", "description": ${{ toJSON(steps.changelog_reader.outputs.changes) }}, "color": 15423743 }] }'
 
