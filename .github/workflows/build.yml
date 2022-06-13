@@ -58,11 +58,10 @@ jobs:
     needs:
       build-and-push-docker-image
     steps:
-      - name: Verify Changelog
-        uses: dangoslen/changelog-enforcer@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Read Changelog
-        if: ${{ success() }}
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2.0.0
 
