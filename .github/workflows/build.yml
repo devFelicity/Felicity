@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-push-docker-image:
-    name: Build Docker image and push to repositories
+    name: Build Docker Image
     runs-on: ubuntu-latest
 
     steps:
