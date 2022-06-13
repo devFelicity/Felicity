@@ -1,0 +1,57 @@
+site_name: Felicity
+site_url: https://tryfelicity.one
+repo_url: https://github.com/axsLeaf/FelicityOne
+repo_name: axsLeaf/FelicityOne
+site_description: "Multi purpose Twitch & Discord bot integrating many APIs such as YouTube, Twitter and Destiny 2"
+edit_uri: ""
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: purple
+      accent: lime
+      toggle:
+        icon: material/weather-sunny
+        name: Dark mode
+    - scheme: default 
+      primary: purple
+      accent: lime
+      toggle:
+        icon: material/weather-night
+        name: Light mode
+  custom_dir: custom
+  features:
+    - navigation.instant
+    - header.autohide
+    - navigation.tabs
+    - toc.integrate
+nav:
+  - About: index.md
+  - Changelog: changelog.md
+  - Commands: commands.md
+  - FAQ: faq.md
+  - Credits: credits.md
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/devFelicity
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - attr_list
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
