@@ -2,7 +2,7 @@ name: Deploy Pages
 on:
   push:
     branches:
-      - gh-pages
+      - docs
 jobs:
   deploy:
     runs-on: ubuntu-latest
