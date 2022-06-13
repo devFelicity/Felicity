@@ -4,7 +4,7 @@
 
 ## How do I join Felicity's support server?
 
-[Get Support :fontawesome-brands-discord:](https://discord.gg/JBBqF6Pw2z){ .md-button .md-button--primary }
+[Support Server :fontawesome-brands-discord:](https://discord.gg/JBBqF6Pw2z){ .md-button .md-button--primary }
 
 ## Where can I find a command list for Felicity?
 
@@ -24,5 +24,4 @@ Eventually there will be a `/feedback` command using modals that will allow you 
 
 ## Is Felicity open source?
 
-Finding that people were literally ripping our features 1:1 and reproducing a similar Discord bot was **beyond** insulting.
-As such, Felicity is not currently open source. This may change in the future, however we will never gatekeep our methods so if you have a question about how our Bungie API requests work for example, feel free to ask them in the Support Server.
+Yes! We will never gatekeep our methods so if you have a question about how our Bungie API requests work for example, feel free to ask them in the [Support Server :fontawesome-brands-discord:](https://discord.gg/JBBqF6Pw2z).
