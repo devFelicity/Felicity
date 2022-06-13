@@ -43,15 +43,15 @@ internal class Felicity
 
     private static void Main()
     {
-        const string ASCIIName = @"    ______     ___      _ __" + "\n" +
-                                 @"   / ____/__  / (_)____(_) /___  __" + "\n" +
-                                 @"  / /_  / _ \/ / / ___/ / __/ / / /" + "\n" +
-                                 @" / __/ /  __/ / / /__/ / /_/ /_/ /" + "\n" +
-                                 @"/_/    \___/_/_/\___/_/\__/\__, /" + "\n" +
-                                 @"                          /____/  @axsLeaf" + "\n";
-
         if (ConfigService.LoadConfigFiles())
             return;
+
+        var ASCIIName = @"    ______     ___      _ __" + "\n" +
+                        @"   / ____/__  / (_)____(_) /___  __" + "\n" +
+                        @"  / /_  / _ \/ / / ___/ / __/ / / /" + "\n" +
+                        @" / __/ /  __/ / / /__/ / /_/ /_/ /" + "\n" +
+                        $@"/_/    \___/_/_/\___/_/\__/\__, /  {ConfigService.GetBotSettings().Version}" + "\n" +
+                        @"                          /____/  @axsLeaf" + "\n";
 
         if (IsDebug())
         {
