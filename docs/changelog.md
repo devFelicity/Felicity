@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.0] - 2022-06-14
+### Added
+- `/recipes` now shows red frames from your inventory
+
+### Changed
+- `/recipes` now defaults to hiding completed frames to prevent spam, you can still view completed frames by using `/recipes hidecomplete: false`
+
 ## [5.1.3] - 2022-06-13
 ### Changed
 - Something very tiny, just to trigger CI deploy.
