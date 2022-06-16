@@ -121,10 +121,10 @@ public class CraftingCommands : InteractionModuleBase<SocketInteractionContext>
             DefinitionHashes.Records.NezarecsWhisper => DefinitionHashes.InventoryItems.NezarecsWhisper_254636484,
             DefinitionHashes.Records.TearsofContrition => DefinitionHashes.InventoryItems.TearsofContrition_1366394399,
             DefinitionHashes.Records.WithoutRemorse => DefinitionHashes.InventoryItems.WithoutRemorse_1478986057,
-            DefinitionHashes.Records.Austringer => DefinitionHashes.InventoryItems.Austringer_2429822977,
+            DefinitionHashes.Records.Austringer => DefinitionHashes.InventoryItems.Austringer_3055790362,
             DefinitionHashes.Records.Beloved => DefinitionHashes.InventoryItems.Beloved_3107853529,
             DefinitionHashes.Records.CALUSMiniTool => DefinitionHashes.InventoryItems.CALUSMiniTool_2490988246,
-            DefinitionHashes.Records.DrangBaroque => DefinitionHashes.InventoryItems.DrangBaroque_79075821,
+            DefinitionHashes.Records.DrangBaroque => DefinitionHashes.InventoryItems.DrangBaroque_502356570,
             DefinitionHashes.Records.FixedOdds => DefinitionHashes.InventoryItems.FixedOdds_2194955522,
             DefinitionHashes.Records.TheEpicurean => DefinitionHashes.InventoryItems.TheEpicurean_2263839058,
             DefinitionHashes.Records.ExplosivePersonality => DefinitionHashes.InventoryItems
