@@ -25,12 +25,12 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
 
-        var wish = Wishes.KnownWishes[wishNumber];
+        var wish = Wishes.KnownWishes[wishNumber-1];
 
         var embed = new EmbedBuilder
         {
             Color = ConfigService.GetEmbedColor(),
-            Description = char.ToUpper(wish.Description[0]) + wish.Description[1..],
+            Description = wish.Description,
             Footer = Extensions.GenerateEmbedFooter(),
             ImageUrl = $"https://cdn.tryfelicity.one/images/wishes/wish-{wishNumber}.png",
             ThumbnailUrl = "https://bungie.net/common/destiny2_content/icons/fc5791eb2406bf5e6b361f3d16596693.png",
@@ -282,7 +282,7 @@ public class WishAutocomplete : AutocompleteHandler
             : Wishes.KnownWishes);
 
         var autocompleteList = resultList
-            .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number - 1)).ToList();
+            .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number)).ToList();
 
         return AutocompletionResult.FromSuccess(autocompleteList);
     }
