@@ -18,6 +18,28 @@ namespace FelicityOne.Commands.SlashCommands;
 [Group("lookup", "Various lookup commands for Destiny 2.")]
 public class Lookup : InteractionModuleBase<SocketInteractionContext>
 {
+    [SlashCommand("wish", "Look up patterns for wishes in the Last Wish raid.")]
+    public async Task LookupWish(
+        [Summary("wish", "Which wish do you need?")] [Autocomplete(typeof(WishAutocomplete))]
+        int wishNumber)
+    {
+        await DeferAsync();
+
+        var wish = Wishes.KnownWishes[wishNumber];
+
+        var embed = new EmbedBuilder
+        {
+            Color = ConfigService.GetEmbedColor(),
+            Description = char.ToUpper(wish.Description[0]) + wish.Description[1..],
+            Footer = Extensions.GenerateEmbedFooter(),
+            ImageUrl = $"https://cdn.tryfelicity.one/images/wishes/wish-{wishNumber}.png",
+            ThumbnailUrl = "https://bungie.net/common/destiny2_content/icons/fc5791eb2406bf5e6b361f3d16596693.png",
+            Title = $"Wish {wish.Number}: {wish.Name}"
+        };
+
+        await FollowupAsync(embed: embed.Build());
+    }
+
     [SlashCommand("guardian", "Look up a profile of a player.")]
     public async Task LookupGuardian(
         [Summary("bungiename", "Bungie name of the requested user (name#1234)")]
@@ -33,7 +55,7 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         {
             var linkedUser = OAuthService.GetUser(Context.User.Id).Result;
 
-            if (linkedUser == null!) 
+            if (linkedUser == null!)
                 await FollowupAsync("You aren't registered and didn't provide a bungie name.");
 
             var linkedProfile = BungieAPI.GetApiClient().Api.Destiny2_GetLinkedProfiles(linkedUser.MembershipId,
@@ -43,10 +65,8 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
             var lastPlayed = new DateTime(1970, 1, 1);
 
             foreach (var profile in linkedProfile.Profiles)
-            {
                 if (profile.DateLastPlayed > lastPlayed)
                     latestProfile = profile;
-            }
 
             membershipId = latestProfile.MembershipId;
             membershipType = latestProfile.MembershipType;
@@ -241,5 +261,29 @@ public class Lookup : InteractionModuleBase<SocketInteractionContext>
         }
 
         await FollowupAsync(embed: embed.Build());
+    }
+}
+
+public class WishAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var resultList = new List<Wish>();
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        resultList.AddRange(currentSearch != null
+            ? Wishes.KnownWishes.Where(autocompleteResult =>
+                autocompleteResult.Description.ToLower().Contains(currentSearch.ToLower()))
+            : Wishes.KnownWishes);
+
+        var autocompleteList = resultList
+            .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number - 1)).ToList();
+
+        return AutocompletionResult.FromSuccess(autocompleteList);
     }
 }
