@@ -20,6 +20,9 @@ public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
     {
         await DeferAsync();
 
+        const string lg = "en";
+        // var lg = Context.Language().ToString().ToLower();
+
         if (!string.IsNullOrEmpty(search))
         {
             var searchEmbed = new EmbedBuilder
@@ -38,10 +41,9 @@ public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        var lg = Context.Language().ToString().ToLower();
-
         var twab = BungieAPI.GetApiClient().Api
-            .Content_GetContentByTagAndType(lg, "twab", "news").Result;
+            .Content_SearchContentWithText(lg, "news", searchtext: "this week at bungie")
+            .Result.Results.First();
 
         var url = $"https://www.bungie.net/{lg}/Explore/Detail/News/{twab.ContentId}";
 
@@ -82,37 +84,8 @@ public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
     {
         var twabList = new List<ContentItemPublicContract>();
 
-        var done = false;
-        var i = 1;
-
-        do
-        {
-            var twabPage = BungieAPI.GetApiClient().Api
-                .Content_SearchContentByTagAndType("en", "news-weekly-update", "news", i).Result;
-            foreach (var page in twabPage.Results)
-            {
-                var alreadyPresent = false;
-
-                foreach (var unused in twabList.Where(contentItemPublicContract =>
-                             contentItemPublicContract.ContentId == page.ContentId))
-                    alreadyPresent = true;
-
-                if (alreadyPresent) continue;
-
-                if (!page.Properties["Title"].ToString()!.ToLower().Contains("week")) continue;
-
-                if (!twabList.Contains(page))
-                    twabList.Add(page);
-            }
-
-            if (twabPage.HasMore)
-            {
-                i++;
-                continue;
-            }
-
-            done = true;
-        } while (!done);
+        twabList.AddRange(FillTwabList("this week at bungie"));
+        twabList.AddRange(FillTwabList("bungie weekly update"));
 
         var foundTwabs = twabList.Where(twabLink =>
             twabLink.Properties["Content"].ToString()!.ToLower().Contains(search.ToLower()));
@@ -157,5 +130,45 @@ public class NewsCommands : InteractionModuleBase<SocketInteractionContext>
             });
 
         return embedFields;
+    }
+
+    private static IEnumerable<ContentItemPublicContract> FillTwabList(string query)
+    {
+        var twabList = new List<ContentItemPublicContract>();
+
+        var done = false;
+        var i = 1;
+
+        do
+        {
+            var twabPage = BungieAPI.GetApiClient().Api
+                .Content_SearchContentWithText("en", "news", i, searchtext: query).Result;
+
+            foreach (var page in twabPage.Results)
+            {
+                var alreadyPresent = false;
+
+                foreach (var unused in twabList.Where(contentItemPublicContract =>
+                             contentItemPublicContract.ContentId == page.ContentId))
+                    alreadyPresent = true;
+
+                if (alreadyPresent) continue;
+
+                if (!page.Properties["Title"].ToString()!.ToLower().Contains("week")) continue;
+
+                if (!twabList.Contains(page))
+                    twabList.Add(page);
+            }
+
+            if (twabPage.HasMore)
+            {
+                i++;
+                continue;
+            }
+
+            done = true;
+        } while (!done);
+
+        return twabList;
     }
 }
