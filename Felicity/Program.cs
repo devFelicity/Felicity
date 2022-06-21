@@ -1,4 +1,5 @@
-﻿using DotNetBungieAPI;
+﻿using Discord;
+using DotNetBungieAPI;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
@@ -6,7 +7,7 @@ using Felicity.Options;
 using Serilog;
 using Serilog.Events;
 
-string[] directoryList = {"Data", "Data/Manifest"};
+string[] directoryList = { "Data", "Data/Manifest" };
 
 foreach (var d in directoryList)
     if (!Directory.Exists(d))
@@ -46,7 +47,9 @@ try
         .AddDiscord(
             discordClient =>
             {
-                // configure your client here
+                discordClient.GatewayIntents = (GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildScheduledEvents) |
+                                               GatewayIntents.GuildMembers | GatewayIntents.GuildPresences;
+                discordClient.AlwaysDownloadUsers = true;
             },
             interactionService =>
             {
