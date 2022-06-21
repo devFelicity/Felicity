@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block extrahead %}
   <link rel="stylesheet" href="{{ 'overrides/assets/stylesheets/main.82a244a8.min.css' | url }}">
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{ title }}" />
+  <meta property="og:description" content="{{ config.site_description }}" />
+  <meta property="og:url" content="{{ page.canonical_url }}" />
+  <meta property="og:image" content="https://cdn.tryfelicity.one/images/felicity.jpg" />
+  <meta property="og:image:type" content="image/jpg" />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
 {% endblock %}
 {% block content %}
   {% include "overrides/partials/content.html" %}
