@@ -2,8 +2,15 @@
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
+using Felicity.Options;
 using Serilog;
 using Serilog.Events;
+
+string[] directoryList = {"Data", "Data/Manifest"};
+
+foreach (var d in directoryList)
+    if (!Directory.Exists(d))
+        Directory.CreateDirectory(d);
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -11,14 +18,6 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Quartz", LogEventLevel.Information)
     .WriteTo.Console()
     .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day)
-    .WriteTo.Sentry(o =>
-    {
-        o.AttachStacktrace = true;
-        o.Dsn = "Get sentry Dsn from config here";
-        o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
-        o.MinimumEventLevel = LogEventLevel.Warning;
-        o.Release = $"FelicityOne@{"Get version here"}";
-    })
     .CreateLogger();
 
 try
@@ -36,10 +35,10 @@ try
             .WriteTo.Sentry(o =>
             {
                 o.AttachStacktrace = true;
-                o.Dsn = "Get sentry Dsn from config here";
+                o.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
                 o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
                 o.MinimumEventLevel = LogEventLevel.Warning;
-                o.Release = $"FelicityOne@{"Get version here"}";
+                o.Release = "FelicityOne@6.0.0";
             });
     });
 
@@ -60,19 +59,22 @@ try
             builder.Configuration)
         .UseBungieApiClient(bungieClient =>
         {
-            bungieClient.ApiKey = "ApiKey";
+            var bungieApiOptions = new BungieApiOptions();
+            builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
+
+            bungieClient.ApiKey = bungieApiOptions.ApiKey;
             bungieClient.ApplicationScopes = ApplicationScopes.ReadBasicUserProfile;
             bungieClient.CacheDefinitions = true;
-            bungieClient.ClientId = 123;
-            bungieClient.ClientSecret = "secret_here";
+            bungieClient.ClientId = bungieApiOptions.ClientId;
+            bungieClient.ClientSecret = bungieApiOptions.ClientSecret;
             bungieClient.UsedLocales.Add(BungieLocales.EN);
             bungieClient
                 .UseDefaultDefinitionProvider(definitionProvider =>
                 {
-                    definitionProvider.ManifestFolderPath = "path where all manifests would be stored";
+                    definitionProvider.ManifestFolderPath = "Data/Manifest";
                     definitionProvider.AutoUpdateManifestOnStartup = true;
                     definitionProvider.FetchLatestManifestOnInitialize = true;
-                    definitionProvider.DeleteOldManifestDataAfterUpdates = false;
+                    definitionProvider.DeleteOldManifestDataAfterUpdates = true;
                 })
                 .UseDefaultHttpClient(httpClient =>
                 {
