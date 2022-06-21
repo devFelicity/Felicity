@@ -1,9 +1,13 @@
 site_name: Felicity
 site_url: https://tryfelicity.one
+
 repo_url: https://github.com/axsLeaf/FelicityOne
 repo_name: axsLeaf/FelicityOne
+
 site_description: "Multi purpose Twitch & Discord bot integrating many APIs such as YouTube, Twitter and Destiny 2"
-edit_uri: ""
+
+edit_uri: edit/docs/docs/
+
 theme:
   name: material
   palette:
@@ -20,21 +24,27 @@ theme:
         icon: material/weather-night
         name: Light mode
   custom_dir: custom
+  font:
+    text: Roboto
+    code: Roboto Mono
   features:
     - navigation.instant
     - header.autohide
     - navigation.tabs
     - toc.integrate
+
 nav:
   - About: index.md
   - Changelog: changelog.md
   - Commands: commands.md
   - FAQ: faq.md
   - Credits: credits.md
+
 extra:
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/devFelicity
+
 markdown_extensions:
   - admonition
   - pymdownx.details

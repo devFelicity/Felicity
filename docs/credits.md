@@ -1,3 +1,7 @@
+---
+template: overrides/main.html
+---
+
 ## Roles
 
 For now, there are a few pre-defined roles included in our Discord server, here's a little explanation of how they work.
