@@ -108,8 +108,28 @@ try
             options.ApiKey = bungieApiOptions.ApiKey;
             options.ClientSecret = bungieApiOptions.ClientSecret;
         });
-
+    
+    builder.Services.AddMvc();
+    builder.Services
+        .AddControllers(options => { options.EnableEndpointRouting = false; });
+    builder.Services.AddCors(c =>
+    {
+        c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    });
+        
     var app = builder.Build();
+    
+    app.UseRouting();
+    
+    app.UseCookiePolicy(new CookiePolicyOptions
+    {
+        Secure = CookieSecurePolicy.Always
+    });
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.UseMvc();
+    
     await app.RunAsync();
 }
 catch (Exception exception)
