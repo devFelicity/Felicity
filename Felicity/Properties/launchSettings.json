@@ -2,7 +2,7 @@
   "profiles": {
     "Felicity": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "workingDirectory": "bin/Debug/net6.0",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
