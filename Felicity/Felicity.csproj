@@ -8,6 +8,8 @@
 
     <ItemGroup>
       <PackageReference Include="Discord.Net" Version="3.7.2" />
+      <PackageReference Include="DotNetBungieAPI" Version="1.8.0" />
+      <PackageReference Include="DotNetBungieAPI.HashReferences" Version="1.8.0" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     </ItemGroup>
 
