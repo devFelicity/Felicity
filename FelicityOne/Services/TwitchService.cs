@@ -9,9 +9,8 @@ using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Services;
 using TwitchLib.Api.Services.Events.LiveStreamMonitor;
-#pragma warning disable CS8622
 
-#pragma warning disable CS8618
+#pragma warning disable CS8622
 
 namespace FelicityOne.Services;
 
@@ -84,7 +83,7 @@ internal static class TwitchService
         monitorService.Stop();
         ConfigureMonitor();
 
-        Log.Information("Restarted TwitchMonitor");
+        Log.Information("Restarted TwitchMonitor.");
     }
 
     private static async void OnStreamOnline(object sender, OnStreamOnlineArgs e)
@@ -95,7 +94,7 @@ internal static class TwitchService
 
         if (File.Exists(filePath))
         {
-            Log.Warning("Stream was already posted.");
+            Log.Information("Stream was already posted.");
             return;
         }
 
@@ -103,10 +102,18 @@ internal static class TwitchService
             .FirstOrDefault();
         var timeStarted = e.Stream.StartedAt.GetTimestamp();
 
+        var gameBoxImage = Api.Helix.Games.GetGamesAsync(new List<string> {e.Stream.GameId}).Result.Games
+            .FirstOrDefault().BoxArtUrl;
+
         var embed = new EmbedBuilder
         {
+            Author = new EmbedAuthorBuilder
+            {
+                Name = e.Stream.UserName,
+                IconUrl = channelInfo?.ProfileImageUrl
+            },
             Color = Color.Green,
-            ThumbnailUrl = channelInfo?.ProfileImageUrl,
+            ThumbnailUrl = gameBoxImage,
             Title = e.Stream.Title,
             Url = $"https://twitch.tv/{e.Stream.UserName}",
             ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
@@ -247,8 +254,7 @@ internal static class TwitchService
                     }
                     catch (Exception ex)
                     {
-                        Log.Error("Error in Twitch OnStreamOffline");
-                        Log.Error($"{ex.GetType()}: {ex.Message}");
+                        Log.Error($"Error in Twitch OnStreamOffline\n{ex.GetType()}: {ex.Message}");
                     }
                 }
 
@@ -308,8 +314,7 @@ internal static class TwitchService
             }
             catch (Exception ex)
             {
-                Log.Error("Error in Twitch OnStreamOffline");
-                Log.Error($"{ex.GetType()}: {ex.Message}");
+                Log.Error($"Error in Twitch OnStreamOffline\n{ex.GetType()}: {ex.Message}");
             }
         }
     }
