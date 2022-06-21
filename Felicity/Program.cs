@@ -25,6 +25,24 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day)
+            .WriteTo.Sentry(o =>
+            {
+                o.AttachStacktrace = true;
+                o.Dsn = "Get sentry Dsn from config here";
+                o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+                o.MinimumEventLevel = LogEventLevel.Warning;
+                o.Release = $"FelicityOne@{"Get version here"}";
+            });
+    });
+
     builder.Services
         .AddDiscord(
             discordClient =>
