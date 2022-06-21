@@ -27,20 +27,25 @@ try
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {
-        configuration
+        var serilogConfig = configuration
             .ReadFrom.Configuration(context.Configuration)
             .ReadFrom.Services(services)
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day)
-            .WriteTo.Sentry(o =>
-            {
-                o.AttachStacktrace = true;
-                o.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
-                o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
-                o.MinimumEventLevel = LogEventLevel.Warning;
-                o.Release = "FelicityOne@6.0.0";
-            });
+            .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day);
+
+        if (builder.Environment.IsProduction())
+        {
+            serilogConfig
+                .WriteTo.Sentry(o =>
+                {
+                    o.AttachStacktrace = true;
+                    o.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
+                    o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+                    o.MinimumEventLevel = LogEventLevel.Warning;
+                    o.Release = "FelicityOne@6.0.0";
+                });
+        }
     });
 
     builder.Services
