@@ -6,11 +6,17 @@
     <div class="md-grid md-typeset">
       <div class="mdx-hero">
         <div class="mdx-hero__image">
-          <img src="https://squidfunk.github.io/mkdocs-material/assets/images/illustration.png" alt="" width="1659" height="1200" draggable="false">
+          <img src="https://cdn.tryfelicity.one/images/ghost.gif" alt="" width="240" height="240" draggable="false" style="transform: scaleX(-1); float: right; margin-right: 22%;">
         </div>
         <div class="mdx-hero__content">
-          <h1>{{ config.site_name }}</h1>
-          <p>{{ config.site_description }}</p>
+          <h1>Home of {{ config.site_name }}</h1>
+          <p>
+            ⭐ Twitch / Twitter / YouTube feeds<br />
+            ⭐ Fake emblem spotter<br />
+            ⭐ Collections guide<br />
+            ⭐ Roll finder<br />
+            ⭐ and more!
+          </p>
           <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}" class="md-button md-button--primary">
             Read More
           </a>
@@ -20,4 +26,3 @@
   </section>
 {% endblock %}
 {% block content %}{% endblock %}
-{% block footer %}{% endblock %}

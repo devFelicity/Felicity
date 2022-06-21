@@ -27,6 +27,9 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
+  favicon: https://cdn.tryfelicity.one/images/felicity_circle.jpg
+  icon:
+    logo: material/account-heart-outline
   features:
     - navigation.instant
     - header.autohide
@@ -34,7 +37,8 @@ theme:
     - toc.integrate
 
 nav:
-  - About: index.md
+  - Home: index.md
+  - About: about.md
   - Changelog: changelog.md
   - Commands: commands.md
   - FAQ: faq.md
