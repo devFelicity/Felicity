@@ -1,19 +1,16 @@
-FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
-WORKDIR /app
-
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["FelicityOne/FelicityOne.csproj", "FelicityOne/"]
-RUN dotnet restore "FelicityOne/FelicityOne.csproj"
-COPY . .
-WORKDIR "/src/FelicityOne"
-RUN dotnet build "FelicityOne.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "FelicityOne.csproj" -c Release -o /app/publish
+COPY *.sln .
+COPY Felicity/*.csproj ./Felicity/
+RUN dotnet restore
 
-FROM base AS final
+COPY Felicity/. ./Felicity/
+WORKDIR /src/Felicity
+RUN dotnet publish -c release -o /app --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app ./
 ENV DOTNET_EnableDiagnostics=0
-ENTRYPOINT ["dotnet", "FelicityOne.dll"]
+ENTRYPOINT ["dotnet", "Felicity.dll"]
