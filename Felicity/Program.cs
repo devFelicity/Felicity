@@ -1,9 +1,11 @@
 ﻿using Discord;
 using DotNetBungieAPI;
+using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
 using Felicity.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 using Serilog.Events;
 
@@ -24,6 +26,9 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    
+    var bungieApiOptions = new BungieApiOptions();
+    builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {
@@ -67,9 +72,6 @@ try
             builder.Configuration)
         .UseBungieApiClient(bungieClient =>
         {
-            var bungieApiOptions = new BungieApiOptions();
-            builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
-
             bungieClient.ApiKey = bungieApiOptions.ApiKey;
             bungieClient.ApplicationScopes = ApplicationScopes.ReadBasicUserProfile |
                                              ApplicationScopes.ReadDestinyInventoryAndVault |
@@ -90,6 +92,21 @@ try
                 {
                     httpClient.SetRatelimitSettings(200, TimeSpan.FromSeconds(10));
                 });
+        });
+    
+    builder.Services
+        .AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = BungieNetAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = BungieNetAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie()
+        .AddBungieNet(options =>
+        {
+            options.ClientId = bungieApiOptions.ClientId.ToString();
+            options.ApiKey = bungieApiOptions.ApiKey;
+            options.ClientSecret = bungieApiOptions.ClientSecret;
         });
 
     var app = builder.Build();
