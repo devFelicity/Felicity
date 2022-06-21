@@ -7,7 +7,7 @@ using Felicity.Options;
 using Serilog;
 using Serilog.Events;
 
-string[] directoryList = { "Data", "Data/Manifest" };
+string[] directoryList = {"Data", "Data/Manifest"};
 
 foreach (var d in directoryList)
     if (!Directory.Exists(d))
@@ -66,7 +66,9 @@ try
             builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
             bungieClient.ApiKey = bungieApiOptions.ApiKey;
-            bungieClient.ApplicationScopes = ApplicationScopes.ReadBasicUserProfile;
+            bungieClient.ApplicationScopes = ApplicationScopes.ReadBasicUserProfile |
+                                             ApplicationScopes.ReadDestinyInventoryAndVault |
+                                             ApplicationScopes.MoveEquipDestinyItems;
             bungieClient.CacheDefinitions = true;
             bungieClient.ClientId = bungieApiOptions.ClientId;
             bungieClient.ClientSecret = bungieApiOptions.ClientSecret;
