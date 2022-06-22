@@ -26,6 +26,7 @@ public class BungieAuthController : ControllerBase
     [HttpGet("bungie_net/{discordId}/post_callback")]
     public async Task HandleAuthPostCallback(ulong discordId)
     {
-        var jwtToken = Request.Headers[HeaderNames.Authorization];
+        var authenticationService = HttpContext.RequestServices.GetRequiredService<IAuthenticationService>();
+        var authResult = await authenticationService.AuthenticateAsync(HttpContext, "BungieNet");
     }
 }

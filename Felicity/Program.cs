@@ -1,11 +1,14 @@
-﻿using Discord;
+﻿using System.Security.Claims;
+using Discord;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
 using Felicity.Options;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Serilog;
 using Serilog.Events;
 
@@ -20,10 +23,10 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    
+
     var bungieApiOptions = new BungieApiOptions();
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
-    
+
     EnsureDirectoryExists(bungieApiOptions.ManifestPath);
 
     builder.Host.UseSerilog((context, services, configuration) =>
@@ -89,7 +92,7 @@ try
                     httpClient.SetRatelimitSettings(200, TimeSpan.FromSeconds(10));
                 });
         });
-    
+
     builder.Services
         .AddAuthentication(options =>
         {
@@ -103,20 +106,30 @@ try
             options.ClientId = bungieApiOptions.ClientId.ToString();
             options.ApiKey = bungieApiOptions.ApiKey;
             options.ClientSecret = bungieApiOptions.ClientSecret;
+            options.Events = new OAuthEvents()
+            {
+                OnCreatingTicket = async (oAuthCreatingTicketContext) =>
+                {
+                    Console.WriteLine($"Access token: {oAuthCreatingTicketContext.AccessToken}");
+                    Console.WriteLine($"Refresh token: {oAuthCreatingTicketContext.RefreshToken}");
+                    Console.WriteLine($"Membership ID: {oAuthCreatingTicketContext.Identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)}");
+                }
+            };
         });
-    
+
     builder.Services.AddMvc();
     builder.Services
         .AddControllers(options => { options.EnableEndpointRouting = false; });
     builder.Services.AddCors(c =>
     {
-        c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        c.AddPolicy("AllowOrigin",
+            options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     });
-        
+
     var app = builder.Build();
-    
+
     app.UseRouting();
-    
+
     app.UseCookiePolicy(new CookiePolicyOptions
     {
         Secure = CookieSecurePolicy.Always
@@ -125,7 +138,7 @@ try
     app.UseAuthorization();
     app.MapControllers();
     app.UseMvc();
-    
+
     await app.RunAsync();
 }
 catch (Exception exception)
