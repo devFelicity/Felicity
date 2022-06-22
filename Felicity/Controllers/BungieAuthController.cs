@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace Felicity.Controllers;
 
@@ -25,6 +26,6 @@ public class BungieAuthController : ControllerBase
     [HttpGet("bungie_net/{discordId}/post_callback")]
     public async Task HandleAuthPostCallback(ulong discordId)
     {
-        
+        var jwtToken = Request.Headers[HeaderNames.Authorization];
     }
 }

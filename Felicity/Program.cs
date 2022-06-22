@@ -9,12 +9,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 using Serilog.Events;
 
-string[] directoryList = {"Data", "Data/Manifest"};
-
-foreach (var d in directoryList)
-    if (!Directory.Exists(d))
-        Directory.CreateDirectory(d);
-
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .MinimumLevel.Debug()
@@ -29,6 +23,8 @@ try
     
     var bungieApiOptions = new BungieApiOptions();
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
+    
+    EnsureDirectoryExists(bungieApiOptions.ManifestPath);
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {
@@ -83,7 +79,7 @@ try
             bungieClient
                 .UseDefaultDefinitionProvider(definitionProvider =>
                 {
-                    definitionProvider.ManifestFolderPath = "Data/Manifest";
+                    definitionProvider.ManifestFolderPath = bungieApiOptions.ManifestPath;
                     definitionProvider.AutoUpdateManifestOnStartup = true;
                     definitionProvider.FetchLatestManifestOnInitialize = true;
                     definitionProvider.DeleteOldManifestDataAfterUpdates = true;
@@ -139,4 +135,10 @@ catch (Exception exception)
 finally
 {
     Log.CloseAndFlush();
+}
+
+void EnsureDirectoryExists(string path)
+{
+    if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
 }
