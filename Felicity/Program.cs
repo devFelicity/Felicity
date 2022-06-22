@@ -6,6 +6,8 @@ using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
 using Felicity.Options;
+using Felicity.Services;
+using Felicity.Services.Hosted;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -91,7 +93,8 @@ try
                 {
                     httpClient.SetRatelimitSettings(200, TimeSpan.FromSeconds(10));
                 });
-        });
+        })
+        .AddHostedService<BungieClientStartupService>();
 
     builder.Services
         .AddAuthentication(options =>
@@ -110,16 +113,15 @@ try
             {
                 OnCreatingTicket = async (oAuthCreatingTicketContext) =>
                 {
-                    Console.WriteLine($"Access token: {oAuthCreatingTicketContext.AccessToken}");
-                    Console.WriteLine($"Refresh token: {oAuthCreatingTicketContext.RefreshToken}");
-                    Console.WriteLine($"Membership ID: {oAuthCreatingTicketContext.Identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)}");
+                    BungieAuthCacheService.TryAddContext(oAuthCreatingTicketContext);
                 }
             };
         });
 
     builder.Services.AddMvc();
     builder.Services
-        .AddControllers(options => { options.EnableEndpointRouting = false; });
+        .AddControllers(options => { options.EnableEndpointRouting = false; })
+        .AddJsonOptions(x => { BungieAuthCacheService.Initialize(x.JsonSerializerOptions); });
     builder.Services.AddCors(c =>
     {
         c.AddPolicy("AllowOrigin",

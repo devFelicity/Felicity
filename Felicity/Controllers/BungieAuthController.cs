@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Felicity.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -24,9 +26,19 @@ public class BungieAuthController : ControllerBase
     }
 
     [HttpGet("bungie_net/{discordId}/post_callback")]
-    public async Task HandleAuthPostCallback(ulong discordId)
+    public async Task<IActionResult> HandleAuthPostCallback(ulong discordId)
     {
-        var authenticationService = HttpContext.RequestServices.GetRequiredService<IAuthenticationService>();
-        var authResult = await authenticationService.AuthenticateAsync(HttpContext, "BungieNet");
+        var claim = HttpContext.User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+        if (claim is null)
+            return NotFound();
+        
+        var id = long.Parse(claim.Value);
+        if (!BungieAuthCacheService.GetByIdAndRemove(id, out var context))
+            return NotFound();
+        
+        var token = context.Token;
+        // Here we save this token
+        return Ok();
+
     }
 }
