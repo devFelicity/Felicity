@@ -113,7 +113,7 @@ internal static class TwitchService
                 IconUrl = channelInfo?.ProfileImageUrl
             },
             Color = Color.Green,
-            ThumbnailUrl = gameBoxImage,
+            ThumbnailUrl = gameBoxImage.Replace("{width}x{height}", "150x200"),
             Title = e.Stream.Title,
             Url = $"https://twitch.tv/{e.Stream.UserName}",
             ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
