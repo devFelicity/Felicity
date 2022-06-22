@@ -11,7 +11,9 @@
       <PackageReference Include="DotNetBungieAPI" Version="1.8.0" />
       <PackageReference Include="DotNetBungieAPI.AspNet.Security.OAuth.Providers" Version="1.0.2" />
       <PackageReference Include="DotNetBungieAPI.HashReferences" Version="1.8.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
       <PackageReference Include="Sentry.Serilog" Version="3.18.0" />
       <PackageReference Include="Serilog" Version="2.11.0" />
       <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
