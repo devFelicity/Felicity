@@ -2,6 +2,10 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 
+// ReSharper disable EmptyConstructor
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
+
 namespace Felicity.DiscordCommands.Interactions;
 
 public class PingCommandExample : InteractionModuleBase<ShardedInteractionContext<SocketSlashCommand>>
