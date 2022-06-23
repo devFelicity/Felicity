@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Discord;
+﻿using Discord;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
 using DotNetBungieAPI.Models;
@@ -8,7 +7,6 @@ using Felicity.Extensions;
 using Felicity.Options;
 using Felicity.Services;
 using Felicity.Services.Hosted;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Serilog;
@@ -29,7 +27,7 @@ try
     var bungieApiOptions = new BungieApiOptions();
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
-    EnsureDirectoryExists(bungieApiOptions.ManifestPath);
+    EnsureDirectoryExists(bungieApiOptions.ManifestPath!);
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {
@@ -58,8 +56,8 @@ try
         .AddDiscord(
             discordClient =>
             {
-                discordClient.GatewayIntents = (GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildScheduledEvents) |
-                                               GatewayIntents.GuildMembers | GatewayIntents.GuildPresences;
+                discordClient.GatewayIntents = (GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildScheduledEvents)
+                                               | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences;
                 discordClient.AlwaysDownloadUsers = true;
             },
             interactionService =>
@@ -107,13 +105,14 @@ try
         .AddBungieNet(options =>
         {
             options.ClientId = bungieApiOptions.ClientId.ToString();
-            options.ApiKey = bungieApiOptions.ApiKey;
-            options.ClientSecret = bungieApiOptions.ClientSecret;
-            options.Events = new OAuthEvents()
+            options.ApiKey = bungieApiOptions.ApiKey!;
+            options.ClientSecret = bungieApiOptions.ClientSecret!;
+            options.Events = new OAuthEvents
             {
-                OnCreatingTicket = async (oAuthCreatingTicketContext) =>
+                OnCreatingTicket = oAuthCreatingTicketContext =>
                 {
                     BungieAuthCacheService.TryAddContext(oAuthCreatingTicketContext);
+                    return Task.CompletedTask;
                 }
             };
         });

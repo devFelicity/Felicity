@@ -8,9 +8,10 @@ namespace Felicity.Services;
 public static class BungieAuthCacheService
 {
     private static ConcurrentDictionary<long, (OAuthCreatingTicketContext Context, AuthorizationTokenData Token)>
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
         _authContexts = new();
 
-    private static JsonSerializerOptions _jsonSerializerOptions;
+    private static JsonSerializerOptions? _jsonSerializerOptions;
 
     public static void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
@@ -19,8 +20,8 @@ public static class BungieAuthCacheService
 
     public static void TryAddContext(OAuthCreatingTicketContext authCreatingTicketContext)
     {
-        var tokenData = authCreatingTicketContext.TokenResponse.Response.Deserialize<AuthorizationTokenData>(_jsonSerializerOptions);
-        _authContexts.TryAdd(tokenData.MembershipId, (authCreatingTicketContext, tokenData));
+        var tokenData = authCreatingTicketContext.TokenResponse.Response!.Deserialize<AuthorizationTokenData>(_jsonSerializerOptions);
+        _authContexts.TryAdd(tokenData!.MembershipId, (authCreatingTicketContext, tokenData));
     }
 
     public static bool GetByIdAndRemove(long id,
