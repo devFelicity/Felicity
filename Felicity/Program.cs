@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
 using DotNetBungieAPI.Models;
@@ -7,6 +8,7 @@ using Felicity.Extensions;
 using Felicity.Options;
 using Felicity.Services;
 using Felicity.Services.Hosted;
+using Felicity.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Serilog;
@@ -17,7 +19,8 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Quartz", LogEventLevel.Information)
     .WriteTo.Console()
-    .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 14)
     .CreateLogger();
 
 try
@@ -39,17 +42,15 @@ try
             .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day);
 
         if (builder.Environment.IsProduction())
-        {
             serilogConfig
                 .WriteTo.Sentry(o =>
                 {
                     o.AttachStacktrace = true;
                     o.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
-                    o.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+                    o.MinimumBreadcrumbLevel = LogEventLevel.Information;
                     o.MinimumEventLevel = LogEventLevel.Warning;
                     o.Release = "FelicityOne@6.0.0";
                 });
-        }
     });
 
     builder.Services
@@ -92,7 +93,8 @@ try
                     httpClient.SetRatelimitSettings(200, TimeSpan.FromSeconds(10));
                 });
         })
-        .AddHostedService<BungieClientStartupService>();
+        .AddHostedService<BungieClientStartupService>()
+        .AddSingleton<LogAdapter<BaseSocketClient>>();
 
     builder.Services
         .AddAuthentication(options =>

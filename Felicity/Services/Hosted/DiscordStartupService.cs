@@ -4,12 +4,14 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Options;
+using Felicity.Util;
 using Microsoft.Extensions.Options;
 
 namespace Felicity.Services.Hosted;
 
 public class DiscordStartupService : BackgroundService
 {
+    private readonly LogAdapter<BaseSocketClient> _adapter;
     private readonly CommandService _commandService;
     private readonly IOptions<DiscordBotOptions> _discordBotOptions;
     private readonly DiscordShardedClient _discordShardedClient;
@@ -23,17 +25,24 @@ public class DiscordStartupService : BackgroundService
         IOptions<DiscordBotOptions> discordBotOptions,
         InteractionService interactionService,
         CommandService commandService,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        LogAdapter<BaseSocketClient> adapter)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
         _interactionService = interactionService;
         _commandService = commandService;
         _serviceProvider = serviceProvider;
+        _adapter = adapter;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _discordShardedClient.Log += async logMessage =>
+        {
+            await _adapter.Log(logMessage);
+        };
+
         PrepareClientAwaiter();
         await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
         await _discordShardedClient.StartAsync();
