@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Serilog;
 using Serilog.Events;
+using BotVariables = Felicity.Util.BotVariables;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -23,15 +24,19 @@ Log.Logger = new LoggerConfiguration()
         retainedFileCountLimit: 14)
     .CreateLogger();
 
+await BotVariables.Initialize();
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    Console.Title = $"Felicity v.{BotVariables.Version}";
 
     var bungieApiOptions = new BungieApiOptions();
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
     EnsureDirectoryExists(bungieApiOptions.ManifestPath!);
-
+    
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         var serilogConfig = configuration
@@ -49,7 +54,7 @@ try
                     o.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
                     o.MinimumBreadcrumbLevel = LogEventLevel.Information;
                     o.MinimumEventLevel = LogEventLevel.Warning;
-                    o.Release = "FelicityOne@6.0.0";
+                    o.Release = $"FelicityOne@{BotVariables.Version}";
                 });
     });
 
