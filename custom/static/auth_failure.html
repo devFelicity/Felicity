@@ -1,0 +1,20 @@
+{% extends "overrides/main.html" %}
+{% block tabs %}
+  {{ super() }}
+  <style>.md-header{position:initial}.md-main__inner{margin:0}.md-content{display:none}@media screen and (min-width:60em){.md-sidebar--secondary{display:none}}@media screen and (min-width:76.25em){.md-sidebar--primary{display:none}}</style>
+  <section class="mdx-container">
+    <div class="md-grid md-typeset">
+      <div class="mdx-hero">
+        <div class="mdx-hero__image">
+          <img src="https://cdn.tryfelicity.one/images/ghost.gif" alt="" width="240" height="240" draggable="false" style="transform: scaleX(-1); float: right; margin-right: 22%;">
+        </div>
+        <div class="mdx-hero__content">
+          <h1>Authentication failed!</h1>
+          <p>
+            This may be caused by an incomplete auth flow, try using <i>/register</i> again or report the issue in our <code><a href="https://discord.gg/JBBqF6Pw2z">Discord server</a></code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
