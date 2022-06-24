@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Serilog;
 using Serilog.Events;
-using BotVariables = Felicity.Util.BotVariables;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -36,7 +35,7 @@ try
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
     EnsureDirectoryExists(bungieApiOptions.ManifestPath!);
-    
+
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         var serilogConfig = configuration
@@ -66,14 +65,8 @@ try
                                                | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences;
                 discordClient.AlwaysDownloadUsers = true;
             },
-            interactionService =>
-            {
-                // configure your interaction service here
-            },
-            textCommandsService =>
-            {
-                // configure your text commands service here
-            },
+            _ => { },
+            textCommandsService => { textCommandsService.CaseSensitiveCommands = false; },
             builder.Configuration)
         .UseBungieApiClient(bungieClient =>
         {
@@ -158,7 +151,7 @@ finally
     Log.CloseAndFlush();
 }
 
-void EnsureDirectoryExists(string path)
+static void EnsureDirectoryExists(string path)
 {
     if (!Directory.Exists(path))
         Directory.CreateDirectory(path);
