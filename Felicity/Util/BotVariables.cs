@@ -4,7 +4,7 @@ namespace Felicity.Util;
 
 public static class BotVariables
 {
-    public static string? Version;
+    internal static string? Version;
 
     public static async Task Initialize()
     {
@@ -14,8 +14,8 @@ public static class BotVariables
         }
         else
         {
-            using var _httpClient = new HttpClient();
-            var s = await _httpClient.GetStringAsync(
+            using var httpClient = new HttpClient();
+            var s = await httpClient.GetStringAsync(
                 "https://raw.githubusercontent.com/axsLeaf/FelicityOne/main/CHANGELOG.md");
             Version = s.Split("## [")[1].Split("]")[0];
         }
