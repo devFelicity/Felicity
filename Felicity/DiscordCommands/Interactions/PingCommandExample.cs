@@ -1,6 +1,7 @@
-﻿using Discord;
+﻿using System.Text.Json;
+using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
+using Felicity.DbObjects;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable UnusedType.Global
@@ -8,26 +9,41 @@ using Discord.WebSocket;
 
 namespace Felicity.DiscordCommands.Interactions;
 
-public class PingCommandExample : InteractionModuleBase<ShardedInteractionContext<SocketSlashCommand>>
+public class PingCommandExample : InteractionModuleBase<ShardedInteractionContext>
 {
-    public PingCommandExample()
+    private readonly UserDb _userDb;
+
+    public PingCommandExample(UserDb userContext)
     {
+        _userDb = userContext;
     }
 
     [SlashCommand("ping", "Pongs back")]
     public async Task PongAsync(
-        [Summary("text to pong back")] string? text = null)
+        [Summary("text", "text to pong back")] string text = "")
     {
         var eb = new EmbedBuilder()
             .WithTitle("Glorious embed title")
             .WithDescription("Description? Idk what you expected in ping command")
             .AddField("PONG", "PONG");
         
-        if (text is not null && text != "")
+        if (string.IsNullOrEmpty(text))
         {
             eb.AddField("Some custom text", text);
         }
 
-        await Context.Interaction.RespondAsync(embed: eb.Build(), ephemeral: true);
+        await RespondAsync(embed: eb.Build(), ephemeral: true);
+    }
+
+    [SlashCommand("whoami", "test db")]
+    public async Task WhoAmI()
+    {
+        await DeferAsync();
+
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+            await FollowupAsync("User not found in db.");
+    
+        await FollowupAsync(JsonSerializer.Serialize(user));
     }
 }

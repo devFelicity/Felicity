@@ -3,10 +3,12 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Felicity.DbObjects;
 using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
 using Serilog;
+using IResult = Discord.Interactions.IResult;
 
 namespace Felicity.Services.Hosted;
 
@@ -44,6 +46,13 @@ public class DiscordStartupService : BackgroundService
             await _adapter.Log(logMessage);
         };
 
+        _discordShardedClient.MessageReceived += OnMessageReceived;
+        _discordShardedClient.InteractionCreated += OnInteractionCreated;
+        _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
+
+        _discordShardedClient.UserJoined += HandleJoin;
+        _discordShardedClient.UserLeft += HandleLeft;
+
         PrepareClientAwaiter();
         await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
         await _discordShardedClient.StartAsync();
@@ -55,7 +64,60 @@ public class DiscordStartupService : BackgroundService
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
         // register your commands here
-        //await _interactionService.RegisterCommandsToGuildAsync();
+        if (BotVariables.IsDebug)
+        {
+            await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
+        }
+        else
+        {
+            await _interactionService.RegisterCommandsGloballyAsync();
+        }
+    }
+
+    private Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
+    {
+        if (result.IsSuccess || !result.Error.HasValue)
+            return Task.CompletedTask;
+
+        var msg = $"Failed to execute command: {result.Error.GetType()}: {result.ErrorReason}";
+        Log.Error(msg);
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnMessageReceived(SocketMessage socketMessage)
+    {
+        if (socketMessage is not SocketUserMessage socketUserMessage)
+            return;
+
+        var argPos = 0;
+        if (socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
+            return;
+
+        if (socketUserMessage.Author.IsBot)
+        {
+            // TODO: check if CP channel
+            return;
+        }
+
+        var context = new ShardedCommandContext(_discordShardedClient, socketUserMessage);
+        await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
+    }
+
+    private async Task OnInteractionCreated(SocketInteraction socketInteraction)
+    {
+        var shardedInteractionContext = new ShardedInteractionContext(_discordShardedClient, socketInteraction);
+        await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
+    }
+
+    private static Task HandleJoin(SocketGuildUser arg)
+    {
+        return Task.CompletedTask;
+    }
+
+    private static Task HandleLeft(SocketGuild arg1, SocketUser arg2)
+    {
+        return Task.CompletedTask;
     }
 
     private void PrepareClientAwaiter()
