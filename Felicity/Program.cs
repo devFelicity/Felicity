@@ -61,7 +61,7 @@ try
         .AddDiscord(
             discordClient =>
             {
-                discordClient.GatewayIntents = (GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildScheduledEvents)
+                discordClient.GatewayIntents = GatewayIntents.AllUnprivileged
                                                | GatewayIntents.GuildMembers | GatewayIntents.GuildPresences;
                 discordClient.AlwaysDownloadUsers = true;
             },
