@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Felicity.Services.Hosted;
 
@@ -65,9 +66,13 @@ public class DiscordStartupService : BackgroundService
         _discordShardedClient.ShardReady += OnShardReady;
     }
 
-    private Task OnShardReady(DiscordSocketClient _)
+    private Task OnShardReady(DiscordSocketClient discordClient)
     {
+        Log.Information($"Connected as {discordClient.CurrentUser.Username}#{discordClient.CurrentUser.DiscriminatorValue}");
+        BotVariables.DiscordLogChannel ??= (SocketTextChannel)discordClient.GetChannel(_discordBotOptions.Value.LogChannelId);
+        
         _shardsReady++;
+
         if (_shardsReady != _discordShardedClient.Shards.Count)
             return Task.CompletedTask;
 
