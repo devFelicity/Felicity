@@ -5,7 +5,6 @@ using DotNetBungieAPI.Models.User;
 using Felicity.DbObjects;
 using Felicity.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Felicity.Controllers;
@@ -14,8 +13,8 @@ namespace Felicity.Controllers;
 [ApiController]
 public class BungieAuthController : ControllerBase
 {
+    private readonly IBungieClient bungieClient;
     private readonly UserDb dbContext;
-    private readonly IBungieClient? bungieClient;
 
     public BungieAuthController(UserDb userDbContext, IBungieClient bungieApiClient)
     {
@@ -40,13 +39,13 @@ public class BungieAuthController : ControllerBase
         var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
         if (claim is null)
             return RedirectPermanent("https://tryfelicity.one/auth_failure");
-        
+
         var id = long.Parse(claim.Value);
         if (!BungieAuthCacheService.GetByIdAndRemove(id, out var context))
             return RedirectPermanent("https://tryfelicity.one/auth_failure");
-        
+
         var token = context.Token;
-        
+
         var nowTime = DateTime.Now;
         var baseTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day,
             nowTime.Hour, nowTime.Minute, nowTime.Second);
@@ -79,26 +78,23 @@ public class BungieAuthController : ControllerBase
             user.OAuthRefreshExpires = baseTime.AddSeconds(token.RefreshExpiresIn);
         }
 
-        if (bungieClient != null)
-        {
-           var linkedProfiles =
-               await bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
-                   user.BungieMembershipId);
+        var linkedProfiles =
+            await bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
+                user.BungieMembershipId);
 
-           foreach (var potentialProfile in linkedProfiles.Response.Profiles)
-               if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
-                   latestProfile = potentialProfile;
+        foreach (var potentialProfile in linkedProfiles.Response.Profiles)
+            if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)
+                latestProfile = potentialProfile;
 
-           user.BungieName = latestProfile.BungieGlobalDisplayName + "#" + latestProfile.BungieGlobalDisplayNameCode;
-           user.DestinyMembershipId = latestProfile.MembershipId;
-           user.DestinyMembershipType = latestProfile.MembershipType;
-        }
-
-        if(addUser)
+        user.BungieName = latestProfile.BungieGlobalDisplayName + "#" + latestProfile.BungieGlobalDisplayNameCode;
+        user.DestinyMembershipId = latestProfile.MembershipId;
+        user.DestinyMembershipType = latestProfile.MembershipType;
+        
+        if (addUser)
             dbContext.Users.Add(user);
 
         await dbContext.SaveChangesAsync();
-        
+
         return RedirectPermanent("https://tryfelicity.one/auth_success");
     }
 }
