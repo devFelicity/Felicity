@@ -9,20 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Felicity.Controllers;
 
-[Route("auth/bungie_net/{discordId}")]
+[Route("auth")]
 [ApiController]
 public class BungieAuthController : ControllerBase
 {
-    private readonly IBungieClient bungieClient;
-    private readonly UserDb dbContext;
+    private readonly IBungieClient _bungieClient;
+    private readonly UserDb _dbContext;
 
     public BungieAuthController(UserDb userDbContext, IBungieClient bungieApiClient)
     {
-        dbContext = userDbContext;
-        bungieClient = bungieApiClient;
+        _dbContext = userDbContext;
+        _bungieClient = bungieApiClient;
     }
 
-    [HttpGet("")]
+    [HttpGet("bungie_net/{discordId}")]
     public async Task RedirectToBungieNet(ulong discordId)
     {
         await HttpContext.ChallengeAsync(
@@ -33,7 +33,7 @@ public class BungieAuthController : ControllerBase
             });
     }
 
-    [HttpGet("post_callback")]
+    [HttpGet("bungie_net/{discordId}/post_callback")]
     public async Task<IActionResult> HandleAuthPostCallback(ulong discordId)
     {
         var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
@@ -52,7 +52,7 @@ public class BungieAuthController : ControllerBase
 
         var latestProfile = new DestinyProfileUserInfoCard();
 
-        var user = dbContext.Users.FirstOrDefault(x => x.DiscordId == discordId);
+        var user = _dbContext.Users.FirstOrDefault(x => x.DiscordId == discordId);
         var addUser = false;
 
         if (user == null)
@@ -79,7 +79,7 @@ public class BungieAuthController : ControllerBase
         }
 
         var linkedProfiles =
-            await bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
+            await _bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
                 user.BungieMembershipId);
 
         foreach (var potentialProfile in linkedProfiles.Response.Profiles)
@@ -91,9 +91,9 @@ public class BungieAuthController : ControllerBase
         user.DestinyMembershipType = latestProfile.MembershipType;
         
         if (addUser)
-            dbContext.Users.Add(user);
+            _dbContext.Users.Add(user);
 
-        await dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return RedirectPermanent("https://tryfelicity.one/auth_success");
     }

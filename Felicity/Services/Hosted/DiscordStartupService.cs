@@ -3,7 +3,6 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Felicity.DbObjects;
 using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
@@ -74,7 +73,7 @@ public class DiscordStartupService : BackgroundService
         }
     }
 
-    private Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
+    private static Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
     {
         if (result.IsSuccess || !result.Error.HasValue)
             return Task.CompletedTask;

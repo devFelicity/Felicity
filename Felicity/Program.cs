@@ -1,12 +1,10 @@
-﻿using System.Security.Cryptography;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.DbObjects;
-using Felicity.DiscordCommands.Interactions;
 using Felicity.Extensions;
 using Felicity.Options;
 using Felicity.Services;
@@ -14,7 +12,6 @@ using Felicity.Services.Hosted;
 using Felicity.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
@@ -100,7 +97,6 @@ try
                 });
         })
         .AddHostedService<BungieClientStartupService>()
-        .AddSingleton<BungieAPIUtils>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();
 
     builder.Services

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Felicity.DbObjects;
 
@@ -33,17 +32,5 @@ public class PingCommandExample : InteractionModuleBase<ShardedInteractionContex
         }
 
         await RespondAsync(embed: eb.Build(), ephemeral: true);
-    }
-
-    [SlashCommand("whoami", "test db")]
-    public async Task WhoAmI()
-    {
-        await DeferAsync();
-
-        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        if (user == null)
-            await FollowupAsync("User not found in db.");
-    
-        await FollowupAsync(JsonSerializer.Serialize(user));
     }
 }
