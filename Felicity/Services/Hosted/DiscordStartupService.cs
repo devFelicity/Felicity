@@ -86,15 +86,15 @@ public class DiscordStartupService : BackgroundService
         if (socketMessage is not SocketUserMessage socketUserMessage)
             return;
 
-        var argPos = 0;
-        if (socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
-            return;
-
         if (socketUserMessage.Author.IsBot)
         {
             // TODO: check if CP channel
             return;
         }
+
+        var argPos = 0;
+        if (socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
+            return;
 
         if (!_discordBotOptions.Value.BotStaff.Contains(socketMessage.Author.Id))
             return;
