@@ -57,12 +57,9 @@ public class DiscordStartupService : BackgroundService
         await _discordShardedClient.StartAsync();
         await WaitForReadyAsync(stoppingToken);
 
-        // load text commands
         await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
-        // load interactions
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
-        // register your commands here
         if (BotVariables.IsDebug)
         {
             await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
@@ -99,12 +96,22 @@ public class DiscordStartupService : BackgroundService
             return;
         }
 
+        if (!_discordBotOptions.Value.BotStaff.Contains(socketMessage.Author.Id))
+            return;
+
         var context = new ShardedCommandContext(_discordShardedClient, socketUserMessage);
         await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
     }
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
     {
+        if (_discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
+        {
+            await socketInteraction.DeferAsync();
+            Log.Information($"Banned user `{socketInteraction.User}` tried to run a command.");
+            return;
+        }
+
         var shardedInteractionContext = new ShardedInteractionContext(_discordShardedClient, socketInteraction);
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
     }
