@@ -18,10 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.2.0] - 2022-06-14
 ### Added
-- `/recipes` now shows red frames from your inventory
+- New `/recipes` command to show recipe progression, also shows red frames from your inventory
 
 ### Changed
-- `/recipes` now defaults to hiding completed frames to prevent spam, you can still view completed frames by using `/recipes hidecomplete: false`
+- `/recipes` defaults to hiding completed frames to prevent spam, you can still view completed frames by using `/recipes hidecomplete: false`
 
 ## [5.1.3] - 2022-06-13
 ### Changed
