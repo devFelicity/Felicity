@@ -268,7 +268,9 @@ public class TwitchService
 
     public void RestartMonitor()
     {
-        _monitorService?.Stop();
+        if(_monitorService is { Enabled: true })
+            _monitorService.Stop();
+
         ConfigureMonitor();
 
         Log.Information("Restarted TwitchMonitor.");

@@ -136,6 +136,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
             await FollowupAsync($"Successfully removed {Format.Bold(stream.TwitchName)}'s stream from server.", ephemeral: true);
         }
     }
+
     private Server GetServer(ulong guildId)
     {
         var server = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id);
