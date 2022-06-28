@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Felicity.DbObjects;
+namespace Felicity.Models;
 
 public class TwitchStream
 {

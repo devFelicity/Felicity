@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Felicity.DbObjects;
+using Felicity.Models;
 
 namespace Felicity.Util;
 

@@ -2,7 +2,7 @@
 using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.User;
-using Felicity.DbObjects;
+using Felicity.Models;
 using Felicity.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;

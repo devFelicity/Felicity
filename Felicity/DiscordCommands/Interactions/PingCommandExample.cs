@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Felicity.DbObjects;
+using Felicity.Models;
 
 // ReSharper disable EmptyConstructor
 // ReSharper disable UnusedType.Global

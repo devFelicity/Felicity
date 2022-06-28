@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Felicity.DbObjects;
+using Felicity.Models;
 using Felicity.Options;
 using Felicity.Util;
 using Humanizer;
@@ -13,24 +13,23 @@ using TwitchLib.Api.Services.Events.LiveStreamMonitor;
 
 namespace Felicity.Services.Hosted;
 
-public class TwitchClientStartupService : BackgroundService
+public class TwitchClientService : BackgroundService
 {
     private static LiveStreamMonitorService? _monitorService;
     private readonly DiscordShardedClient _discordClient;
     private readonly IOptions<TwitchOptions> _twitchOptions;
     private readonly TwitchStreamDb _twitchStreamDb;
-    private TwitchAPI _twitchApi;
+    private TwitchAPI? _twitchApi;
 
-    public TwitchClientStartupService(TwitchAPI twitchApi, DiscordShardedClient discordClient,
+    public TwitchClientService(DiscordShardedClient discordClient,
         IOptions<TwitchOptions> twitchOptions, TwitchStreamDb twitchStreamDb)
     {
-        _twitchApi = twitchApi;
         _discordClient = discordClient;
         _twitchOptions = twitchOptions;
         _twitchStreamDb = twitchStreamDb;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _twitchApi = new TwitchAPI
         {
@@ -42,6 +41,8 @@ public class TwitchClientStartupService : BackgroundService
         };
 
         ConfigureMonitor();
+
+        return Task.CompletedTask;
     }
 
     private void ConfigureMonitor()
@@ -55,9 +56,17 @@ public class TwitchClientStartupService : BackgroundService
         _monitorService = new LiveStreamMonitorService(_twitchApi);
         _monitorService.OnStreamOnline += OnStreamOnline;
         _monitorService.OnStreamOffline += OnStreamOffline;
-        _monitorService.SetChannelsByName(streamList);
-        Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamList)}");
-        _monitorService.Start();
+
+        if (streamList.Count > 0)
+        {
+            _monitorService.SetChannelsByName(streamList);
+            Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamList)}");
+            _monitorService.Start();
+        }
+        else
+        {
+            Log.Information("No streams to listen to.");
+        }
     }
 
     private async void OnStreamOnline(object? sender, OnStreamOnlineArgs e)
@@ -67,11 +76,11 @@ public class TwitchClientStartupService : BackgroundService
         var streamList = _twitchStreamDb.TwitchStreams.Where(x =>
             string.Equals(x.TwitchName, e.Channel, StringComparison.CurrentCultureIgnoreCase));
 
-        var channelInfo = _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
+        var channelInfo = _twitchApi?.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
             .FirstOrDefault();
         var timeStarted = e.Stream.StartedAt.GetTimestamp();
 
-        var gameBoxImage = _twitchApi.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId }).Result.Games
+        var gameBoxImage = _twitchApi?.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId }).Result.Games
             .FirstOrDefault()
             ?.BoxArtUrl;
 
@@ -151,7 +160,7 @@ public class TwitchClientStartupService : BackgroundService
             return;
         }
 
-        var channelInfo = _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
+        var channelInfo = _twitchApi?.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
             .FirstOrDefault();
 
         if (channelInfo == null)
@@ -160,19 +169,19 @@ public class TwitchClientStartupService : BackgroundService
             return;
         }
 
-        var vodList = _twitchApi.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1)
+        var vodList = _twitchApi?.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1)
             .Result;
 
         var vodUrl = string.Empty;
         EmbedBuilder embed;
 
-        if (vodList.Videos.Length != 0)
+        if (vodList != null && vodList.Videos.Length != 0)
         {
             var vod = vodList.Videos.First();
             vodUrl = $" <https://www.twitch.tv/videos/{vod.Id}>";
 
             var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
-
+             
             embed = new EmbedBuilder
             {
                 Color = Color.Red,

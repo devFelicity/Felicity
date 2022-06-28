@@ -1,7 +1,8 @@
-﻿using Discord;
+using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Models;
-using Felicity.DbObjects;
+using Felicity.Models;
+using Felicity.Services.Hosted;
 using Felicity.Util;
 
 // ReSharper disable StringLiteralTypo
