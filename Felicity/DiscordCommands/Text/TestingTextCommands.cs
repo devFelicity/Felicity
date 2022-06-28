@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using DotNetBungieAPI.Models;
-using Felicity.DbObjects;
+using Felicity.Models;
 
 namespace Felicity.DiscordCommands.Text;
 

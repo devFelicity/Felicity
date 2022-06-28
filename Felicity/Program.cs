@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
@@ -101,7 +101,7 @@ try
         .AddHostedService<BungieClientStartupService>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();
 
-    builder.Services.AddHostedService<TwitchClientStartupService>();
+    builder.Services.Configure<TwitchOptions>(builder.Configuration.GetSection("Twitch")).AddHostedService<TwitchClientService>();
 
     builder.Services
         .AddAuthentication(options =>

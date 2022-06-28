@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Models;
 using Felicity.Models;
@@ -17,7 +17,7 @@ namespace Felicity.DiscordCommands.Interactions;
 public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly ServerDb _serverDb;
-
+    
     public ServerCommands(ServerDb serverDb)
     {
         _serverDb = serverDb;
@@ -70,10 +70,12 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
     public class TwitchNotifications : InteractionModuleBase<ShardedInteractionContext>
     {
         private readonly TwitchStreamDb _streamDb;
+        private readonly TwitchClientService _twitchClientService;
 
-        public TwitchNotifications(TwitchStreamDb streamDb)
+        public TwitchNotifications(TwitchStreamDb streamDb, TwitchClientService twitchClientService)
         {
             _streamDb = streamDb;
+            _twitchClientService = twitchClientService;
         }
 
         [SlashCommand("add", "Add a Twitch stream to the server.")]
@@ -105,7 +107,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
             _streamDb.TwitchStreams.Add(stream);
             await _streamDb.SaveChangesAsync();
 
-            // TwitchService.RestartMonitor();
+            _twitchClientService.RestartMonitor();
 
             await FollowupAsync($"Added {Format.Bold(twitchName)}'s stream to {channel.Mention}", ephemeral: true);
         }
@@ -128,7 +130,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
             _streamDb.TwitchStreams.Remove(stream);
             await _streamDb.SaveChangesAsync();
 
-            // TwitchService.RestartMonitor();
+            _twitchClientService.RestartMonitor();
 
             await FollowupAsync($"Successfully removed {Format.Bold(stream.TwitchName)}'s stream from server.", ephemeral: true);
         }
