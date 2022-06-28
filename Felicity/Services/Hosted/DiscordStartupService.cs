@@ -93,10 +93,10 @@ public class DiscordStartupService : BackgroundService
         }
 
         var argPos = 0;
-        if (socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
+        if (!socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
             return;
 
-        if (!_discordBotOptions.Value.BotStaff.Contains(socketMessage.Author.Id))
+        if (_discordBotOptions.Value.BotStaff != null && !_discordBotOptions.Value.BotStaff.Contains(socketMessage.Author.Id))
             return;
 
         var context = new ShardedCommandContext(_discordShardedClient, socketUserMessage);
@@ -105,7 +105,7 @@ public class DiscordStartupService : BackgroundService
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
     {
-        if (_discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
+        if(_discordBotOptions.Value.BannedUsers != null && _discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
         {
             await socketInteraction.DeferAsync();
             Log.Information($"Banned user `{socketInteraction.User}` tried to run a command.");

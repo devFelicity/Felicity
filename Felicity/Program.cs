@@ -61,6 +61,8 @@ try
     builder.Host.UseDefaultServiceProvider(o => o.ValidateScopes = false);
 
     builder.Services.AddDbContext<UserDb>();
+    builder.Services.AddDbContext<ServerDb>();
+    builder.Services.AddDbContext<TwitchStreamDb>();
 
     builder.Services
         .AddDiscord(
@@ -98,6 +100,8 @@ try
         })
         .AddHostedService<BungieClientStartupService>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();
+
+    builder.Services.AddHostedService<TwitchClientStartupService>();
 
     builder.Services
         .AddAuthentication(options =>
