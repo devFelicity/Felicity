@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.WebSocket;
 using Felicity.Models;
 using Felicity.Options;
@@ -76,13 +76,25 @@ public class TwitchClientService : BackgroundService
         var streamList = _twitchStreamDb.TwitchStreams.Where(x =>
             string.Equals(x.TwitchName, e.Channel, StringComparison.CurrentCultureIgnoreCase));
 
-        var channelInfo = _twitchApi?.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
-            .FirstOrDefault();
+        if (_twitchApi == null)
+        {
+            Log.Error("Twitch API is not initialized.");
+            return;
+        }
+
+        var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
+
+        if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
+        {
+            Log.Error("No channel found for online stream.");
+            return;
+        }
+
+        var channelInfo = channelInfoTask.Users.FirstOrDefault();
         var timeStarted = e.Stream.StartedAt.GetTimestamp();
 
-        var gameBoxImage = _twitchApi?.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId }).Result.Games
-            .FirstOrDefault()
-            ?.BoxArtUrl;
+        var gameBoxImageTask = await _twitchApi.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId });
+        var gameBoxImage = gameBoxImageTask.Games.FirstOrDefault()?.BoxArtUrl;
 
         var embed = new EmbedBuilder
         {
@@ -149,9 +161,15 @@ public class TwitchClientService : BackgroundService
             }
     }
 
-    private void OnStreamOffline(object? sender, OnStreamOfflineArgs e)
+    private async void OnStreamOffline(object? sender, OnStreamOfflineArgs e)
     {
         Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
+
+        if (_twitchApi == null)
+        {
+            Log.Error("Twitch API is not initialized.");
+            return;
+        }
 
         var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId == e.Stream.Id);
         if (!activeStreams.Any())
@@ -160,17 +178,17 @@ public class TwitchClientService : BackgroundService
             return;
         }
 
-        var channelInfo = _twitchApi?.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId }).Result.Users
-            .FirstOrDefault();
+        var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
 
-        if (channelInfo == null)
+        if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
         {
-            Log.Error("No channel found for stream.");
+            Log.Error("No channel found for online stream.");
             return;
         }
 
-        var vodList = _twitchApi?.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1)
-            .Result;
+        var channelInfo = channelInfoTask.Users.FirstOrDefault();
+
+        var vodList = await _twitchApi.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1);
 
         var vodUrl = string.Empty;
         EmbedBuilder embed;
@@ -188,7 +206,7 @@ public class TwitchClientService : BackgroundService
                 Title = vod.Title,
                 Url = vodUrl,
                 ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
-                ThumbnailUrl = channelInfo.ProfileImageUrl,
+                ThumbnailUrl = channelInfo?.ProfileImageUrl,
                 Footer = Embeds.MakeFooter(),
                 Fields = new List<EmbedFieldBuilder>
                 {
@@ -218,7 +236,7 @@ public class TwitchClientService : BackgroundService
                 Color = Color.Purple,
                 Title = e.Stream.Title,
                 ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
-                ThumbnailUrl = channelInfo.ProfileImageUrl,
+                ThumbnailUrl = channelInfo?.ProfileImageUrl,
                 Footer = Embeds.MakeFooter(),
                 Fields = new List<EmbedFieldBuilder>
                 {
