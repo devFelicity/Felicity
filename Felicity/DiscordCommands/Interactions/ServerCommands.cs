@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using DotNetBungieAPI.Models;
 using Felicity.Models;
+using Felicity.Services;
 using Felicity.Services.Hosted;
 using Felicity.Util;
 
@@ -70,9 +71,9 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
     public class TwitchNotifications : InteractionModuleBase<ShardedInteractionContext>
     {
         private readonly TwitchStreamDb _streamDb;
-        private readonly TwitchClientService _twitchClientService;
+        private readonly TwitchService _twitchClientService;
 
-        public TwitchNotifications(TwitchStreamDb streamDb, TwitchClientService twitchClientService)
+        public TwitchNotifications(TwitchStreamDb streamDb, TwitchService twitchClientService)
         {
             _streamDb = streamDb;
             _twitchClientService = twitchClientService;

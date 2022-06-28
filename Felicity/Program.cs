@@ -101,7 +101,8 @@ try
         .AddHostedService<BungieClientStartupService>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();
 
-    builder.Services.Configure<TwitchOptions>(builder.Configuration.GetSection("Twitch")).AddHostedService<TwitchClientService>();
+    builder.Services.Configure<TwitchOptions>(builder.Configuration.GetSection("Twitch")).AddSingleton<TwitchService>();
+    builder.Services.AddHostedService<TwitchStartupService>();
 
     builder.Services
         .AddAuthentication(options =>

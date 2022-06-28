@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using Felicity.Models;
 using Felicity.Options;
@@ -11,41 +11,31 @@ using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Services;
 using TwitchLib.Api.Services.Events.LiveStreamMonitor;
 
-namespace Felicity.Services.Hosted;
+namespace Felicity.Services;
 
-public class TwitchClientService : BackgroundService
+public class TwitchService
 {
     private static LiveStreamMonitorService? _monitorService;
     private readonly DiscordShardedClient _discordClient;
-    private readonly IOptions<TwitchOptions> _twitchOptions;
     private readonly TwitchStreamDb _twitchStreamDb;
-    private TwitchAPI? _twitchApi;
+    private readonly TwitchAPI _twitchApi;
 
-    public TwitchClientService(DiscordShardedClient discordClient,
+    public TwitchService(DiscordShardedClient discordClient,
         IOptions<TwitchOptions> twitchOptions, TwitchStreamDb twitchStreamDb)
     {
         _discordClient = discordClient;
-        _twitchOptions = twitchOptions;
         _twitchStreamDb = twitchStreamDb;
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
         _twitchApi = new TwitchAPI
         {
             Settings =
             {
-                AccessToken = _twitchOptions.Value.AccessToken,
-                ClientId = _twitchOptions.Value.ClientId
+                AccessToken = twitchOptions.Value.AccessToken,
+                ClientId = twitchOptions.Value.ClientId
             }
         };
-
-        ConfigureMonitor();
-
-        return Task.CompletedTask;
     }
 
-    private void ConfigureMonitor()
+    public void ConfigureMonitor()
     {
         var streamList = new List<string>();
 
@@ -75,12 +65,6 @@ public class TwitchClientService : BackgroundService
 
         var streamList = _twitchStreamDb.TwitchStreams.Where(x =>
             string.Equals(x.TwitchName, e.Channel, StringComparison.CurrentCultureIgnoreCase));
-
-        if (_twitchApi == null)
-        {
-            Log.Error("Twitch API is not initialized.");
-            return;
-        }
 
         var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
 
@@ -164,12 +148,6 @@ public class TwitchClientService : BackgroundService
     private async void OnStreamOffline(object? sender, OnStreamOfflineArgs e)
     {
         Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
-
-        if (_twitchApi == null)
-        {
-            Log.Error("Twitch API is not initialized.");
-            return;
-        }
 
         var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId == e.Stream.Id);
         if (!activeStreams.Any())
