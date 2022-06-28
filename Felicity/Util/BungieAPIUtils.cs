@@ -2,6 +2,9 @@
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.User;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
+
 namespace Felicity.Util;
 
 public class BungieApiUtils

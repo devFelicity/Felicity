@@ -1,4 +1,5 @@
-﻿namespace Felicity.Options;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+namespace Felicity.Options;
 
 public class BungieApiOptions
 {

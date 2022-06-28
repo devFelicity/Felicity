@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Rebuilt on aspnet... Painful, but worth it.
-- Minor changes on `/server` command.
 
 ### Removed
 - Many `/server` commands have been grouped into a single new command.

@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -26,7 +28,7 @@ public class ActiveStream
     [Key]
     public int Id { get; set; }
     public int ConfigId { get; set; }
-    public string StreamId { get; set; }
+    public string StreamId { get; set; } = string.Empty;
     public ulong MessageId { get; set; }
 }
 
@@ -44,8 +46,7 @@ public class TwitchStreamDb : DbContext
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
         optionsBuilder.UseMySql(_connectionString, serverVersion);
     }
-        
-    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+
     public DbSet<TwitchStream> TwitchStreams { get; set; } = null!;
     public DbSet<ActiveStream> ActiveStreams { get; set; } = null!;
 }

@@ -2,6 +2,7 @@
 using DotNetBungieAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
+// ReSharper disable UnusedMember.Global
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
