@@ -1,6 +1,4 @@
-﻿
-using System.Data.Entity;
-using DotNetBungieAPI.Models;
+﻿using DotNetBungieAPI.Models;
 using Felicity.Models;
 
 namespace Felicity.Util;
