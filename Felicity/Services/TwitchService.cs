@@ -4,6 +4,7 @@ using Felicity.Models;
 using Felicity.Options;
 using Felicity.Util;
 using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
 using TwitchLib.Api;
@@ -65,7 +66,7 @@ public class TwitchService
     {
         Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-        var streamList = _twitchStreamDb.TwitchStreams.Where(x => x.TwitchName == e.Channel);
+        var streamList = await _twitchStreamDb.TwitchStreams.Where(x => x.TwitchName == e.Channel).ToListAsync();
 
         var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
 
