@@ -7,6 +7,8 @@ using Felicity.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
+// ReSharper disable RouteTemplates.ActionRoutePrefixCanBeExtractedToControllerRoute
+
 namespace Felicity.Controllers;
 
 [Route("auth")]
@@ -46,7 +48,7 @@ public class BungieAuthController : ControllerBase
 
         var token = context.Token;
 
-        var nowTime = DateTime.Now;
+        var nowTime = DateTime.UtcNow;
         var baseTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day,
             nowTime.Hour, nowTime.Minute, nowTime.Second);
 
@@ -68,8 +70,8 @@ public class BungieAuthController : ControllerBase
         user.BungieMembershipId = token.MembershipId;
         user.OAuthToken = token.AccessToken;
         user.OAuthRefreshToken = token.RefreshToken;
-        user.OAuthTokenExpires = nowTime.AddSeconds(token.ExpiresIn);
-        user.OAuthRefreshExpires = nowTime.AddSeconds(token.RefreshExpiresIn);
+        user.OAuthTokenExpires = baseTime.AddSeconds(token.ExpiresIn);
+        user.OAuthRefreshExpires = baseTime.AddSeconds(token.RefreshExpiresIn);
 
         var linkedProfiles =
             await _bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
