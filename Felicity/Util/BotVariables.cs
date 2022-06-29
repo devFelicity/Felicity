@@ -5,8 +5,11 @@ namespace Felicity.Util;
 
 public static class BotVariables
 {
+    public const ulong BotOwnerId = 684854397871849482;
+
     internal static string? Version;
     internal static bool IsDebug;
+
     public static SocketTextChannel? DiscordLogChannel { get; set; }
 
     public static async Task Initialize()

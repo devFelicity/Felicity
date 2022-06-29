@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Felicity.Models;
+using Felicity.Util;
 
 // ReSharper disable NotAccessedField.Local
 // ReSharper disable EmptyConstructor
@@ -9,7 +10,7 @@ using Felicity.Models;
 
 namespace Felicity.DiscordCommands.Interactions;
 
-[RequireBotModerator]
+[Preconditions.RequireBotModerator]
 public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly UserDb _userDb;
@@ -38,28 +39,5 @@ public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         await RespondAsync(embed: eb.Build(), ephemeral: true);
-    }
-}
-
-public class RequireBotModerator : PreconditionAttribute
-{
-    public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
-        ICommandInfo commandInfo, IServiceProvider services)
-    {
-        if(context.User.Id == 684854397871849482)
-            return Task.FromResult(PreconditionResult.FromSuccess());
-
-        if (((IGuildUser) context.User).GuildPermissions.ManageGuild)
-            return Task.FromResult(PreconditionResult.FromSuccess());
-
-        var guildUser = context.Guild.GetUserAsync(context.User.Id).Result;
-
-        if (context.Guild.OwnerId == guildUser.Id)
-            return Task.FromResult(PreconditionResult.FromSuccess());
-
-        const string msg =
-            "You are not a bot moderator for this server, your server owner should not have this command enabled for roles other than the designated moderator role.";
-
-        return Task.FromResult(PreconditionResult.FromError(msg));
     }
 }

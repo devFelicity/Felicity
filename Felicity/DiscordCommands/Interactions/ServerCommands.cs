@@ -149,7 +149,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
 
             var stream = new TwitchStream
             {
-                TwitchName = twitchName,
+                TwitchName = twitchName.ToLower(),
                 ServerId = Context.Guild.Id,
                 ChannelId = channel.Id,
                 MentionEveryone = mentionEveryone
