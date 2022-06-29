@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DotNetBungieAPI.Authorization;
+using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,34 @@ public class User
     public string BungieName { get; set; } = string.Empty;
     public long DestinyMembershipId { get; set; }
     public BungieMembershipType DestinyMembershipType { get; set; }
+}
+
+public static class UserExtensions
+{
+    public static async Task<User> RefreshToken(this User user, IBungieClient bungieClient, DateTime nowTime)
+    {
+        var refreshedUser = await bungieClient.Authentication.RenewToken(user.GetTokenData());
+
+        user.OAuthToken = refreshedUser.AccessToken;
+        user.OAuthTokenExpires = nowTime.AddSeconds(refreshedUser.ExpiresIn);
+        user.OAuthRefreshToken = refreshedUser.RefreshToken;
+        user.OAuthRefreshExpires = nowTime.AddSeconds(refreshedUser.RefreshExpiresIn);
+
+        return user;
+    }
+
+    public static AuthorizationTokenData GetTokenData(this User user)
+    {
+        return new AuthorizationTokenData
+        { 
+            AccessToken = user.OAuthToken,
+            RefreshToken = user.OAuthRefreshToken,
+            ExpiresIn = (int) (user.OAuthTokenExpires - DateTime.UtcNow).TotalSeconds,
+            MembershipId = user.BungieMembershipId,
+            RefreshExpiresIn = (int) (user.OAuthRefreshExpires - DateTime.UtcNow).TotalSeconds,
+            TokenType = "Bearer"
+        };
+    }
 }
 
 public class UserDb : DbContext

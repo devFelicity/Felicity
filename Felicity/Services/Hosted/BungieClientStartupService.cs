@@ -15,6 +15,7 @@ public class BungieClientStartupService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await _bungieClient.DefinitionProvider.Initialize();
+        // TODO: if run on machines with more ram, uncomment this and use repository
         // await _bungieClient.DefinitionProvider.ReadToRepository(_bungieClient.Repository);
     }
 }

@@ -9,7 +9,9 @@ public static class BungieAuthCacheService
 {
     private static ConcurrentDictionary<long, (OAuthCreatingTicketContext Context, AuthorizationTokenData Token)>
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
+#pragma warning disable IDE0044 // Add readonly modifier
         _authContexts = new();
+#pragma warning restore IDE0044 // Add readonly modifier
 
     private static JsonSerializerOptions? _jsonSerializerOptions;
 

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.User;
@@ -62,21 +62,14 @@ public class BungieAuthController : ControllerBase
             user = new User
             {
                 DiscordId = discordId,
-                BungieMembershipId = token.MembershipId,
-                OAuthToken = token.AccessToken,
-                OAuthRefreshToken = token.RefreshToken,
-                OAuthTokenExpires = baseTime.AddSeconds(token.ExpiresIn),
-                OAuthRefreshExpires = baseTime.AddSeconds(token.RefreshExpiresIn)
             };
         }
-        else
-        {
-            user.BungieMembershipId = token.MembershipId;
-            user.OAuthToken = token.AccessToken;
-            user.OAuthRefreshToken = token.RefreshToken;
-            user.OAuthTokenExpires = baseTime.AddSeconds(token.ExpiresIn);
-            user.OAuthRefreshExpires = baseTime.AddSeconds(token.RefreshExpiresIn);
-        }
+
+        user.BungieMembershipId = token.MembershipId;
+        user.OAuthToken = token.AccessToken;
+        user.OAuthRefreshToken = token.RefreshToken;
+        user.OAuthTokenExpires = nowTime.AddSeconds(token.ExpiresIn);
+        user.OAuthRefreshExpires = nowTime.AddSeconds(token.RefreshExpiresIn);
 
         var linkedProfiles =
             await _bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
