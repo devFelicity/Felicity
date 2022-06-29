@@ -13,7 +13,7 @@ using Felicity.Util;
 namespace Felicity.DiscordCommands.Interactions;
 
 [RequireContext(ContextType.Guild)]
-[RequireUserPermission(GuildPermission.ManageGuild)]
+[Preconditions.RequireBotModerator]
 [Group("server", "Collection of server management commands for setting up your server.")]
 public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
 {
@@ -39,7 +39,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync(true);
 
-        var server = GetServer(Context.Guild.Id);
+        var server = MiscUtils.GetServer(_serverDb, Context.Guild.Id);
         server.AnnouncementChannel = announcementChannel.Id;
         server.StaffChannel = staffChannel.Id;
 
@@ -75,7 +75,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync(true);
 
-        var server = GetServer(Context.Guild.Id);
+        var server = MiscUtils.GetServer(_serverDb, Context.Guild.Id);
 
         var embed = Embeds.MakeBuilder();
         embed.Author = new EmbedAuthorBuilder
@@ -102,24 +102,8 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
         return channelId == null ? "not set." : guild.GetTextChannel((ulong)channelId).Mention;
     }
 
-    private Server GetServer(ulong guildId)
-    {
-        var server = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id);
-        if (server != null)
-            return server;
-
-        server = new Server
-        {
-            ServerId = guildId,
-            BungieLocale = BungieLocales.EN
-        };
-        _serverDb.Servers.Add(server);
-
-        return server;
-    }
-
     [RequireContext(ContextType.Guild)]
-    [RequireUserPermission(GuildPermission.ManageGuild)]
+    [Preconditions.RequireBotModerator]
     [Group("twitch", "Manage Twitch stream notifications for this server.")]
     public class TwitchNotifications : InteractionModuleBase<ShardedInteractionContext>
     {

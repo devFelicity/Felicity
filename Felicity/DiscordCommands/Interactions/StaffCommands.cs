@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.Clients;
 using Felicity.Models;
 using Felicity.Util;
 
@@ -16,12 +17,21 @@ public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
     private readonly UserDb _userDb;
     private readonly ServerDb _serverDb;
     private readonly TwitchStreamDb _streamDb;
+    private readonly IBungieClient _bungieClient;
 
-    public StaffCommands(UserDb userContext, TwitchStreamDb streamDb, ServerDb serverDb)
+    public StaffCommands(UserDb userContext, TwitchStreamDb streamDb, ServerDb serverDb, IBungieClient bungieClient)
     {
         _userDb = userContext;
         _streamDb = streamDb;
         _serverDb = serverDb;
+        _bungieClient = bungieClient;
+    }
+
+    [SlashCommand("mod_forcerefresh", "Forcefully refreshes all users tokens.")]
+    public async Task ForceRefresh()
+    {
+        await RespondAsync("Triggering refresh...");
+        await BungieApiUtils.ForceRefresh(_bungieClient, _userDb);
     }
 
     [SlashCommand("ping", "Pongs back")]
