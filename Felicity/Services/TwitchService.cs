@@ -51,7 +51,9 @@ public class TwitchService
         {
             _monitorService.SetChannelsByName(streamList);
             Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamList)}");
-            _monitorService.Start();
+
+            if(!BotVariables.IsDebug)
+                _monitorService.Start();
         }
         else
         {
@@ -63,8 +65,7 @@ public class TwitchService
     {
         Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-        var streamList = _twitchStreamDb.TwitchStreams.Where(x =>
-            string.Equals(x.TwitchName, e.Channel, StringComparison.CurrentCultureIgnoreCase));
+        var streamList = _twitchStreamDb.TwitchStreams.Where(x => x.TwitchName == e.Channel);
 
         var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
 
