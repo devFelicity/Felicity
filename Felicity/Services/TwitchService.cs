@@ -145,6 +145,8 @@ public class TwitchService
             {
                 Log.Error($"Error in OnStreamOnline: {exception.GetType()}: {exception.Message}");
             }
+
+        await _twitchStreamDb.SaveChangesAsync();
     }
 
     private async void OnStreamOffline(object? sender, OnStreamOfflineArgs e)
