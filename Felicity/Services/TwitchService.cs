@@ -124,10 +124,10 @@ public class TwitchService
                 var mention = "";
                 if (stream.MentionEveryone)
                     mention = "@everyone ";
-                else if (stream.MentionRole != 0)
+                else if (stream.MentionRole != null)
                     mention = $"<@&{stream.MentionRole}> ";
 
-                var mentionUser = stream.UserId == 0
+                var mentionUser = stream.UserId == null
                     ? e.Channel
                     : $"<@{stream.UserId}>";
 
