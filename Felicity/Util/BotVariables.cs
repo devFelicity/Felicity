@@ -6,6 +6,7 @@ namespace Felicity.Util;
 public static class BotVariables
 {
     public const ulong BotOwnerId = 684854397871849482;
+    public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
 
     internal static string? Version;
     internal static bool IsDebug;

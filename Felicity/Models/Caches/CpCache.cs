@@ -135,7 +135,7 @@ public static class ProcessCpData
         var embed = BaseEmbed();
         embed.Description =
             "For help, saved checkpoints and nice people to talk to, join the **Luckstruck9** Discord Server by clicking [here](https://discord.gg/luckstruck9).\n\n" +
-            "**DO NOT** post Felicity errors in this server, use the [Felicity support server](https://discord.gg/JBBqF6Pw2z) for that.";
+            $"**DO NOT** post Felicity errors in this server, use the [Felicity support server]({BotVariables.DiscordInvite}) for that.";
 
         return embed.Build();
     }
