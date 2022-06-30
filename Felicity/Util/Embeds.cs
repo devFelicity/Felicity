@@ -54,4 +54,15 @@ public static class Embeds
         
         return embed;
     }
+
+    public static EmbedBuilder MakeErrorEmbed()
+    {
+        var builder = new EmbedBuilder
+        {
+            Color = Color.Red,
+            Footer = MakeFooter()
+        };
+
+        return builder;
+    }
 }

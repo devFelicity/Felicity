@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Felicity.DiscordCommands.Interactions;
 using Felicity.Models;
 using Felicity.Models.Caches;
+using Felicity.Util.Enums;
 
 namespace Felicity.Util;
 
@@ -126,5 +127,29 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         results = results.OrderBy(x => x.Name).ToList();
 
         return AutocompletionResult.FromSuccess(results);
+    }
+}
+
+public class WishAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var resultList = new List<Wish>();
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        resultList.AddRange(currentSearch != null
+            ? Wishes.KnownWishes.Where(autocompleteResult =>
+                autocompleteResult.Description!.ToLower().Contains(currentSearch.ToLower()))
+            : Wishes.KnownWishes);
+
+        var autocompleteList = resultList
+            .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number)).ToList();
+
+        return AutocompletionResult.FromSuccess(autocompleteList);
     }
 }

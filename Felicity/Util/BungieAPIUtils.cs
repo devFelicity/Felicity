@@ -1,6 +1,7 @@
 ﻿using DotNetBungieAPI.Authorization;
 using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Models.Requests;
 using DotNetBungieAPI.Models.User;
 using Felicity.Models;
 
@@ -22,6 +23,23 @@ public static class BungieApiUtils
                 result = potentialProfile;
 
         return result;
+    }
+
+    public static async Task<DestinyProfileUserInfoCard?> GetLatestProfile(IBungieClient bungieClient, string bungieName, short bungieCode)
+    {
+        var userInfoCard = await bungieClient.ApiAccess.Destiny2.SearchDestinyPlayerByBungieName(
+            BungieMembershipType.All,
+            new ExactSearchRequest
+            {
+                DisplayName = bungieName,
+                DisplayNameCode = bungieCode
+            });
+
+        var response = userInfoCard.Response.First();
+        if (response == null)
+            return null;
+
+        return await GetLatestProfile(bungieClient, response.MembershipId, response.MembershipType);
     }
 
     public static async Task ForceRefresh(IBungieClient client, UserDb userDb)
