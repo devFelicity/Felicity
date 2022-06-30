@@ -70,12 +70,23 @@ public class CheckpointAutocomplete : AutocompleteHandler
 
         var cpCache = ProcessCpData.ReadJson();
 
-        var result = cpCache?.CpInventory.Checkpoints
-            .Select(activeCp => new AutocompleteResult(activeCp.Name, activeCp.Name)).ToList();
+        var result = new List<AutocompleteResult>();
 
-        if (result == null)
+        if (cpCache?.CpInventory.Checkpoints != null)
+            foreach (var activeCp in cpCache.CpInventory.Checkpoints)
+            {
+                var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+                if (!string.IsNullOrEmpty(currentSearch))
+                    if (!activeCp.Name.ToLower().Contains(currentSearch))
+                        continue;
+
+                result.Add(new AutocompleteResult(activeCp.Name, activeCp.Name));
+            }
+        else
             return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful,
                 "Failed to fetch checkpoints from cache.");
+
         result = result.OrderBy(x => x.Name).ToList();
 
         result.Add(new AutocompleteResult("--- Others", "Other"));
