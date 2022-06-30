@@ -69,11 +69,9 @@ internal static class EmoteHelper
             foreach (var settingsServerId in emoteConfig.Settings.ServerIDs!)
             {
                 var serverMotes = discordClient.GetGuild(settingsServerId).Emotes;
-                foreach (var serverMote in serverMotes)
-                {
-                    if (serverMote.Id == emoteConfig.Settings.Emotes[(uint) valuePerkId].Id)
-                        return serverMote;
-                }
+                var emotes = serverMotes.FirstOrDefault(x => x.Id == emoteConfig.Settings.Emotes[(uint)valuePerkId].Id);
+                if (emotes != null)
+                    return emotes;
             }
         }
             
