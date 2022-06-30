@@ -116,19 +116,16 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var manifestInventoryItems = new List<DestinyInventoryItemDefinition>();
         foreach (var destinyInventoryItemDefinition in manifestInventoryItemIDs)
         {
-            var result =
-                await _bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>(
-                    (uint)destinyInventoryItemDefinition!, lg);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)destinyInventoryItemDefinition!, lg, out var result);
 
             manifestInventoryItems.Add(result);
         }
         
-        var manifestCollectibles =new List<DestinyCollectibleDefinition>();
+        var manifestCollectibles = new List<DestinyCollectibleDefinition>();
         foreach (var definitionHashPointer in manifestCollectibleIDs)
         {
-            var result =
-                await _bungieClient.DefinitionProvider.LoadDefinition<DestinyCollectibleDefinition>(
-                    (uint)definitionHashPointer.Hash!, lg);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(
+                (uint)definitionHashPointer.Hash!, lg, out var result);
 
             manifestCollectibles.Add(result);
         }

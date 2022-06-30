@@ -11,6 +11,8 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.PresentationNodes;
 using Felicity.Util;
 using Serilog;
+using TwitchLib.PubSub.Events;
+
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
@@ -214,8 +216,8 @@ public static class ProcessXurData
 
         foreach (var fetchPerk in fetchList)
         {
-            var manifestFetch =
-                await bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>(fetchPerk, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(fetchPerk, lg,
+                out var manifestFetch);
 
             foreach (var perk in response.Where(perk => perk.Value.PerkId == manifestFetch.Hash))
             {
@@ -296,7 +298,8 @@ public static class ProcessXurData
         
         foreach (var item in manifestFetch.Where(item => item != null))
         {
-            var manifestItem = await bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>((uint) item!, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!, lg,
+                out var manifestItem);
 
             var vendorItem = xurExotics.FirstOrDefault(destinyVendorSaleItemComponent =>
                 destinyVendorSaleItemComponent.Item.Hash == manifestItem.Hash)!;
@@ -337,7 +340,8 @@ public static class ProcessXurData
 
         foreach (var item in manifestFetch.Where(item => item != null))
         {
-            var manifestItem = await bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>((uint) item!, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!, lg,
+                out var manifestItem);
 
             var vendorItem = xurWeps.FirstOrDefault(destinyVendorSaleItemComponent =>
                 destinyVendorSaleItemComponent.Item.Hash == manifestItem.Hash)!;
@@ -363,19 +367,19 @@ public static class ProcessXurData
             }
         }
 
-        var armorSetCollectible = await
-            bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>((uint) xurArmor.First().Item.Hash!,
-                lg);
+        bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
+            (uint)xurArmor.First().Item.Hash!, lg, out var armorSetCollectible);
 
         var collectibleHash = armorSetCollectible.Collectible.Hash;
         if (collectibleHash != null)
         {
             var hash = (uint)collectibleHash;
-            var armorSetCollectibleDefinition = await bungieClient.DefinitionProvider.LoadDefinition<DestinyCollectibleDefinition>(hash, lg);
 
-            var parentNode =
-                await bungieClient.DefinitionProvider.LoadDefinition<DestinyPresentationNodeDefinition>(
-                    (uint) armorSetCollectibleDefinition.ParentNodes.First().Hash!, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(hash, lg,
+                out var armorSetCollectibleDefinition);
+
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyPresentationNodeDefinition>(
+                (uint)armorSetCollectibleDefinition.ParentNodes.First().Hash!, lg, out var parentNode);
 
             xurCache.XurInventory.Armor.LegendarySet = parentNode.DisplayProperties.Name;
         }

@@ -8,6 +8,7 @@ using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.SandboxPerks;
 using Felicity.Util;
+using TwitchLib.PubSub.Events;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedType.Global
@@ -139,9 +140,8 @@ public static class ProcessModData
             if (saleItemsValue.Item.Hash == null)
                 continue;
 
-            var manifestItem =
-                await bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>(
-                    (uint)saleItemsValue.Item.Hash, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
+                (uint)saleItemsValue.Item.Hash, lg, out var manifestItem);
 
             manifestItems.Add(manifestItem);
         }
@@ -150,9 +150,9 @@ public static class ProcessModData
         foreach (var destinyInventoryItemDefinition in manifestItems.Where(destinyInventoryItemDefinition =>
                      destinyInventoryItemDefinition.ItemType == DestinyItemType.Mod))
         {
-            var result =
-                await bungieClient.DefinitionProvider.LoadDefinition<DestinySandboxPerkDefinition>(
-                    (uint)destinyInventoryItemDefinition.Perks.First().Perk.Hash!, lg);
+            bungieClient.Repository.TryGetDestinyDefinition<DestinySandboxPerkDefinition>(
+                (uint)destinyInventoryItemDefinition.Perks.First().Perk.Hash!, lg, out var result);
+
             manifestPerks.Add(result);
         }
 

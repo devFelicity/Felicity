@@ -8,6 +8,7 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
+using TwitchLib.PubSub.Events;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -162,14 +163,15 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             var plugHash1 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(3).Plug.Hash;
             var plugHash2 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(4).Plug.Hash;
 
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)reward.Item.Hash!, lg, out var result1);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash1!, lg, out var result2);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash2!, lg, out var result3);
+
             var manifestItems = new[]
             {
-                await _bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>(
-                    (uint)reward.Item.Hash!, lg),
-                await _bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>((uint)plugHash1!,
-                    lg),
-                await _bungieClient.DefinitionProvider.LoadDefinition<DestinyInventoryItemDefinition>((uint)plugHash2!,
-                    lg)
+                result1,
+                result2,
+                result3
             };
 
             if (manifestItems[0].ItemType != DestinyItemType.Weapon)

@@ -68,7 +68,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             foreach (var weaponId in weaponList)
             {
-                var manifestRecord = await _bungieClient.DefinitionProvider.LoadDefinition<DestinyRecordDefinition>(weaponId, serverLanguage);
+                _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage, out var manifestRecord);
 
                 var record = request.Response.ProfileRecords.Data.Records[weaponId];
                 var obj = record.Objectives.First();
