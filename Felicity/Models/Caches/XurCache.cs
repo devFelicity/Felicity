@@ -235,7 +235,7 @@ public static class ProcessXurData
 
         if (File.Exists(path))
         {
-            xurCache = JsonSerializer.Deserialize<XurCache>(File.ReadAllText(path));
+            xurCache = JsonSerializer.Deserialize<XurCache>(await File.ReadAllTextAsync(path));
 
             if (xurCache != null && xurCache.InventoryExpires < DateTime.UtcNow)
                 File.Delete(path);

@@ -4,7 +4,9 @@ using DotNetBungieAPI.Models;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
-using Serilog;
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedType.Global
 
 namespace Felicity.DiscordCommands.Interactions;
 
@@ -56,5 +58,28 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
 
             await FollowupAsync(embed: ProcessXurData.BuildUnavailableEmbed());
         }
+    }
+
+    [SlashCommand("mods", "Get list of mods currently available at vendors.")]
+    public async Task Mods()
+    {
+        await DeferAsync();
+
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+        {
+            await FollowupAsync("Failed to fetch user profile.");
+            return;
+        }
+
+        var server = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id);
+        var lg = server?.BungieLocale ?? BungieLocales.EN;
+        
+        // if (!File.Exists($"Data/modCache-{lg}.json"))
+        //     await FollowupAsync("Populating vendor data, this might take some time...");
+
+        var modCache = await ProcessModData.FetchInventory(_bungieClient, lg, user);
+
+        await FollowupAsync(embed: await ProcessModData.BuildEmbed(_bungieClient, modCache, user));
     }
 }
