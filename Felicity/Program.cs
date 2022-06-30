@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Net;
+using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
@@ -150,6 +151,9 @@ try
     app.UseAuthorization();
     app.MapControllers();
     app.UseMvc();
+    app.UseHttpsRedirection();
+    if (!app.Environment.IsDevelopment()) 
+        app.UseHsts();
 
     await app.RunAsync();
 }

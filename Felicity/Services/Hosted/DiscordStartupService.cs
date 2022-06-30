@@ -4,6 +4,7 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Models;
+using Felicity.Models.Caches;
 using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
@@ -85,8 +86,11 @@ public class DiscordStartupService : BackgroundService
             return;
 
         if (socketUserMessage.Author.IsBot)
-            // TODO: check if CP channel
-            return;
+            if (socketUserMessage.Channel.Id == 973173481162285106)
+            {
+                ProcessCpData.Populate(socketMessage);
+                return;
+            }
 
         var argPos = 0;
         if (!socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
@@ -186,7 +190,7 @@ public class DiscordStartupService : BackgroundService
             return _taskCompletionSource.Task;
 
         var registration = cancellationToken.Register(
-            state => { ((TaskCompletionSource<object>)state!).TrySetResult(null!); },
+            state => { ((TaskCompletionSource<bool>)state!).TrySetResult(true); },
             _taskCompletionSource);
 
         return _taskCompletionSource.Task.ContinueWith(_ => registration.DisposeAsync(), cancellationToken);

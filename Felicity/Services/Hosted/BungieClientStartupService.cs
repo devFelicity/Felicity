@@ -16,6 +16,6 @@ public class BungieClientStartupService : BackgroundService
     {
         await _bungieClient.DefinitionProvider.Initialize();
         // TODO: if run on machines with more ram, uncomment this and use repository
-        // await _bungieClient.DefinitionProvider.ReadToRepository(_bungieClient.Repository);
+        await _bungieClient.DefinitionProvider.ReadToRepository(_bungieClient.Repository);
     }
 }
