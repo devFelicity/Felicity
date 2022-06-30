@@ -36,6 +36,7 @@ try
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
     EnsureDirectoryExists(bungieApiOptions.ManifestPath!);
+    EnsureDirectoryExists("Data");
 
     builder.Host.UseSerilog((context, services, configuration) =>
     {

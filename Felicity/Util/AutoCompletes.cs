@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using Felicity.DiscordCommands.Interactions;
 using Felicity.Models;
+using Felicity.Models.Caches;
 
 namespace Felicity.Util;
 
@@ -55,5 +56,30 @@ public class RunByteAutocomplete : AutocompleteHandler
         }
 
         return AutocompletionResult.FromSuccess(resultList);
+    }
+}
+
+public class CheckpointAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var cpCache = ProcessCpData.ReadJson();
+
+        var result = cpCache?.CpInventory.Checkpoints
+            .Select(activeCp => new AutocompleteResult(activeCp.Name, activeCp.Name)).ToList();
+
+        if (result == null)
+            return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful,
+                "Failed to fetch checkpoints from cache.");
+        result = result.OrderBy(x => x.Name).ToList();
+
+        result.Add(new AutocompleteResult("--- Others", "Other"));
+
+        return AutocompletionResult.FromSuccess(result);
+
     }
 }

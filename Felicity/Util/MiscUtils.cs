@@ -10,6 +10,13 @@ public static class MiscUtils
         return dateTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
     }
 
+    public static DateTime TimeStampToDateTime(double unixTimeStamp)
+    {
+        var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+        return dateTime;
+    }
+
     public static Server GetServer(ServerDb serverDb, ulong guildId)
     {
         var server = serverDb.Servers.FirstOrDefault(x => x.ServerId == guildId);
