@@ -49,9 +49,10 @@ public class RunByteAutocomplete : AutocompleteHandler
 
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
-        foreach (var availableByte in FunCommands.AvailableBytes.Where(availableByte => currentSearch != null && availableByte.ToLower().Contains(currentSearch.ToLower())))
+        foreach (var availableByte in FunCommands.AvailableBytes.Where(availableByte =>
+                     currentSearch != null && availableByte.ToLower().Contains(currentSearch.ToLower())))
         {
-            resultList.Add(new AutocompleteResult{Name = availableByte, Value = i});
+            resultList.Add(new AutocompleteResult { Name = availableByte, Value = i });
             i++;
         }
 
@@ -80,6 +81,39 @@ public class CheckpointAutocomplete : AutocompleteHandler
         result.Add(new AutocompleteResult("--- Others", "Other"));
 
         return AutocompletionResult.FromSuccess(result);
+    }
+}
 
+public class MementoWeaponAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var source = (from autocompleteOption in autocompleteInteraction.Data.Options
+            where autocompleteOption.Name == "source"
+            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+
+        var memCache = ProcessMementoData.ReadJson();
+
+        if (memCache == null)
+            return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful, "Memento cache not found.");
+
+        var goodSource = memCache.MementoInventory?.FirstOrDefault(x => x.Source == source);
+
+        if (goodSource?.WeaponList == null)
+            return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful, "Memento cache not found.");
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        var results = (from weapon in goodSource.WeaponList
+            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+
+        results = results.OrderBy(x => x.Name).ToList();
+
+        return AutocompletionResult.FromSuccess(results);
     }
 }
