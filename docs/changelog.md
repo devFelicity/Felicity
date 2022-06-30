@@ -8,6 +8,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0]
+### Added
+- Honestly... too much to remember.
+- `/server` command revamp. Now groups everything.
+- `/server summary`, check on your server settings.
+
+### Changed
+- Rebuilt on aspnet... Painful, but worth it.
+
+### Removed
+- Many `/server` commands have been grouped into a single new command.
+
+## [5.3.2] - 2022-06-21
+### Changed
+- Change up Twitch embeds to show the game icon for easier eyeballing.
+
+## [5.3.1] - 2022-06-20
+### Changed
+- Fixed TWAB search logic to (hopefully) include all TWABs.
+
 ## [5.3.0] - 2022-06-17
 ### Added
 - `/lookup wish` command: view wishes from the Last Wish raid for easy reference
