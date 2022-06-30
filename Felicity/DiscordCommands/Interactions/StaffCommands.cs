@@ -27,7 +27,7 @@ public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
         _bungieClient = bungieClient;
     }
 
-    [SlashCommand("mod_forcerefresh", "Forcefully refreshes all users tokens.")]
+    [SlashCommand("mod_refresh", "Forcefully refreshes all users tokens.")]
     public async Task ForceRefresh()
     {
         await RespondAsync("Triggering refresh...");

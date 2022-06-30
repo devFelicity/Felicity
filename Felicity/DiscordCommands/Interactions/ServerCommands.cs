@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using DotNetBungieAPI.Models;
 using Felicity.Models;
 using Felicity.Services;
 using Felicity.Util;

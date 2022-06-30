@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Felicity.Models.Caches;
 
 public class MementoCache
@@ -31,7 +33,7 @@ public class MementoCache
     }
 }
 
-public class ProcessMementoData
+public static class ProcessMementoData
 {
     private const string FilePath = "Data/mementoCache.json";
 
