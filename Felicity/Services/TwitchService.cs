@@ -246,7 +246,7 @@ public class TwitchService
                         },
                         new()
                         {
-                            Name = "Duration", Value = (e.Stream.StartedAt - DateTime.Now).Humanize(),
+                            Name = "Duration", Value = (e.Stream.StartedAt - DateTime.UtcNow).Humanize(),
                             IsInline = true
                         },
                         new()
@@ -266,19 +266,13 @@ public class TwitchService
                 var message = await ((SocketTextChannel)_discordClient.GetChannel(
                         _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
                     .GetMessageAsync(activeStream.MessageId);
-                try
-                {
-                    (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
-                    {
-                        properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
-                        properties.Embed = embed.Build();
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"Error in Twitch OnStreamOffline\n{ex.GetType()}: {ex.Message}");
-                }
 
+                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                {
+                    properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
+                    properties.Embed = embed.Build();
+                });
+                
                 streamsToRemove.Add(activeStream);
             }
 
