@@ -56,8 +56,6 @@ public class Preconditions
                 // ReSharper disable once InvertIf
                 if (user.OAuthTokenExpires < nowTime)
                 {
-                    await context.Interaction.DeferAsync();
-
                     user = await user.RefreshToken(services.GetService<IBungieClient>()!, nowTime);
 
                     Log.Information($"Refreshed token for {user.BungieName}.");
