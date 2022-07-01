@@ -18,8 +18,8 @@ public class TwitchService
 {
     private static LiveStreamMonitorService? _monitorService;
     private readonly DiscordShardedClient _discordClient;
-    private readonly TwitchStreamDb _twitchStreamDb;
     private readonly TwitchAPI _twitchApi;
+    private readonly TwitchStreamDb _twitchStreamDb;
 
     public TwitchService(DiscordShardedClient discordClient,
         IOptions<TwitchOptions> twitchOptions, TwitchStreamDb twitchStreamDb)
@@ -53,8 +53,8 @@ public class TwitchService
             _monitorService.SetChannelsByName(streamList);
             Log.Information($"Listening to Twitch streams from: {string.Join(", ", streamList)}");
 
-            if(!BotVariables.IsDebug)
-                _monitorService.Start();
+            // if(!BotVariables.IsDebug)
+            _monitorService.Start();
         }
         else
         {
@@ -64,215 +64,230 @@ public class TwitchService
 
     private async void OnStreamOnline(object? sender, OnStreamOnlineArgs e)
     {
-        Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
-
-        var streamList = await _twitchStreamDb.TwitchStreams.Where(x => x.TwitchName == e.Channel).ToListAsync();
-
-        var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
-
-        if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
+        try
         {
-            Log.Error("No channel found for online stream.");
-            return;
-        }
+            Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-        var channelInfo = channelInfoTask.Users.FirstOrDefault();
-        var timeStarted = e.Stream.StartedAt.GetTimestamp();
-
-        var gameBoxImageTask = await _twitchApi.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId });
-        var gameBoxImage = gameBoxImageTask.Games.FirstOrDefault()?.BoxArtUrl;
-
-        var embed = new EmbedBuilder
-        {
-            Author = new EmbedAuthorBuilder
+            var activeStreams = _twitchStreamDb.ActiveStreams.Any(x => x.StreamId == e.Stream.Id);
+            if (activeStreams)
             {
-                Name = e.Stream.UserName,
-                IconUrl = channelInfo?.ProfileImageUrl
-            },
-            Color = Color.Green,
-            ThumbnailUrl = gameBoxImage?.Replace("{width}x{height}", "150x200"),
-            Title = e.Stream.Title,
-            Url = $"https://twitch.tv/{e.Stream.UserName}",
-            ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
-            Footer = Embeds.MakeFooter(),
-            Fields = new List<EmbedFieldBuilder>
+                Log.Information("Stream already posted.");
+                return;
+            }
+
+            var streamList = await _twitchStreamDb.TwitchStreams.Where(x => x.TwitchName == e.Channel).ToListAsync();
+
+            var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
+
+            if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
             {
-                new()
+                Log.Error("No channel found for online stream.");
+                return;
+            }
+
+            var channelInfo = channelInfoTask.Users.FirstOrDefault();
+            var timeStarted = e.Stream.StartedAt.GetTimestamp();
+
+            var gameBoxImageTask = await _twitchApi.Helix.Games.GetGamesAsync(new List<string> { e.Stream.GameId });
+            var gameBoxImage = gameBoxImageTask.Games.FirstOrDefault()?.BoxArtUrl;
+
+            var embed = new EmbedBuilder
+            {
+                Author = new EmbedAuthorBuilder
                 {
-                    Name = "Game",
-                    Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
-                    IsInline = true
+                    Name = e.Stream.UserName,
+                    IconUrl = channelInfo?.ProfileImageUrl
                 },
-                new()
+                Color = Color.Green,
+                ThumbnailUrl = gameBoxImage?.Replace("{width}x{height}", "150x200"),
+                Title = e.Stream.Title,
+                Url = $"https://twitch.tv/{e.Stream.UserName}",
+                ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
+                Footer = Embeds.MakeFooter(),
+                Fields = new List<EmbedFieldBuilder>
                 {
-                    Name = "Started",
-                    Value = $"<t:{timeStarted}:R>",
-                    IsInline = true
+                    new()
+                    {
+                        Name = "Game",
+                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                        IsInline = true
+                    },
+                    new()
+                    {
+                        Name = "Started",
+                        Value = $"<t:{timeStarted}:R>",
+                        IsInline = true
+                    }
                 }
-            }
-        };
+            };
 
-        foreach (var stream in streamList)
-            try
-            {
-                var activeStream = new ActiveStream
+            foreach (var stream in streamList)
+                try
                 {
-                    ConfigId = stream.Id,
-                    StreamId = e.Stream.Id
-                };
+                    var activeStream = new ActiveStream
+                    {
+                        ConfigId = stream.Id,
+                        StreamId = e.Stream.Id
+                    };
 
-                var mention = "";
-                if (stream.MentionEveryone)
-                    mention = "@everyone ";
-                else if (stream.MentionRole != null)
-                    mention = $"<@&{stream.MentionRole}> ";
+                    var mention = "";
+                    if (stream.MentionEveryone)
+                        mention = "@everyone ";
+                    else if (stream.MentionRole != null)
+                        mention = $"<@&{stream.MentionRole}> ";
 
-                var mentionUser = stream.UserId == null
-                    ? e.Channel
-                    : $"<@{stream.UserId}>";
+                    var mentionUser = stream.UserId == null
+                        ? e.Channel
+                        : $"<@{stream.UserId}>";
 
-                var message = await _discordClient.GetGuild(stream.ServerId)
-                    .GetTextChannel(stream.ChannelId)
-                    .SendMessageAsync(
-                        $"{mentionUser} is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
-                        false, embed.Build());
+                    var message = await _discordClient.GetGuild(stream.ServerId)
+                        .GetTextChannel(stream.ChannelId)
+                        .SendMessageAsync(
+                            $"{mentionUser} is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
+                            false, embed.Build());
 
-                activeStream.MessageId = message.Id;
+                    activeStream.MessageId = message.Id;
 
-                _twitchStreamDb.ActiveStreams.Add(activeStream);
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"Error in OnStreamOnline: {exception.GetType()}: {exception.Message}");
-            }
+                    _twitchStreamDb.ActiveStreams.Add(activeStream);
+                }
+                catch (Exception exception)
+                {
+                    Log.Error($"Error in OnStreamOnline: {exception.GetType()}: {exception.Message}");
+                }
 
-        await _twitchStreamDb.SaveChangesAsync();
+            await _twitchStreamDb.SaveChangesAsync();
+        }
+        catch (Exception exception)
+        {
+            Log.Error(exception, $"OnStreamOnline - {e.Stream.UserName} / {e.Stream.Id}");
+        }
     }
 
     private async void OnStreamOffline(object? sender, OnStreamOfflineArgs e)
     {
-        Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
-
-        var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId == e.Stream.Id);
-        if (!activeStreams.Any())
+        try
         {
-            Log.Error("No active streams found for monitored channel.");
-            return;
-        }
+            Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-        var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
-
-        if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
-        {
-            Log.Error("No channel found for online stream.");
-            return;
-        }
-
-        var channelInfo = channelInfoTask.Users.FirstOrDefault();
-
-        var vodList = await _twitchApi.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1);
-
-        var vodUrl = string.Empty;
-        EmbedBuilder embed;
-
-        if (vodList != null && vodList.Videos.Length != 0)
-        {
-            var vod = vodList.Videos.First();
-            vodUrl = $" <https://www.twitch.tv/videos/{vod.Id}>";
-
-            var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
-             
-            embed = new EmbedBuilder
+            var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId == e.Stream.Id).ToList();
+            if (!activeStreams.Any())
             {
-                Color = Color.Red,
-                Title = vod.Title,
-                Url = vodUrl,
-                ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
-                ThumbnailUrl = channelInfo?.ProfileImageUrl,
-                Footer = Embeds.MakeFooter(),
-                Fields = new List<EmbedFieldBuilder>
+                Log.Error("No active streams found for monitored channel.");
+                return;
+            }
+
+            var channelInfoTask = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { e.Stream.UserId });
+
+            if (channelInfoTask == null || channelInfoTask.Users.Length == 0)
+            {
+                Log.Error("No channel found for online stream.");
+                return;
+            }
+
+            var channelInfo = channelInfoTask.Users.FirstOrDefault();
+
+            var vodList =
+                await _twitchApi.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1);
+
+            var vodUrl = string.Empty;
+            EmbedBuilder embed;
+
+            if (vodList != null && vodList.Videos.Length != 0)
+            {
+                var vod = vodList.Videos.First();
+                vodUrl = $" <https://www.twitch.tv/videos/{vod.Id}>";
+
+                var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
+
+                embed = new EmbedBuilder
                 {
-                    new()
+                    Color = Color.Red,
+                    Title = vod.Title,
+                    Url = vodUrl,
+                    ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
+                    ThumbnailUrl = channelInfo?.ProfileImageUrl,
+                    Footer = Embeds.MakeFooter(),
+                    Fields = new List<EmbedFieldBuilder>
                     {
-                        Name = "Started", Value = $"<t:{unixTimestamp}:f>",
-                        IsInline = true
-                    },
-                    new()
-                    {
-                        Name = "Duration", Value = vod.Duration,
-                        IsInline = true
-                    },
-                    new()
-                    {
-                        Name = "Game",
-                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
-                        IsInline = true
+                        new()
+                        {
+                            Name = "Started", Value = $"<t:{unixTimestamp}:f>",
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "Duration", Value = vod.Duration,
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "Game",
+                            Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                            IsInline = true
+                        }
                     }
-                }
-            };
-        }
-        else
-        {
-            embed = new EmbedBuilder
+                };
+            }
+            else
             {
-                Color = Color.Purple,
-                Title = e.Stream.Title,
-                ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
-                ThumbnailUrl = channelInfo?.ProfileImageUrl,
-                Footer = Embeds.MakeFooter(),
-                Fields = new List<EmbedFieldBuilder>
+                embed = new EmbedBuilder
                 {
-                    new()
+                    Color = Color.Purple,
+                    Title = e.Stream.Title,
+                    ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
+                    ThumbnailUrl = channelInfo?.ProfileImageUrl,
+                    Footer = Embeds.MakeFooter(),
+                    Fields = new List<EmbedFieldBuilder>
                     {
-                        Name = "Started", Value = e.Stream.StartedAt.ToString("F"),
-                        IsInline = true
-                    },
-                    new()
-                    {
-                        Name = "Duration", Value = (e.Stream.StartedAt - DateTime.Now).Humanize(),
-                        IsInline = true
-                    },
-                    new()
-                    {
-                        Name = "Game",
-                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
-                        IsInline = true
+                        new()
+                        {
+                            Name = "Started", Value = e.Stream.StartedAt.ToString("F"),
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "Duration", Value = (e.Stream.StartedAt - DateTime.UtcNow).Humanize(),
+                            IsInline = true
+                        },
+                        new()
+                        {
+                            Name = "Game",
+                            Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                            IsInline = true
+                        }
                     }
-                }
-            };
-        }
+                };
+            }
 
-        var streamsToRemove = new List<ActiveStream>();
+            var streamsToRemove = new List<ActiveStream>();
 
-        foreach (var activeStream in activeStreams)
-        {
-            var message =
-                ((SocketTextChannel)_discordClient.GetChannel(
-                    _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
-                .GetMessageAsync(activeStream.MessageId)
-                .Result;
-            try
+            foreach (var activeStream in activeStreams)
             {
+                var message = await ((SocketTextChannel)_discordClient.GetChannel(
+                        _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
+                    .GetMessageAsync(activeStream.MessageId);
+
                 (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
                 {
                     properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
                     properties.Embed = embed.Build();
                 });
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error in Twitch OnStreamOffline\n{ex.GetType()}: {ex.Message}");
+                
+                streamsToRemove.Add(activeStream);
             }
 
-            streamsToRemove.Add(activeStream);
+            _twitchStreamDb.ActiveStreams.RemoveRange(streamsToRemove);
+            await _twitchStreamDb.SaveChangesAsync();
         }
-
-        _twitchStreamDb.ActiveStreams.RemoveRange(streamsToRemove);
+        catch (Exception exception)
+        {
+            Log.Error(exception, $"OnStreamOffline - {e.Stream.UserName} / {e.Stream.Id}");
+        }
     }
 
     public void RestartMonitor()
     {
-        if(_monitorService is { Enabled: true })
+        if (_monitorService is { Enabled: true })
             _monitorService.Stop();
 
         ConfigureMonitor();
