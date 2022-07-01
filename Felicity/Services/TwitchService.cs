@@ -203,7 +203,7 @@ public class TwitchService
                 {
                     Color = Color.Red,
                     Title = vod.Title,
-                    Url = vodUrl,
+                    Url = vodUrl.Replace("<", "").Replace(">", ""),
                     ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
                     ThumbnailUrl = channelInfo?.ProfileImageUrl,
                     Footer = Embeds.MakeFooter(),
