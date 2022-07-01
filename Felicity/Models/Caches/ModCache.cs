@@ -127,7 +127,7 @@ public static class ProcessModData
         return modCache;
     }
 
-    private static async Task<ModCache> PopulateMods(IBungieClient bungieClient, BungieLocales lg, ModCache modCache,
+    private static Task<ModCache> PopulateMods(IBungieClient bungieClient, BungieLocales lg, ModCache modCache,
         uint vendor,
         IReadOnlyDictionary<uint, PersonalDestinyVendorSaleItemSetComponent> salesData)
     {
@@ -182,6 +182,6 @@ public static class ProcessModData
             i++;
         }
 
-        return modCache;
+        return Task.FromResult(modCache);
     }
 }

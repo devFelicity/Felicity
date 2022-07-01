@@ -174,7 +174,7 @@ public static class ProcessXurData
         };
     }
 
-    private static async Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg, ItemTierType inventoryTierType,
+    private static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg, ItemTierType inventoryTierType,
         DestinyItemSocketsComponent xurPerk)
     {
         var response = new Dictionary<string, Perk>();
@@ -188,7 +188,7 @@ public static class ProcessXurData
         };
 
         if (goodPerkList.Length == 0)
-            return response;
+            return Task.FromResult(response);
 
         var i = 0;
 
@@ -226,7 +226,7 @@ public static class ProcessXurData
             }
         }
 
-        return response;
+        return Task.FromResult(response);
     }
 
     public static async Task<XurCache?> FetchInventory(BungieLocales lg, User oauth, IBungieClient bungieClient)

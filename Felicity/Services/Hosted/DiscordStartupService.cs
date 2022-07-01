@@ -58,7 +58,8 @@ public class DiscordStartupService : BackgroundService
         PrepareClientAwaiter();
         await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
         await _discordShardedClient.StartAsync();
-        await WaitForReadyAsync(stoppingToken);
+
+        /*await WaitForReadyAsync(stoppingToken);
 
         await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
@@ -66,7 +67,7 @@ public class DiscordStartupService : BackgroundService
         if (BotVariables.IsDebug)
             await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
         else
-            await _interactionService.RegisterCommandsGloballyAsync();
+            await _interactionService.RegisterCommandsGloballyAsync();*/
     }
 
     private static Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
