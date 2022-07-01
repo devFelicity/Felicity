@@ -83,7 +83,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
             if (vodList != null && vodList.Videos.Length != 0)
             {
                 var vod = vodList.Videos.First();
-                vodUrl = $" <https://www.twitch.tv/videos/{vod.Id}>";
+                vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
 
                 var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
 
@@ -119,6 +119,9 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 
             var streamsToRemove = new List<ActiveStream>();
 
+            if (!string.IsNullOrEmpty(vodUrl))
+                vodUrl = $" <{vodUrl}>";
+
             foreach (var activeStream in activeStreams)
             {
                 var message = await ((SocketTextChannel)Context.Client.GetChannel(
@@ -139,7 +142,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         }
         catch (Exception exception)
         {
-            Log.Error(exception, $"OnStreamOffline");
+            Log.Error(exception, "OnStreamOffline");
         }
     }
 }

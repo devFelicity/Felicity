@@ -261,6 +261,9 @@ public class TwitchService
 
             var streamsToRemove = new List<ActiveStream>();
 
+            if (!string.IsNullOrEmpty(vodUrl))
+                vodUrl = $" <{vodUrl}>";
+
             foreach (var activeStream in activeStreams)
             {
                 var message = await ((SocketTextChannel)_discordClient.GetChannel(
