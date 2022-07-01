@@ -5,14 +5,18 @@ namespace Felicity.Util;
 
 public static class BotVariables
 {
+    // TODO: move these to settings
     public const ulong BotOwnerId = 684854397871849482;
-    public const string BungieBaseUrl = "https://www.bungie.net/";
+    public const ulong CpChannelId = 973173481162285106;
     public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
+
+    public const string BungieBaseUrl = "https://www.bungie.net/";
 
     internal static string? Version;
     internal static bool IsDebug;
 
     public static SocketTextChannel? DiscordLogChannel { get; set; }
+    
 
     public static async Task Initialize()
     {
@@ -30,7 +34,7 @@ public static class BotVariables
         }
     }
 
-    public class Images
+    public static class Images
     {
         public const string ModVendorIcon =
             "https://bungie.net/common/destiny2_content/icons/23599621d4c63076c647384028d96ca4.png";
@@ -40,5 +44,7 @@ public static class BotVariables
 
         public const string SaintVendorLogo =
             "https://bungie.net/common/destiny2_content/icons/c3cb40c2b36cccd2f6cf462f14c89736.png";
+
+        public const string SadFace = "https://cdn.tryfelicity.one/images/peepoSad.png";
     }
 }

@@ -8,7 +8,6 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
-using TwitchLib.PubSub.Events;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global

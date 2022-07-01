@@ -11,10 +11,8 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.PresentationNodes;
 using Felicity.Util;
 using Serilog;
-using TwitchLib.PubSub.Events;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedAutoPropertyAccessor.Global

@@ -8,7 +8,6 @@ using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.SandboxPerks;
 using Felicity.Util;
-using TwitchLib.PubSub.Events;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedType.Global

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;

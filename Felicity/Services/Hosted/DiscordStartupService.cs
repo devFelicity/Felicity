@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -9,6 +10,7 @@ using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Serilog.Context;
 using IResult = Discord.Interactions.IResult;
 
 namespace Felicity.Services.Hosted;
@@ -65,20 +67,53 @@ public class DiscordStartupService : BackgroundService
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
         if (BotVariables.IsDebug)
+        {
+            await _discordShardedClient.Rest.DeleteAllGlobalCommandsAsync();
+
             await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
+        }
         else
             await _interactionService.RegisterCommandsGloballyAsync();
     }
 
-    private static Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
+    private static async Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
     {
         if (result.IsSuccess || !result.Error.HasValue)
-            return Task.CompletedTask;
+            return;
 
-        var msg = $"Failed to execute command: {result.Error.GetType()}: {result.ErrorReason}";
-        Log.Error(msg);
+        var errorEmbed = Embeds.MakeErrorEmbed();
+        errorEmbed.Title = "Failed to execute command.";
 
-        return Task.CompletedTask;
+        errorEmbed.Description = $"You can report this error either in our [Support Server]({BotVariables.DiscordInvite}) " +
+                                 "or by creating a [GitHub Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=)";
+
+        var debugOptions = new List<string>();
+        var options = ((SocketSlashCommand)arg2.Interaction).Data;
+        if (options != null && options.Options.Count > 0)
+        {
+            var opt = options.Options.First();
+            debugOptions.Add($"SubCommand = {opt.Name}");
+            debugOptions.AddRange(opt.Options.Select(socketSlashCommandDataOption =>
+                $"{socketSlashCommandDataOption.Name} = {socketSlashCommandDataOption.Value}"));
+        }
+
+        var errorMessage = $"{result.Error}: {result.ErrorReason}";
+
+        errorEmbed.AddField("Command", $"```{options!.Name}```");
+        errorEmbed.AddField("Parameters", $"```{JsonSerializer.Serialize(debugOptions)}```");
+        errorEmbed.AddField("Error", $"```{errorMessage}```");
+
+        await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
+
+        using (LogContext.PushProperty("context", new
+               {
+                   CommandName = options.Name,
+                   CommandParameters = debugOptions,
+                   ServerId = arg2.Interaction.GuildId ?? 0
+               }))
+        {
+            Log.Error(errorMessage);
+        }
     }
 
     private async Task OnMessageReceived(SocketMessage socketMessage)
@@ -87,7 +122,7 @@ public class DiscordStartupService : BackgroundService
             return;
 
         if (socketUserMessage.Author.IsBot)
-            if (socketUserMessage.Channel.Id == 973173481162285106)
+            if (socketUserMessage.Channel.Id == BotVariables.CpChannelId)
             {
                 ProcessCpData.Populate(socketMessage);
                 return;
@@ -117,12 +152,9 @@ public class DiscordStartupService : BackgroundService
             Log.Information($"Banned user `{socketInteraction.User}` tried to run a command.");
             return;
         }
-
+        
         var shardedInteractionContext = new ShardedInteractionContext(_discordShardedClient, socketInteraction);
-        var command = await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
-
-        if (command.Error != null)
-            Log.Error($"{command.Error}: {command.ErrorReason}");
+        await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
     }
 
     private async Task HandleJoin(SocketGuildUser arg)
