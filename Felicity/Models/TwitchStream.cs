@@ -28,7 +28,7 @@ public class ActiveStream
     [Key]
     public int Id { get; set; }
     public int ConfigId { get; set; }
-    public string StreamId { get; set; } = string.Empty;
+    public ulong StreamId { get; set; }
     public ulong MessageId { get; set; }
 }
 

@@ -68,7 +68,7 @@ public class TwitchService
         {
             Log.Information($"Processing online Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-            var activeStreams = _twitchStreamDb.ActiveStreams.Any(x => x.StreamId == e.Stream.Id);
+            var activeStreams = _twitchStreamDb.ActiveStreams.Any(x => x.StreamId.ToString() == e.Stream.Id);
             if (activeStreams)
             {
                 Log.Information("Stream already posted.");
@@ -127,7 +127,7 @@ public class TwitchService
                     var activeStream = new ActiveStream
                     {
                         ConfigId = stream.Id,
-                        StreamId = e.Stream.Id
+                        StreamId = Convert.ToUInt64(e.Stream.Id)
                     };
 
                     var mention = "";
@@ -169,7 +169,7 @@ public class TwitchService
         {
             Log.Information($"Processing offline Twitch stream by {e.Channel} - Stream ID: {e.Stream.Id}");
 
-            var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId == e.Stream.Id).ToList();
+            var activeStreams = _twitchStreamDb.ActiveStreams.Where(x => x.StreamId.ToString() == e.Stream.Id).ToList();
             if (!activeStreams.Any())
             {
                 Log.Error("No active streams found for monitored channel.");

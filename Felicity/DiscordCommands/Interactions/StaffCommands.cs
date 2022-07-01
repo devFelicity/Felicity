@@ -1,7 +1,4 @@
-﻿using Discord;
-using Discord.Interactions;
-using DotNetBungieAPI.Clients;
-using Felicity.Models;
+﻿using Discord.Interactions;
 using Felicity.Util;
 
 // ReSharper disable NotAccessedField.Local
@@ -14,7 +11,7 @@ namespace Felicity.DiscordCommands.Interactions;
 [Preconditions.RequireBotModerator]
 public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
 {
-    private readonly UserDb _userDb;
+    /*private readonly UserDb _userDb;
     private readonly ServerDb _serverDb;
     private readonly TwitchStreamDb _streamDb;
     private readonly IBungieClient _bungieClient;
@@ -49,5 +46,5 @@ public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         await RespondAsync(embed: eb.Build(), ephemeral: true);
-    }
+    }*/
 }
