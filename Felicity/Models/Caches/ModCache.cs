@@ -8,7 +8,6 @@ using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.SandboxPerks;
 using Felicity.Util;
-using TwitchLib.PubSub.Events;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedType.Global
@@ -127,7 +126,7 @@ public static class ProcessModData
         return modCache;
     }
 
-    private static async Task<ModCache> PopulateMods(IBungieClient bungieClient, BungieLocales lg, ModCache modCache,
+    private static Task<ModCache> PopulateMods(IBungieClient bungieClient, BungieLocales lg, ModCache modCache,
         uint vendor,
         IReadOnlyDictionary<uint, PersonalDestinyVendorSaleItemSetComponent> salesData)
     {
@@ -182,6 +181,6 @@ public static class ProcessModData
             i++;
         }
 
-        return modCache;
+        return Task.FromResult(modCache);
     }
 }

@@ -10,7 +10,6 @@ using DotNetBungieAPI.Models.Destiny.Responses;
 using Felicity.Models;
 using Felicity.Util;
 using Felicity.Util.Enums;
-using Serilog;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -61,34 +60,20 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync();
 
-        long membershipId;
-        BungieMembershipType membershipType;
-        string bungieName;
+        var name = bungieTag.Split("#").First();
+        var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-        try
+        var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
+        if (goodProfile == null)
         {
-            var name = bungieTag.Split("#").First();
-            var code = Convert.ToInt16(bungieTag.Split("#").Last());
-
-            var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-            if (goodProfile == null)
-            {
-                await FollowupAsync($"No profiles found matching `{bungieTag}`.");
-                return;
-            }
-
-            membershipId = goodProfile.MembershipId;
-            membershipType = goodProfile.MembershipType;
-            bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
-        }
-        catch (Exception ex)
-        {
-            var msg = $"Failed to lookup: {bungieTag}\n{ex.GetType()}: {ex.Message}";
-
-            Log.Error(msg, ex);
-            await FollowupAsync(msg);
+            await FollowupAsync($"No profiles found matching `{bungieTag}`.");
             return;
         }
+
+        var membershipId = goodProfile.MembershipId;
+        var membershipType = goodProfile.MembershipType;
+        var bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
+        
         var profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new []{
                 DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
             });
@@ -223,31 +208,20 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         }
         else
         {
-            try
+            var name = bungieTag.Split("#").First();
+            var code = Convert.ToInt16(bungieTag.Split("#").Last());
+
+            var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
+
+            if (goodProfile == null)
             {
-                var name = bungieTag.Split("#").First();
-                var code = Convert.ToInt16(bungieTag.Split("#").Last());
-
-                var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-
-                if (goodProfile == null)
-                {
-                    await FollowupAsync($"No profiles found matching `{bungieTag}`.");
-                    return;
-                }
-
-                membershipId = goodProfile.MembershipId;
-                membershipType = goodProfile.MembershipType;
-                bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
-            }
-            catch (Exception ex)
-            {
-                var msg = $"Failed to lookup: {bungieTag}\n{ex.GetType()}: {ex.Message}";
-                Log.Error(ex, msg);
-
-                await FollowupAsync($"Failed to lookup profile.\n{ex.GetType()}: {ex.Message}");
+                await FollowupAsync($"No profiles found matching `{bungieTag}`.");
                 return;
             }
+
+            membershipId = goodProfile.MembershipId;
+            membershipType = goodProfile.MembershipType;
+            bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
         }
 
         var player = _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new[]

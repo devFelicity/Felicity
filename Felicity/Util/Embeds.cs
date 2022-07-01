@@ -60,7 +60,8 @@ public static class Embeds
         var builder = new EmbedBuilder
         {
             Color = Color.Red,
-            Footer = MakeFooter()
+            Footer = MakeFooter(),
+            ThumbnailUrl = BotVariables.Images.SadFace
         };
 
         return builder;
