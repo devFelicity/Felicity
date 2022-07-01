@@ -195,7 +195,7 @@ public class TwitchService
             if (vodList != null && vodList.Videos.Length != 0)
             {
                 var vod = vodList.Videos.First();
-                vodUrl = $" <https://www.twitch.tv/videos/{vod.Id}>";
+                vodUrl = $"https://www.twitch.tv/videos/{vod.Id}";
 
                 var unixTimestamp = DateTime.Parse(vod.CreatedAt).ToUniversalTime().GetTimestamp();
 
@@ -203,7 +203,7 @@ public class TwitchService
                 {
                     Color = Color.Red,
                     Title = vod.Title,
-                    Url = vodUrl.Replace("<", "").Replace(">", ""),
+                    Url = vodUrl,
                     ImageUrl = vod.ThumbnailUrl.Replace("%{width}x%{height}", "1280x720"),
                     ThumbnailUrl = channelInfo?.ProfileImageUrl,
                     Footer = Embeds.MakeFooter(),
