@@ -55,6 +55,15 @@
         "doc",
         "example"
       ]
+    },
+    {
+      "login": "TheLastJoaquin",
+      "name": "TheLastJoaquin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108595663?v=4",
+      "profile": "https://github.com/TheLastJoaquin",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "projectName": "FelicityOne",
