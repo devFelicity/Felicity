@@ -67,7 +67,7 @@ public class Preconditions
             }
 
             msg = "This command requires you to be registered to provide user information to the API.\n" +
-                  "Please user `/user register` and try again.";
+                  "Please use `/user register` and try again.";
             await context.Interaction.RespondAsync(msg);
 
             return PreconditionResult.FromError(msg);

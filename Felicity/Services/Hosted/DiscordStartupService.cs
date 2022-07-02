@@ -85,7 +85,7 @@ public class DiscordStartupService : BackgroundService
         errorEmbed.Title = "Failed to execute command.";
 
         errorEmbed.Description = $"You can report this error either in our [Support Server]({BotVariables.DiscordInvite}) " +
-                                 "or by creating a [GitHub Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=)";
+                                 "or by creating a [GitHub Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=).";
 
         var debugOptions = new List<string>();
         var options = ((SocketSlashCommand)arg2.Interaction).Data;
