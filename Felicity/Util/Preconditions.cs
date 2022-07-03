@@ -11,22 +11,24 @@ public class Preconditions
 {
     public class RequireBotModerator : PreconditionAttribute
     {
-        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
+        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
             ICommandInfo commandInfo, IServiceProvider services)
         {
             if (context.User.Id == BotVariables.BotOwnerId)
-                return Task.FromResult(PreconditionResult.FromSuccess());
+                return PreconditionResult.FromSuccess();
 
             if (((IGuildUser)context.User).GuildPermissions.ManageGuild)
-                return Task.FromResult(PreconditionResult.FromSuccess());
+                return PreconditionResult.FromSuccess();
 
             if (context.Guild.OwnerId == context.User.Id)
-                return Task.FromResult(PreconditionResult.FromSuccess());
+                return PreconditionResult.FromSuccess();
 
             const string msg =
                 "You are not a bot moderator for this server.";
 
-            return Task.FromResult(PreconditionResult.FromError(msg));
+            await context.Interaction.RespondAsync(msg);
+
+            return PreconditionResult.FromError(msg);
         }
     }
 
@@ -67,7 +69,7 @@ public class Preconditions
             }
 
             msg = "This command requires you to be registered to provide user information to the API.\n" +
-                  "Please user `/user register` and try again.";
+                  "Please use `/user register` and try again.";
             await context.Interaction.RespondAsync(msg);
 
             return PreconditionResult.FromError(msg);
