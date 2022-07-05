@@ -11,8 +11,8 @@ namespace Felicity.Models;
 
 public class User
 {
-    [Key]
-    public ulong DiscordId { get; set; }
+    [Key] public ulong DiscordId { get; set; }
+
     public string OAuthToken { get; set; } = string.Empty;
     public DateTime OAuthTokenExpires { get; set; }
     public string OAuthRefreshToken { get; set; } = string.Empty;
@@ -40,12 +40,12 @@ public static class UserExtensions
     public static AuthorizationTokenData GetTokenData(this User user)
     {
         return new AuthorizationTokenData
-        { 
+        {
             AccessToken = user.OAuthToken,
             RefreshToken = user.OAuthRefreshToken,
-            ExpiresIn = (int) (user.OAuthTokenExpires - DateTime.UtcNow).TotalSeconds,
+            ExpiresIn = (int)(user.OAuthTokenExpires - DateTime.UtcNow).TotalSeconds,
             MembershipId = user.BungieMembershipId,
-            RefreshExpiresIn = (int) (user.OAuthRefreshExpires - DateTime.UtcNow).TotalSeconds,
+            RefreshExpiresIn = (int)(user.OAuthRefreshExpires - DateTime.UtcNow).TotalSeconds,
             TokenType = "Bearer"
         };
     }
@@ -60,12 +60,12 @@ public class UserDb : DbContext
         _connectionString = configuration.GetConnectionString("MySQLDb");
     }
 
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+    public DbSet<User> Users { get; set; } = null!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
         optionsBuilder.UseMySql(_connectionString, serverVersion);
     }
-        
-    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-    public DbSet<User> Users { get; set; } = null!;
 }

@@ -172,7 +172,8 @@ public static class ProcessXurData
         };
     }
 
-    private static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg, ItemTierType inventoryTierType,
+    private static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg,
+        ItemTierType inventoryTierType,
         DestinyItemSocketsComponent xurPerk)
     {
         var response = new Dictionary<string, Perk>();
@@ -207,9 +208,9 @@ public static class ProcessXurData
         }
 
         var fetchList = (from keyPair in response
-                let valuePerkId = keyPair.Value.PerkId
-                where valuePerkId != null
-                select (uint)valuePerkId)
+                         let valuePerkId = keyPair.Value.PerkId
+                         where valuePerkId != null
+                         select (uint)valuePerkId)
             .ToList();
 
         foreach (var fetchPerk in fetchList)
@@ -293,7 +294,7 @@ public static class ProcessXurData
         };
 
         var manifestFetch = xurExotics.Select(vendorItem => vendorItem.Item.Hash).ToList();
-        
+
         foreach (var item in manifestFetch.Where(item => item != null))
         {
             bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!, lg,
@@ -309,24 +310,27 @@ public static class ProcessXurData
                     xurCache.XurInventory.Weapons.Exotic.Add(new Weapon
                     {
                         Name = manifestItem.DisplayProperties.Name,
-                        WeaponId = (uint) vendorItem.Item.Hash!
+                        WeaponId = (uint)vendorItem.Item.Hash!
                     });
                     break;
                 case DestinyItemType.Armor:
                     xurCache.XurInventory.Armor.Exotic.Add(new Armor
                     {
-                        ArmorId = (uint) vendorItem.Item.Hash!,
+                        ArmorId = (uint)vendorItem.Item.Hash!,
                         ArmorName = manifestItem.DisplayProperties.Name,
                         CharacterClass = manifestItem.ClassType,
                         Stats = new Stats
                         {
-                            Mobility = xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Mobility].Value,
+                            Mobility =
+                                xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Mobility].Value,
                             Resilience =
                                 xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Resilience].Value,
-                            Recovery = xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Recovery].Value,
+                            Recovery =
+                                xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Recovery].Value,
                             Discipline =
                                 xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Discipline].Value,
-                            Intellect = xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Intellect].Value,
+                            Intellect = xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Intellect]
+                                .Value,
                             Strength = xurStats[vendorItem.VendorItemIndex].Stats[DefinitionHashes.Stats.Strength].Value
                         }
                     });
@@ -347,8 +351,9 @@ public static class ProcessXurData
             var weapon = new Weapon
             {
                 Name = manifestItem.DisplayProperties.Name,
-                WeaponId = (uint) vendorItem.Item.Hash!,
-                Perks = await BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue, xurSockets[vendorItem.VendorItemIndex])
+                WeaponId = (uint)vendorItem.Item.Hash!,
+                Perks = await BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue,
+                    xurSockets[vendorItem.VendorItemIndex])
             };
 
             // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
@@ -361,7 +366,7 @@ public static class ProcessXurData
                     xurCache.XurInventory.Weapons.Legendary.Add(weapon);
                     break;
                 default:
-                    continue;    
+                    continue;
             }
         }
 

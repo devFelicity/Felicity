@@ -16,7 +16,7 @@ public static class BotVariables
     internal static bool IsDebug;
 
     public static SocketTextChannel? DiscordLogChannel { get; set; }
-    
+
 
     public static async Task Initialize()
     {

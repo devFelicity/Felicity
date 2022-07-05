@@ -74,7 +74,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 if (obj.IsComplete && hideComplete)
                     continue;
 
-                field.Value += $"\n{manifestRecord.DisplayProperties.Name}: ";
+                field.Value += "\n > ";
 
                 if (obj.IsComplete)
                 {
@@ -85,7 +85,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     var inventoryItemCount = GetItemCount(request, manifestRecord.Hash);
                     if (inventoryItemCount > 0)
                     {
-                        field.Value += $"⚠️ {obj.Progress + inventoryItemCount}/{obj.CompletionValue}";
+                        field.Value += $"{obj.Progress + inventoryItemCount}/{obj.CompletionValue} ⚠️ ";
                         updateDescription = true;
                     }
                     else
@@ -93,6 +93,9 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                         field.Value += $"{obj.Progress}/{obj.CompletionValue}";
                     }
                 }
+
+                field.Value +=
+                    $" - [{manifestRecord.DisplayProperties.Name}](https://light.gg/db/items/{Craftables.GetWeaponId(manifestRecord.Hash)})";
             }
 
             if (string.IsNullOrEmpty((string?)field.Value)) continue;

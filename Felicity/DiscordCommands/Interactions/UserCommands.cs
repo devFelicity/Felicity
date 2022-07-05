@@ -37,7 +37,7 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync(true);
         var embed = Embeds.MakeBuilder();
-        
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
 
         if (user != null)

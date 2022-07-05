@@ -8,4 +8,5 @@ namespace Felicity.DiscordCommands.Interactions;
 
 [Preconditions.RequireBotModerator]
 public class StaffCommands : InteractionModuleBase<ShardedInteractionContext>
-{ }
+{
+}

@@ -73,7 +73,9 @@ public class DiscordStartupService : BackgroundService
             await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
         }
         else
+        {
             await _interactionService.RegisterCommandsGloballyAsync();
+        }
     }
 
     private static async Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
@@ -87,8 +89,9 @@ public class DiscordStartupService : BackgroundService
         var errorEmbed = Embeds.MakeErrorEmbed();
         errorEmbed.Title = "Failed to execute command.";
 
-        errorEmbed.Description = $"You can report this error either in our [Support Server]({BotVariables.DiscordInvite}) " +
-                                 "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
+        errorEmbed.Description =
+            $"You can report this error either in our [Support Server]({BotVariables.DiscordInvite}) " +
+            "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
 
         var debugOptions = new List<string>();
         var options = ((SocketSlashCommand)arg2.Interaction).Data;
@@ -109,11 +112,11 @@ public class DiscordStartupService : BackgroundService
         await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
 
         using (LogContext.PushProperty("context", new
-               {
-                   CommandName = options.Name,
-                   CommandParameters = debugOptions,
-                   ServerId = arg2.Interaction.GuildId ?? 0
-               }))
+        {
+            CommandName = options.Name,
+            CommandParameters = debugOptions,
+            ServerId = arg2.Interaction.GuildId ?? 0
+        }))
         {
             Log.Error(errorMessage);
         }
@@ -155,7 +158,7 @@ public class DiscordStartupService : BackgroundService
             Log.Information($"Banned user `{socketInteraction.User}` tried to run a command.");
             return;
         }
-        
+
         var shardedInteractionContext = new ShardedInteractionContext(_discordShardedClient, socketInteraction);
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
     }

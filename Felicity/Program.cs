@@ -151,7 +151,7 @@ try
     app.MapControllers();
     app.UseMvc();
     app.UseHttpsRedirection();
-    if (!app.Environment.IsDevelopment()) 
+    if (!app.Environment.IsDevelopment())
         app.UseHsts();
 
     await app.RunAsync();

@@ -7,7 +7,7 @@ namespace Felicity.Models.Caches;
 public class MementoCache
 {
     public MementoInventoryElement[]? MementoInventory { get; set; }
-    
+
     public class MementoInventoryElement
     {
         public MementoSource Source { get; set; }

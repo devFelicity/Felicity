@@ -10,8 +10,8 @@ namespace Felicity.Models;
 
 public class Server
 {
-    [Key]
-    public ulong ServerId { get; set; }
+    [Key] public ulong ServerId { get; set; }
+
     public BungieLocales BungieLocale { get; set; }
     public ulong? AnnouncementChannel { get; set; }
     public ulong? StaffChannel { get; set; }
@@ -34,12 +34,12 @@ public class ServerDb : DbContext
         _connectionString = configuration.GetConnectionString("MySQLDb");
     }
 
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+    public DbSet<Server> Servers { get; set; } = null!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
         optionsBuilder.UseMySql(_connectionString, serverVersion);
     }
-        
-    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-    public DbSet<Server> Servers { get; set; } = null!;
 }

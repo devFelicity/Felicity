@@ -12,12 +12,13 @@ namespace Felicity.Util;
 
 public static class BungieApiUtils
 {
-    public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(IBungieClient client, long membershipId, BungieMembershipType membershipType)
+    public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(IBungieClient client, long membershipId,
+        BungieMembershipType membershipType)
     {
         var result = new DestinyProfileUserInfoCard();
 
         var linkedProfiles = await client.ApiAccess.Destiny2.GetLinkedProfiles(membershipType, membershipId);
-        
+
         foreach (var potentialProfile in linkedProfiles.Response.Profiles)
             if (potentialProfile.DateLastPlayed > result.DateLastPlayed)
                 result = potentialProfile;
@@ -25,7 +26,8 @@ public static class BungieApiUtils
         return result;
     }
 
-    public static async Task<DestinyProfileUserInfoCard?> GetLatestProfile(IBungieClient bungieClient, string bungieName, short bungieCode)
+    public static async Task<DestinyProfileUserInfoCard?> GetLatestProfile(IBungieClient bungieClient,
+        string bungieName, short bungieCode)
     {
         var userInfoCard = await bungieClient.ApiAccess.Destiny2.SearchDestinyPlayerByBungieName(
             BungieMembershipType.All,
@@ -45,9 +47,8 @@ public static class BungieApiUtils
     public static async Task ForceRefresh(IBungieClient client, UserDb userDb)
     {
         var nowTime = DateTime.UtcNow;
-        
+
         foreach (var user in userDb.Users)
-        {
             try
             {
                 var token = new AuthorizationTokenData
@@ -69,7 +70,6 @@ public static class BungieApiUtils
             {
                 Console.WriteLine($"Caught {e.GetType()}: {e.Message}\n{user.BungieName}");
             }
-        }
 
         await userDb.SaveChangesAsync();
     }

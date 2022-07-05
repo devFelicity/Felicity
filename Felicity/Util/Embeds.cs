@@ -51,7 +51,7 @@ public static class Embeds
                 Value = socketUser.Id
             }
         };
-        
+
         return embed;
     }
 
