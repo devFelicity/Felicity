@@ -32,8 +32,6 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]
     public async Task Xur()
     {
-        await DeferAsync();
-
         if (ProcessXurData.IsXurHere())
         {
             var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
@@ -67,8 +65,6 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("mods", "Get list of mods currently available at vendors.")]
     public async Task Mods()
     {
-        await DeferAsync();
-
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (user == null)
         {
@@ -90,8 +86,6 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("saint14", "Fetch Saint-14 (Trials of Osiris) reputation rewards for the week.")]
     public async Task Saint14()
     {
-        await DeferAsync();
-
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (user == null)
         {
