@@ -19,8 +19,8 @@ namespace Felicity.DiscordCommands.Interactions;
 public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly UserDb _userDb;
     private readonly ServerDb _serverDb;
+    private readonly UserDb _userDb;
 
     public CraftingCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb)
     {
@@ -34,9 +34,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         [Summary("hidecomplete", "Hide completed recipes? (default: true)")]
         bool hideComplete = true)
     {
-        if(!Context.Interaction.HasResponded)
-            await DeferAsync();
-
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
 
@@ -68,7 +65,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             foreach (var weaponId in weaponList)
             {
-                _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage, out var manifestRecord);
+                _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
+                    out var manifestRecord);
 
                 var record = request.Response.ProfileRecords.Data.Records[weaponId];
                 var obj = record.Objectives.First();
@@ -108,7 +106,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         if (updateDescription)
             embed.Description += "\n\n⚠️ = Includes incomplete deepsight weapons.";
 
-        if (embed.Fields.Count == 0) 
+        if (embed.Fields.Count == 0)
             embed.Description = "You have completed all available patterns.";
 
         await FollowupAsync(embed: embed.Build());
@@ -120,10 +118,9 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         allItems.AddRange(request.Response.CharacterInventories.Data.Values.SelectMany(d => d.Items));
         allItems.AddRange(request.Response.CharacterEquipment.Data.Values.SelectMany(d => d.Items));
 
-        var counter = allItems
-            .Where(destinyItemComponent => destinyItemComponent.GetHashCode() == Craftables.GetWeaponId(recordDefinitionHash))
-            .Count(destinyItemComponent => destinyItemComponent.State.HasFlag(ItemState.HighlightedObjective));
+        var goodHash = Craftables.GetWeaponId(recordDefinitionHash);
 
-        return counter;
+        return allItems.Where(destinyItemComponent => destinyItemComponent.Item.Hash == goodHash)
+            .Count(destinyItemComponent => destinyItemComponent.State.HasFlag(ItemState.HighlightedObjective));
     }
 }

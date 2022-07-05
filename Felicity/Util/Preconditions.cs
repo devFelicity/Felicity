@@ -37,6 +37,8 @@ public class Preconditions
         public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
             ICommandInfo commandInfo, IServiceProvider services)
         {
+            await context.Interaction.DeferAsync();
+
             var dbSet = services.GetService<UserDb>();
             var user = dbSet?.Users.FirstOrDefault(x => x.DiscordId == context.User.Id);
             var nowTime = DateTime.UtcNow;
@@ -50,7 +52,7 @@ public class Preconditions
                         "Your information has expired and needs to be refreshed.\n" +
                         "Please run `/user register` and follow the instructions.";
 
-                    await context.Interaction.RespondAsync(msg);
+                    await context.Interaction.FollowupAsync(msg);
 
                     return PreconditionResult.FromError(msg);
                 }
@@ -70,7 +72,7 @@ public class Preconditions
 
             msg = "This command requires you to be registered to provide user information to the API.\n" +
                   "Please use `/user register` and try again.";
-            await context.Interaction.RespondAsync(msg);
+            await context.Interaction.FollowupAsync(msg);
 
             return PreconditionResult.FromError(msg);
         }
