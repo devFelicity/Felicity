@@ -63,7 +63,7 @@ public class BungieAuthController : ControllerBase
 
             user = new User
             {
-                DiscordId = discordId,
+                DiscordId = discordId
             };
         }
 
@@ -84,7 +84,7 @@ public class BungieAuthController : ControllerBase
         user.BungieName = latestProfile.BungieGlobalDisplayName + "#" + latestProfile.BungieGlobalDisplayNameCode;
         user.DestinyMembershipId = latestProfile.MembershipId;
         user.DestinyMembershipType = latestProfile.MembershipType;
-        
+
         if (addUser)
             _dbContext.Users.Add(user);
 

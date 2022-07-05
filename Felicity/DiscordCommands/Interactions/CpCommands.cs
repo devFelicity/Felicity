@@ -34,4 +34,3 @@ public class Checkpoint : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: ProcessCpData.BuildCpEmbed(activity));
     }
 }
-

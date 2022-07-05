@@ -105,8 +105,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         await Task.Delay(0);
 
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
-            where autocompleteOption.Name == "source"
-            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+                      where autocompleteOption.Name == "source"
+                      select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
 
         var memCache = ProcessMementoData.ReadJson();
 
@@ -121,8 +121,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var results = (from weapon in goodSource.WeaponList
-            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
-            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+                       where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+                       select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
 
         results = results.OrderBy(x => x.Name).ToList();
 

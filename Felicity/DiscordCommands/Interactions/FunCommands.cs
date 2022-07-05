@@ -19,7 +19,8 @@ public class FunCommands : InteractionModuleBase<ShardedInteractionContext>
 
     [SlashCommand("byte", "Miscellaneous commands that don't really need their own command.")]
     public async Task RunByte(
-        [Autocomplete(typeof(RunByteAutocomplete))] [Summary("byte", "Name of the command to run.")] int byteNumber)
+        [Autocomplete(typeof(RunByteAutocomplete))] [Summary("byte", "Name of the command to run.")]
+        int byteNumber)
     {
         await DeferAsync();
 

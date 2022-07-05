@@ -11,6 +11,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     [Command("ping")]
     public async Task Pong()
     {
+        // ReSharper disable once StringLiteralTypo
         await ReplyAsync("<:NOOOOOOOOOOOOOT:855149582177533983>");
     }
 

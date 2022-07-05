@@ -20,8 +20,8 @@ namespace Felicity.DiscordCommands.Interactions;
 public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly UserDb _userDb;
     private readonly ServerDb _serverDb;
+    private readonly UserDb _userDb;
 
     public LookupCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb)
     {
@@ -52,9 +52,9 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    [SlashCommand("accountshare", "Look up account shared emblems of a player.")]
+    [SlashCommand("account-share", "Look up account shared emblems of a player.")]
     public async Task LookupAccountShare(
-        [Summary("bungiename",
+        [Summary("bungie-name",
             "Bungie name of the requested user (name#1234).")]
         string bungieTag)
     {
@@ -73,10 +73,11 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var membershipId = goodProfile.MembershipId;
         var membershipType = goodProfile.MembershipType;
         var bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
-        
-        var profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new []{
-                DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
-            });
+
+        var profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new[]
+        {
+            DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
+        });
 
         if (profile.Response.ProfileCollectibles.Data == null)
         {
@@ -101,11 +102,12 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var manifestInventoryItems = new List<DestinyInventoryItemDefinition>();
         foreach (var destinyInventoryItemDefinition in manifestInventoryItemIDs)
         {
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)destinyInventoryItemDefinition!, lg, out var result);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
+                (uint)destinyInventoryItemDefinition!, lg, out var result);
 
             manifestInventoryItems.Add(result);
         }
-        
+
         var manifestCollectibles = new List<DestinyCollectibleDefinition>();
         foreach (var definitionHashPointer in manifestCollectibleIDs)
         {
@@ -116,21 +118,21 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         foreach (var collectible in from collectible in manifestCollectibles
-                 where !collectible.Redacted
-                 where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
-                 from manifestCollectibleParentNodeHash in collectible.ParentNodes
-                 where EmblemCats.EmblemCatList.Contains((EmblemCat) manifestCollectibleParentNodeHash.Hash!)
-                 select collectible)
+                                    where !collectible.Redacted
+                                    where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
+                                    from manifestCollectibleParentNodeHash in collectible.ParentNodes
+                                    where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
+                                    select collectible)
         {
             emblemCount++;
 
             var value = profile.Response.ProfileCollectibles.Data.Collectibles[collectible.Hash];
 
             foreach (var unused in from emblem in manifestInventoryItems
-                     where emblem.Collectible.Hash == collectible.Hash
-                     where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                     where !emblemList.Contains(collectible)
-                     select emblem) emblemList.Add(collectible);
+                                   where emblem.Collectible.Hash == collectible.Hash
+                                   where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                                   where !emblemList.Contains(collectible)
+                                   select emblem) emblemList.Add(collectible);
 
             if (value.State.HasFlag(DestinyCollectibleState.Invisible) &&
                 !value.State.HasFlag(DestinyCollectibleState.NotAcquired))
@@ -180,7 +182,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
     [SlashCommand("guardian", "Look up a profile of a player.")]
     public async Task LookupGuardian(
-        [Summary("bungiename", "Bungie name of the requested user (name#1234). Defaults to your own.")]
+        [Summary("bungie-name", "Bungie name of the requested user (name#1234). Defaults to your own.")]
         string bungieTag = "")
     {
         await DeferAsync();

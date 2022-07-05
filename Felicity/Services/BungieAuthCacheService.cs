@@ -22,7 +22,9 @@ public static class BungieAuthCacheService
 
     public static void TryAddContext(OAuthCreatingTicketContext authCreatingTicketContext)
     {
-        var tokenData = authCreatingTicketContext.TokenResponse.Response!.Deserialize<AuthorizationTokenData>(_jsonSerializerOptions);
+        var tokenData =
+            authCreatingTicketContext.TokenResponse.Response!.Deserialize<AuthorizationTokenData>(
+                _jsonSerializerOptions);
         _authContexts.TryAdd(tokenData!.MembershipId, (authCreatingTicketContext, tokenData));
     }
 

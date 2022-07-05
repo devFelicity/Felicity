@@ -150,15 +150,19 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             if (reward.Quantity != 1)
                 continue;
 
-            if (reward.Item.Hash is DefinitionHashes.InventoryItems.PowerfulTrialsGear or DefinitionHashes.InventoryItems.ResetRank_1514009869)
+            if (reward.Item.Hash is DefinitionHashes.InventoryItems.PowerfulTrialsGear
+                or DefinitionHashes.InventoryItems.ResetRank_1514009869)
                 continue;
 
             var plugHash1 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(3).Plug.Hash;
             var plugHash2 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(4).Plug.Hash;
 
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)reward.Item.Hash!, lg, out var result1);
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash1!, lg, out var result2);
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash2!, lg, out var result3);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)reward.Item.Hash!,
+                lg, out var result1);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash1!, lg,
+                out var result2);
+            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash2!, lg,
+                out var result3);
 
             var manifestItems = new[]
             {

@@ -1,8 +1,8 @@
-﻿using Felicity.Options;
-using Felicity.Services.Hosted;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Felicity.Options;
+using Felicity.Services.Hosted;
 
 namespace Felicity.Extensions;
 
