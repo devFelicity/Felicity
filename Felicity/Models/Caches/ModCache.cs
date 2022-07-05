@@ -38,13 +38,16 @@ public static class ProcessModData
             Name = "Mod Vendors:",
             IconUrl = BotVariables.Images.ModVendorIcon
         };
-        embed.Description = "Ada-1 and Banshee-44 can both be found in the Tower.\n\n⚠️ - not owned in collections.";
+        embed.Description = "Ada-1 and Banshee-44 can both be found in the Tower.";
 
         var adaMods = await GetMods(bungieClient, self, DefinitionHashes.Vendors.Ada1_350061650, user);
         var bansheeMods = await GetMods(bungieClient, self, DefinitionHashes.Vendors.Banshee44_672118013, user);
 
         embed.AddField("Ada-1", adaMods, true);
         embed.AddField("Banshee-44", bansheeMods, true);
+
+        if (adaMods.Contains("⚠️") || bansheeMods.Contains("⚠️"))
+            embed.Description += "\n\n⚠️ - not owned in collections.";
 
         return embed.Build();
     }
