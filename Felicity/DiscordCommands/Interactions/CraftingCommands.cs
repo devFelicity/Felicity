@@ -65,17 +65,18 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         if (!showWq)
         {
-            craftableList.Remove("Witch Queen");
-            craftableList.Remove("Wellspring");
+            craftableList.Remove(Craftables.CraftSource.Wq);
+            craftableList.Remove(Craftables.CraftSource.WqWellspring);
         }
 
-        if (!showRaid) craftableList.Remove("Vow of the Disciple");
+        if (!showRaid)
+            craftableList.Remove(Craftables.CraftSource.RaidVotD);
 
         if (!showSeasonal)
         {
-            craftableList.Remove("Risen");
-            craftableList.Remove("Haunted");
-            craftableList.Remove("Leviathan");
+            craftableList.Remove(Craftables.CraftSource.SeasonRisen);
+            craftableList.Remove(Craftables.CraftSource.SeasonHaunted);
+            craftableList.Remove(Craftables.CraftSource.Leviathan);
         }
 
         foreach (var (source, weaponList) in craftableList)
