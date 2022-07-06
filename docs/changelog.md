@@ -8,6 +8,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.0]
+### Added
+- New `/support` command for finding useful links related to Felicity.
+
+### Changed
+- Allowed hiding of certain fields in `/recipes`, this will allow for easier viewing once more categories get added throughout the seasons.
+- Fixed a crash when commands were ran in DMs with the bot.
+- Fixed an issue where logging was not working as intended.
+- Fixed an issue where oauth flow could fail due to visibility issues.
+
 ## [6.1.0]
 ### Added
 - Felicity server changelog channel is now an announcement channel, you can now follow the channel for updates in your own server.
