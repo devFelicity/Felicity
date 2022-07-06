@@ -110,7 +110,7 @@ public static class ProcessXurData
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
         {
             exoticArmors +=
-                $"[{exoticArmor.ArmorName}]({WeaponHelper.BuildLightGGLink(exoticArmor.ArmorId)}) [{WeaponHelper.TotalStats(exoticArmor.Stats)}]\n";
+                $"[{exoticArmor.ArmorName}]({MiscUtils.GetLightGgLink(exoticArmor.ArmorId)}) [{WeaponHelper.TotalStats(exoticArmor.Stats)}]\n";
             exoticArmors +=
                 $"{EmoteHelper.GetEmote(discordClient, "", "Mobility", 0)} {exoticArmor.Stats.Mobility:00} ";
             exoticArmors +=
@@ -143,14 +143,14 @@ public static class ProcessXurData
         foreach (var weapon in weapons)
             if (weapon.Perks.Count == 0)
             {
-                result += $"[{weapon.Name}]({WeaponHelper.BuildLightGGLink(weapon.WeaponId)}/)\n\n";
+                result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/)\n\n";
             }
             else
             {
                 if (gunsmithLink)
                     result += $"[{weapon.Name}]({WeaponHelper.BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
                 else
-                    result += $"[{weapon.Name}]({WeaponHelper.BuildLightGGLink(weapon.WeaponId)}/) | ";
+                    result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/) | ";
 
                 foreach (var (_, value) in weapon.Perks)
                     result += EmoteHelper.GetEmote(discordClient, value.IconPath!, value.Perkname!, value.PerkId);

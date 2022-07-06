@@ -175,7 +175,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 continue;
 
             var fullMessage =
-                $"[{manifestItems[0].DisplayProperties.Name}]({WeaponHelper.BuildLightGGLink(manifestItems[0].Hash)})\n";
+                $"[{manifestItems[0].DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestItems[0].Hash)})\n";
 
             fullMessage += EmoteHelper.GetEmote(Context.Client, manifestItems[1].DisplayProperties.Icon.RelativePath,
                 manifestItems[1].DisplayProperties.Name, plugHash1);

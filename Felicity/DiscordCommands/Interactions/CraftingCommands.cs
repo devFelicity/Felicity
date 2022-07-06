@@ -95,7 +95,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 }
 
                 field.Value +=
-                    $" - [{manifestRecord.DisplayProperties.Name}](https://light.gg/db/items/{Craftables.GetWeaponId(manifestRecord.Hash)})";
+                    $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
             }
 
             if (string.IsNullOrEmpty((string?)field.Value)) continue;

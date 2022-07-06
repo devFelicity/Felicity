@@ -78,7 +78,7 @@ public static class ProcessModData
                         if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
                             missing = "⚠️ ";
 
-            result = result + $"{missing}[{mod.Name}](https://www.light.gg/db/items/{mod.Id})\n" +
+            result = result + $"{missing}[{mod.Name}]({MiscUtils.GetLightGgLink(mod.Id)})\n" +
                      $"> {Format.Italics(mod.Description)}\n\n";
         }
 

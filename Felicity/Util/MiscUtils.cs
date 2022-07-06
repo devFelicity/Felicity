@@ -32,4 +32,11 @@ public static class MiscUtils
 
         return server;
     }
+
+    public static string GetLightGgLink(uint itemId)
+    {
+        var shareId = Convert.ToBase64String(BitConverter.GetBytes(itemId)).Replace('+', '-').Replace('/', '_')
+            .Trim('=');
+        return $"https://light.gg/i/{shareId}";
+    }
 }
