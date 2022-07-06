@@ -31,8 +31,14 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
-        [Summary("hidecomplete", "Hide completed recipes? (default: true)")]
-        bool hideComplete = true)
+        [Summary("hide-complete", "Hide completed recipes? (default: true)")]
+        bool hideComplete = true,
+        [Summary("show-wq", "Show Witch Queen recipes? (default: true)")]
+        bool showWq = true,
+        [Summary("show-raid", "Show raid recipes? (default: true)")]
+        bool showRaid = true,
+        [Summary("show-seasonal", "Show seasonal recipes? (default: true)")]
+        bool showSeasonal = true)
     {
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
@@ -55,7 +61,26 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var updateDescription = false;
 
-        foreach (var (source, weaponList) in Craftables.CraftableList)
+        var craftableList = Craftables.CraftableList;
+
+        if (!showWq)
+        {
+            craftableList.Remove("Witch Queen");
+            craftableList.Remove("Wellspring");
+        }
+
+        if (!showRaid)
+        {
+            craftableList.Remove("Vow of the Disciple");
+        }
+        if (!showSeasonal)
+        {
+            craftableList.Remove("Risen");
+            craftableList.Remove("Haunted");
+            craftableList.Remove("Leviathan");
+        }
+
+        foreach (var (source, weaponList) in craftableList)
         {
             var field = new EmbedFieldBuilder
             {
