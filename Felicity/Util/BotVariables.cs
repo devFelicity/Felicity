@@ -9,14 +9,13 @@ public static class BotVariables
     public const ulong BotOwnerId = 684854397871849482;
     public const ulong CpChannelId = 973173481162285106;
     public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
-
     public const string BungieBaseUrl = "https://www.bungie.net/";
-
-    internal static string? Version;
+    internal static string ErrorMessage = $"You can report this error either in our [Support Server]({DiscordInvite}) " +
+                                          "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
     internal static bool IsDebug;
+    internal static string? Version;
 
     public static SocketTextChannel? DiscordLogChannel { get; set; }
-
 
     public static async Task Initialize()
     {
