@@ -1,4 +1,5 @@
-﻿using DotNetBungieAPI.Models;
+﻿using Discord.WebSocket;
+using DotNetBungieAPI.Models;
 using Felicity.Models;
 
 namespace Felicity.Util;
@@ -38,5 +39,14 @@ public static class MiscUtils
         var shareId = Convert.ToBase64String(BitConverter.GetBytes(itemId)).Replace('+', '-').Replace('/', '_')
             .Trim('=');
         return $"https://light.gg/i/{shareId}";
+    }
+
+    public static BungieLocales GetLanguage(SocketGuild? contextGuild, ServerDb serverDb)
+    {
+        if (contextGuild == null)
+            return BungieLocales.EN;
+
+        return serverDb.Servers.FirstOrDefault(x => x.ServerId == contextGuild.Id)?.BungieLocale ??
+             BungieLocales.EN;
     }
 }

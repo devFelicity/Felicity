@@ -96,8 +96,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var manifestCollectibleIDs =
             profile.Response.ProfileCollectibles.Data.Collectibles.Select(collectible => collectible.Key).ToList();
 
-        var lg = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id)?.BungieLocale ??
-                 BungieLocales.EN;
+        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         var manifestInventoryItems = new List<DestinyInventoryItemDefinition>();
         foreach (var destinyInventoryItemDefinition in manifestInventoryItemIDs)

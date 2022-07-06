@@ -41,8 +41,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 return;
             }
 
-            var lg = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id)?.BungieLocale ??
-                     BungieLocales.EN;
+            var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
             // if (!File.Exists($"Data/xurCache-{lg}.json"))
             //     await FollowupAsync("Populating vendor data, this might take some time...");
@@ -72,8 +71,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var server = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id);
-        var lg = server?.BungieLocale ?? BungieLocales.EN;
+        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         // if (!File.Exists($"Data/modCache-{lg}.json"))
         //     await FollowupAsync("Populating vendor data, this might take some time...");
@@ -139,9 +137,8 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             + "These rewards change perks based on weekly reset.";
 
         var i = 0;
-        var server = _serverDb.Servers.FirstOrDefault(x => x.ServerId == Context.Guild.Id);
 
-        var lg = server?.BungieLocale ?? BungieLocales.EN;
+        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         foreach (var repReward in repRewards)
         {
