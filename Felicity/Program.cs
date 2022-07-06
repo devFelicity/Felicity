@@ -32,6 +32,16 @@ try
 
     Console.Title = $"Felicity v.{BotVariables.Version}";
 
+    if (!BotVariables.IsDebug)
+        builder.WebHost.UseSentry(options =>
+        {
+            options.AttachStacktrace = true;
+            options.Dsn = builder.Configuration.GetSection("SentryDsn").Value;
+            options.MinimumBreadcrumbLevel = LogLevel.Information;
+            options.MinimumEventLevel = LogLevel.Warning;
+            options.Release = $"FelicityOne@{BotVariables.Version}";
+        });
+
     var bungieApiOptions = new BungieApiOptions();
     builder.Configuration.GetSection("Bungie").Bind(bungieApiOptions);
 
@@ -141,6 +151,8 @@ try
     var app = builder.Build();
 
     app.UseRouting();
+
+    app.UseSentryTracing();
 
     app.UseCookiePolicy(new CookiePolicyOptions
     {
