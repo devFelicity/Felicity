@@ -75,7 +75,7 @@ public class BungieAuthController : ControllerBase
 
         var linkedProfiles =
             await _bungieClient.ApiAccess.Destiny2.GetLinkedProfiles(BungieMembershipType.BungieNext,
-                user.BungieMembershipId);
+                user.BungieMembershipId, true);
 
         foreach (var potentialProfile in linkedProfiles.Response.Profiles)
             if (potentialProfile.DateLastPlayed > latestProfile.DateLastPlayed)

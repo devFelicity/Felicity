@@ -42,22 +42,18 @@ public class Preconditions
             var dbSet = services.GetService<UserDb>();
             var user = dbSet?.Users.FirstOrDefault(x => x.DiscordId == context.User.Id);
             var nowTime = DateTime.UtcNow;
-            string msg;
+
+            var errorEmbed = Embeds.MakeErrorEmbed();
 
             if (user != null)
             {
                 if (user.OAuthRefreshExpires < nowTime)
                 {
-                    msg =
+                    errorEmbed.Description =
                         "Your information has expired and needs to be refreshed.\n" +
                         "Please run `/user register` and follow the instructions.";
-
-                    await context.Interaction.FollowupAsync(msg);
-
-                    return PreconditionResult.FromError(msg);
                 }
 
-                // ReSharper disable once InvertIf
                 if (user.OAuthTokenExpires < nowTime)
                 {
                     user = await user.RefreshToken(services.GetService<IBungieClient>()!, nowTime);
@@ -67,14 +63,22 @@ public class Preconditions
                     await dbSet?.SaveChangesAsync()!;
                 }
 
-                return PreconditionResult.FromSuccess();
+                if (user.BungieMembershipId == 0)
+                {
+                    errorEmbed.Description = $"Your registration data is invalid, please run `/user register` again.\nIf the issue persists, {BotVariables.ErrorMessage}";
+                }
+            }
+            else
+            {
+                errorEmbed.Description = "This command requires you to be registered to provide user information to the API.\n" +
+                                         "Please use `/user register` and try again.";
             }
 
-            msg = "This command requires you to be registered to provide user information to the API.\n" +
-                  "Please use `/user register` and try again.";
-            await context.Interaction.FollowupAsync(msg);
+            if (string.IsNullOrEmpty(errorEmbed.Description))
+                return PreconditionResult.FromSuccess();
 
-            return PreconditionResult.FromError(msg);
+            await context.Interaction.FollowupAsync(embed: errorEmbed.Build());
+            return PreconditionResult.FromError(errorEmbed.Description);
         }
     }
 }

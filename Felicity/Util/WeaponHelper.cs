@@ -28,11 +28,6 @@ internal static class WeaponHelper
         };
     }
 
-    public static string BuildLightGGLink(uint itemId)
-    {
-        return $"https://light.gg/db/items/{itemId}";
-    }
-
     public static string BuildLightGGLink(string armorLegendarySet)
     {
         var search = armorLegendarySet.ToLower().Replace("suit", "")

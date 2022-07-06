@@ -23,7 +23,7 @@ public static class Embeds
         return new EmbedFooterBuilder
         {
             Text = $"Felicity v.{BotVariables.Version} | tryfelicity.one",
-            IconUrl = "https://cdn.tryfelicity.one/images/felicity_circle.jpg"
+            IconUrl = BotVariables.Images.FelicityCircle
         };
     }
 

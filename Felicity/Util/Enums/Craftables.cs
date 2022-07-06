@@ -7,7 +7,7 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
-            "Haunted", new List<uint>
+            CraftSource.SeasonHaunted, new List<uint>
             {
                 DefinitionHashes.Records.BumpintheNight,
                 DefinitionHashes.Records.Firefright,
@@ -18,7 +18,7 @@ internal static class Craftables
             }
         },
         {
-            "Leviathan", new List<uint>
+            CraftSource.Leviathan, new List<uint>
             {
                 DefinitionHashes.Records.Austringer,
                 DefinitionHashes.Records.Beloved,
@@ -29,7 +29,7 @@ internal static class Craftables
             }
         },
         {
-            "Risen", new List<uint>
+            CraftSource.SeasonRisen, new List<uint>
             {
                 DefinitionHashes.Records.ExplosivePersonality,
                 DefinitionHashes.Records.PieceofMind,
@@ -40,7 +40,7 @@ internal static class Craftables
             }
         },
         {
-            "Vow of the Disciple", new List<uint>
+            CraftSource.RaidVotD, new List<uint>
             {
                 DefinitionHashes.Records.Cataclysmic,
                 DefinitionHashes.Records.Deliverance,
@@ -51,7 +51,7 @@ internal static class Craftables
             }
         },
         {
-            "Wellspring", new List<uint>
+            CraftSource.WqWellspring, new List<uint>
             {
                 DefinitionHashes.Records.CometoPass,
                 DefinitionHashes.Records.EdgeofAction,
@@ -63,7 +63,7 @@ internal static class Craftables
             }
         },
         {
-            "Witch Queen", new List<uint>
+            CraftSource.Wq, new List<uint>
             {
                 DefinitionHashes.Records.EmpiricalEvidence,
                 DefinitionHashes.Records.ForensicNightmare,
@@ -78,6 +78,16 @@ internal static class Craftables
             }
         }
     };
+
+    public static class CraftSource
+    {
+        public const string SeasonHaunted = "Haunted";
+        public const string Leviathan = "Leviathan";
+        public const string SeasonRisen = "Risen";
+        public const string RaidVotD = "Vow of the Disciple";
+        public const string WqWellspring = "Wellspring";
+        public const string Wq = "Witch Queen";
+    }
 
     public static uint GetWeaponId(uint recordDefinitionHash)
     {

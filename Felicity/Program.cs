@@ -47,7 +47,7 @@ try
             .WriteTo.Console()
             .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day);
 
-        if (builder.Environment.IsProduction())
+        if (!BotVariables.IsDebug)
             serilogConfig
                 .WriteTo.Sentry(o =>
                 {

@@ -31,8 +31,14 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
-        [Summary("hidecomplete", "Hide completed recipes? (default: true)")]
-        bool hideComplete = true)
+        [Summary("hide-complete", "Hide completed recipes? (default: true)")]
+        bool hideComplete = true,
+        [Summary("show-wq", "Show Witch Queen recipes? (default: true)")]
+        bool showWq = true,
+        [Summary("show-raid", "Show raid recipes? (default: true)")]
+        bool showRaid = true,
+        [Summary("show-seasonal", "Show seasonal recipes? (default: true)")]
+        bool showSeasonal = true)
     {
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
@@ -55,7 +61,25 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var updateDescription = false;
 
-        foreach (var (source, weaponList) in Craftables.CraftableList)
+        var craftableList = Craftables.CraftableList;
+
+        if (!showWq)
+        {
+            craftableList.Remove(Craftables.CraftSource.Wq);
+            craftableList.Remove(Craftables.CraftSource.WqWellspring);
+        }
+
+        if (!showRaid)
+            craftableList.Remove(Craftables.CraftSource.RaidVotD);
+
+        if (!showSeasonal)
+        {
+            craftableList.Remove(Craftables.CraftSource.SeasonRisen);
+            craftableList.Remove(Craftables.CraftSource.SeasonHaunted);
+            craftableList.Remove(Craftables.CraftSource.Leviathan);
+        }
+
+        foreach (var (source, weaponList) in craftableList)
         {
             var field = new EmbedFieldBuilder
             {
@@ -95,7 +119,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 }
 
                 field.Value +=
-                    $" - [{manifestRecord.DisplayProperties.Name}](https://light.gg/db/items/{Craftables.GetWeaponId(manifestRecord.Hash)})";
+                    $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
             }
 
             if (string.IsNullOrEmpty((string?)field.Value)) continue;

@@ -89,9 +89,7 @@ public class DiscordStartupService : BackgroundService
         var errorEmbed = Embeds.MakeErrorEmbed();
         errorEmbed.Title = "Failed to execute command.";
 
-        errorEmbed.Description =
-            $"You can report this error either in our [Support Server]({BotVariables.DiscordInvite}) " +
-            "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
+        errorEmbed.Description = BotVariables.ErrorMessage;
 
         var debugOptions = new List<string>();
         var options = ((SocketSlashCommand)arg2.Interaction).Data;
@@ -109,17 +107,18 @@ public class DiscordStartupService : BackgroundService
         errorEmbed.AddField("Parameters", $"```{JsonSerializer.Serialize(debugOptions)}```");
         errorEmbed.AddField("Error", $"```{errorMessage}```");
 
-        await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
-
         using (LogContext.PushProperty("context", new
         {
+            Sender = arg2.User.ToString(),
             CommandName = options.Name,
-            CommandParameters = debugOptions,
+            CommandParameters = JsonSerializer.Serialize(debugOptions),
             ServerId = arg2.Interaction.GuildId ?? 0
         }))
         {
             Log.Error(errorMessage);
         }
+
+        await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
     }
 
     private async Task OnMessageReceived(SocketMessage socketMessage)
