@@ -152,7 +152,8 @@ try
 
     app.UseRouting();
 
-    app.UseSentryTracing();
+    if (!BotVariables.IsDebug)
+        app.UseSentryTracing();
 
     app.UseCookiePolicy(new CookiePolicyOptions
     {
