@@ -37,11 +37,11 @@ public static class BungieApiUtils
                 DisplayNameCode = bungieCode
             });
 
-        var response = userInfoCard.Response.First();
-        if (response == null)
+        var response = userInfoCard.Response;
+        if (response == null || response.Length == 0)
             return null;
 
-        return await GetLatestProfile(bungieClient, response.MembershipId, response.MembershipType);
+        return await GetLatestProfile(bungieClient, response.First().MembershipId, response.First().MembershipType);
     }
 
     public static async Task ForceRefresh(IBungieClient client, UserDb userDb)
