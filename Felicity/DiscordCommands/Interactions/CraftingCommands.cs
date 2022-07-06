@@ -69,10 +69,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             craftableList.Remove("Wellspring");
         }
 
-        if (!showRaid)
-        {
-            craftableList.Remove("Vow of the Disciple");
-        }
+        if (!showRaid) craftableList.Remove("Vow of the Disciple");
+
         if (!showSeasonal)
         {
             craftableList.Remove("Risen");
