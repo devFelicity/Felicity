@@ -60,13 +60,23 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync();
 
+        if (!bungieTag.Contains('#'))
+        {
+            var errorEmbed = Embeds.MakeErrorEmbed();
+            errorEmbed.Description = $"`{bungieTag}` is not a correct format for a Bungie name.\nTry again with the `<name>#<number>` format.";
+            await FollowupAsync(embed: errorEmbed.Build());
+            return;
+        }
+
         var name = bungieTag.Split("#").First();
         var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
         var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
         if (goodProfile == null)
         {
-            await FollowupAsync($"No profiles found matching `{bungieTag}`.");
+            var errorEmbed = Embeds.MakeErrorEmbed();
+            errorEmbed.Description = $"No profiles found matching `{bungieTag}`.";
+            await FollowupAsync(embed: errorEmbed.Build());
             return;
         }
 
