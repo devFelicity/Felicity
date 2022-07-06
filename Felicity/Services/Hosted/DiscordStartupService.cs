@@ -109,6 +109,7 @@ public class DiscordStartupService : BackgroundService
 
         using (LogContext.PushProperty("context", new
         {
+            Sender = arg2.User.ToString(),
             CommandName = options.Name,
             CommandParameters = JsonSerializer.Serialize(debugOptions),
             ServerId = arg2.Interaction.GuildId ?? 0
