@@ -45,5 +45,9 @@ public static class BotVariables
             "https://bungie.net/common/destiny2_content/icons/c3cb40c2b36cccd2f6cf462f14c89736.png";
 
         public const string SadFace = "https://cdn.tryfelicity.one/images/peepoSad.png";
+
+        public const string FelicityCircle = "https://cdn.tryfelicity.one/images/felicity_circle.jpg";
+
+        public const string FelicitySquare = "https://cdn.tryfelicity.one/images/felicity.jpg";
     }
 }
