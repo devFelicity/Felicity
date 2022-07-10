@@ -159,12 +159,9 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var embed = new EmbedBuilder
         {
-            Author = new EmbedAuthorBuilder
-            {
-                Name = bungieName,
-                Url = "https://www.bungie.net/7/en/User/Profile/254/" +
-                      profile.Response.Profile.Data.UserInfo.MembershipId
-            },
+            Title = bungieName,
+            Url = $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
+                  profile.Response.Profile.Data.UserInfo.MembershipId,
             Color = Color.Purple,
             ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
             Footer = Embeds.MakeFooter()
@@ -223,10 +220,11 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
             var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-
             if (goodProfile == null)
             {
-                await FollowupAsync($"No profiles found matching `{bungieTag}`.");
+                var errorEmbed = Embeds.MakeErrorEmbed();
+                errorEmbed.Description = $"No profiles found matching `{bungieTag}`.";
+                await FollowupAsync(embed: errorEmbed.Build());
                 return;
             }
 
