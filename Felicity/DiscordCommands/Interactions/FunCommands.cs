@@ -25,16 +25,16 @@ public class FunCommands : InteractionModuleBase<ShardedInteractionContext>
         await DeferAsync();
 
         var embed = Embeds.MakeBuilder();
-        embed = PopulateRunByte(AvailableBytes[byteNumber], embed);
+        embed = PopulateRunByte(byteNumber, embed);
 
         await FollowupAsync(embed: embed.Build());
     }
 
-    private static EmbedBuilder PopulateRunByte(string runByte, EmbedBuilder embed)
+    private static EmbedBuilder PopulateRunByte(int runByte, EmbedBuilder embed)
     {
         switch (runByte)
         {
-            case "fristy":
+            case 0:
                 embed.Author = new EmbedAuthorBuilder
                 {
                     IconUrl =
@@ -48,7 +48,7 @@ public class FunCommands : InteractionModuleBase<ShardedInteractionContext>
                                     "Breaker of Bongobutt Chains, and Father of Cuties <:mittensAWW:594996439508320297> Cutest there is, " +
                                     "Cutest there was, and the Cutest there ever will be!!! NO TAKE BACKS! <:mittensAWW:594996439508320297>";
                 break;
-            case "jess":
+            case 1:
                 embed.Author = new EmbedAuthorBuilder
                 {
                     IconUrl =
