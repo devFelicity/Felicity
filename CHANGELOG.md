@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.2]
+### Added
+- Add cache busting to twitch live thumbnails.
+
+### Changed
+- Mention users on join/leave for easier administration.
+- Fixed account-share loading incorrect platforms, leading to "error loading clan" messages from Bungie.net.
+
 ## [6.2.1]
 ### Changed
 - Added error handling in `accountshare` command.

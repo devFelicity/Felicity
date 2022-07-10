@@ -102,7 +102,8 @@ public class TwitchService
                 ThumbnailUrl = gameBoxImage?.Replace("{width}x{height}", "150x200"),
                 Title = e.Stream.Title,
                 Url = $"https://twitch.tv/{e.Stream.UserName}",
-                ImageUrl = e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720"),
+                ImageUrl =
+                    $"{e.Stream.ThumbnailUrl.Replace("{width}x{height}", "1280x720")}?{DateTime.UtcNow.GetTimestamp()}",
                 Footer = Embeds.MakeFooter(),
                 Fields = new List<EmbedFieldBuilder>
                 {

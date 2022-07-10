@@ -170,7 +170,7 @@ public class DiscordStartupService : BackgroundService
             if (serverSettings.MemberJoined != null && (bool)serverSettings.MemberJoined)
             {
                 var embed = Embeds.GenerateGuildUser(arg);
-                embed.Description = $"{Format.Bold(arg.Username)} joined the server!";
+                embed.Description = $"{arg.Mention} joined the server!";
 
                 await _discordShardedClient.GetGuild(arg.Guild.Id)
                     .GetTextChannel((ulong)serverSettings.MemberLogChannel).SendMessageAsync(embed: embed.Build());
@@ -185,7 +185,7 @@ public class DiscordStartupService : BackgroundService
             if (serverSettings.MemberLeft != null && (bool)serverSettings.MemberLeft)
             {
                 var embed = Embeds.GenerateGuildUser(arg2);
-                embed.Description = $"{Format.Bold(arg2.Username)} left the server!";
+                embed.Description = $"{arg2.Mention} left the server!";
 
                 await _discordShardedClient.GetGuild(arg1.Id)
                     .GetTextChannel((ulong)serverSettings.MemberLogChannel).SendMessageAsync(embed: embed.Build());
