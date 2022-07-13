@@ -2,8 +2,10 @@
 using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models.Caches;
 using Emote = Felicity.Models.Caches.Emote;
+// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
 
 namespace Felicity.Util;
 
@@ -82,66 +84,36 @@ internal static class EmoteHelper
         return result;
     }
 
-    public static string GetWeaponType(DestinyItemSubType manifestItemItemSubType)
+    public static string GetWeaponType(DestinyInventoryItemDefinition manifestItem)
     {
-        var result = string.Empty;
-
-        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        switch (manifestItemItemSubType)
+        var result = manifestItem.ItemSubType switch
         {
-            case DestinyItemSubType.AutoRifle:
-                result += "<:autorifle:996495566521520208> ";
-                break;
-            case DestinyItemSubType.Shotgun:
-                result += "<:shotgun:996495567825948672> ";
-                break;
-            case DestinyItemSubType.Machinegun:
-                result += "<:machinegun:996495568887087196> ";
-                break;
-            case DestinyItemSubType.HandCannon:
-                result += "<:handcannon:996492277373476906> ";
-                break;
-            case DestinyItemSubType.RocketLauncher:
-                result += "<:rocketlauncher:996493601083244695> ";
-                break;
-            case DestinyItemSubType.FusionRifle:
-                result += "<:fusionrifle:996495565082873976> ";
-                break;
-            case DestinyItemSubType.SniperRifle:
-                result += "<:sniperrifle:996492271212040243> ";
-                break;
-            case DestinyItemSubType.PulseRifle:
-                result += "<:pulserifle:996493599871078491> ";
-                break;
-            case DestinyItemSubType.ScoutRifle:
-                result += "<:scoutrifle:996492274953371769> ";
-                break;
-            case DestinyItemSubType.Sidearm:
-                result += "<:sidearm:996492272411619470> ";
-                break;
-            case DestinyItemSubType.Sword:
-                result += "<:sword:996492273795727361> ";
-                break;
-            case DestinyItemSubType.FusionRifleLine:
-                result += "<:linearfusion:996497905865195540> ";
-                break;
-            case DestinyItemSubType.GrenadeLauncher:
-                result += "<:grenadelauncher:996492276228436000> ";
-                break;
-            case DestinyItemSubType.SubmachineGun:
-                result += "<:submachinegun:996493598495359096> ";
-                break;
-            case DestinyItemSubType.TraceRifle:
-                result += "<:tracerifle:996495569650466929> ";
-                break;
-            case DestinyItemSubType.Bow:
-                result += "<:bow:996493602354114640> ";
-                break;
-            case DestinyItemSubType.Glaive:
-                result += "<:glaive:996495571126845491> ";
-                break;
-        }
+            DestinyItemSubType.AutoRifle => "<:autorifle:996495566521520208> ",
+            DestinyItemSubType.Shotgun => "<:shotgun:996495567825948672> ",
+            DestinyItemSubType.Machinegun => "<:machinegun:996495568887087196> ",
+            DestinyItemSubType.HandCannon => "<:handcannon:996492277373476906> ",
+            DestinyItemSubType.RocketLauncher => "<:rocketlauncher:996493601083244695> ",
+            DestinyItemSubType.FusionRifle => "<:fusionrifle:996495565082873976> ",
+            DestinyItemSubType.SniperRifle => "<:sniperrifle:996492271212040243> ",
+            DestinyItemSubType.PulseRifle => "<:pulserifle:996493599871078491> ",
+            DestinyItemSubType.ScoutRifle => "<:scoutrifle:996492274953371769> ",
+            DestinyItemSubType.Sidearm => "<:sidearm:996492272411619470> ",
+            DestinyItemSubType.Sword => "<:sword:996492273795727361> ",
+            DestinyItemSubType.FusionRifleLine => "<:linearfusion:996497905865195540> ",
+            DestinyItemSubType.GrenadeLauncher => "<:grenadelauncher:996492276228436000> ",
+            DestinyItemSubType.SubmachineGun => "<:submachinegun:996493598495359096> ",
+            DestinyItemSubType.TraceRifle => "<:tracerifle:996495569650466929> ",
+            DestinyItemSubType.Bow => "<:bow:996493602354114640> ",
+            DestinyItemSubType.Glaive => "<:glaive:996495571126845491> ",
+            DestinyItemSubType.None => manifestItem.ItemType switch
+            {
+                DestinyItemType.Vehicle => "<:sparrow:996727310805893181> ",
+                DestinyItemType.Ship => "<:ship:996727309069471815> ",
+                _ => string.Empty
+            },
+            _ => string.Empty
+        };
 
-        return result;
+        return result != string.Empty ? result : "<:consumables:996724235634491523> ";
     }
 }

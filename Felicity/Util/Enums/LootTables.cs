@@ -253,6 +253,48 @@ public static class LootTables
                     }
                 }
             }
+        },
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Raid, Name = "Last Wish", Description = "The opportunity of a lifetime.\n\n" +
+                "Last Wish drops are unique in that anything can drop from anywhere except key items shown below.\n" +
+                "Weapons indicated here are curated roll drops.",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Kalli, The Corrupted",
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.AgeOldBond }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Shuro Chi, The Corrupted",
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.Transfiguration }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Third, EncounterName = "Morgeth, The Spirekeeper",
+                    LootIds = new List<uint>
+                    {
+                        DefinitionHashes.InventoryItems.NationofBeasts,
+                        DefinitionHashes.InventoryItems.CleansingKnife
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Fourth, EncounterName = "The Vault",
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.TyrannyofHeaven }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Riven of a Thousand Voices",
+                    LootIds = new List<uint>
+                    {
+                        DefinitionHashes.InventoryItems.ChatteringBone,
+                        DefinitionHashes.InventoryItems.GlitteringKey
+                    }
+                }
+            }
         }
     };
 }
