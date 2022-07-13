@@ -21,6 +21,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/IcarusAim"><img src="https://avatars.githubusercontent.com/u/49577234?v=4?s=100" width="100px;" alt=""/><br /><sub><b>icarusaim</b></sub></a><br /><a href="#data-icarusaim" title="Data">🔣</a></td>
     <td align="center"><a href="https://github.com/HussainQ"><img src="https://avatars.githubusercontent.com/u/1257350?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hussain Quadri</b></sub></a><br /><a href="https://github.com/axsLeaf/FelicityOne/commits?author=hussainq" title="Documentation">📖</a> <a href="#example-hussainq" title="Examples">💡</a></td>
     <td align="center"><a href="https://github.com/TheLastJoaquin"><img src="https://avatars.githubusercontent.com/u/108595663?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TheLastJoaquin</b></sub></a><br /><a href="#data-TheLastJoaquin" title="Data">🔣</a></td>
+    <td align="center"><a href="https://github.com/Subhaven"><img src="https://avatars.githubusercontent.com/u/30436380?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Subhaven</b></sub></a><br /><a href="#design-Subhaven" title="Design">🎨</a></td>
   </tr>
 </table>
 
