@@ -49,5 +49,8 @@ public static class BotVariables
         public const string FelicityCircle = "https://cdn.tryfelicity.one/images/felicity_circle.jpg";
 
         public const string FelicitySquare = "https://cdn.tryfelicity.one/images/felicity.jpg";
+
+        public const string DungeonIcon = "https://bungie.net/common/destiny2_content/icons/4456b756d5b28e38a7c905fd68e557b7.png";
+        public const string RaidIcon = "https://bungie.net/common/destiny2_content/icons/8b1bfd1c1ce1cab51d23c78235a6e067.png";
     }
 }

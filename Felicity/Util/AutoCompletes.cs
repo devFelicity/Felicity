@@ -130,6 +130,33 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
     }
 }
 
+public class LootTableAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var resultList = new List<LootTableDefinition>();
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        resultList.AddRange(currentSearch != null
+            ? LootTables.KnownTables.Where(autocompleteResult =>
+                autocompleteResult.Name!.ToLower().Contains(currentSearch.ToLower()))
+            : LootTables.KnownTables);
+
+        var autocompleteList = resultList
+            .Select(lootTable => new AutocompleteResult($"{lootTable.ActivityType}: {lootTable.Name}", lootTable.Name))
+            .ToList();
+
+        autocompleteList = autocompleteList.OrderBy(x => x.Name).ToList();
+
+        return AutocompletionResult.FromSuccess(autocompleteList);
+    }
+}
+
 public class WishAutocomplete : AutocompleteHandler
 {
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
