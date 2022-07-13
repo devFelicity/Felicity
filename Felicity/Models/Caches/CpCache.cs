@@ -43,13 +43,12 @@ public static class ProcessCpData
         if (socketMessage.Embeds.Count != 1)
             return;
 
-        if (socketMessage.Embeds.First().Title != "===== :bell: CHECKPOINT SHARING :bell: =====")
+        if (!socketMessage.Embeds.First().Title.ToLower().Contains("checkpoint sharing"))
             return;
 
         var embed = socketMessage.Embeds.ElementAt(0);
         var generalInfoField = embed.Fields[0];
         var savedCpField = embed.Fields[3];
-        var activeCpField = embed.Fields[4];
 
         var offlineTime =
             MiscUtils.TimeStampToDateTime(Convert.ToDouble(generalInfoField.Value.Split("<t:")[1].Split(":R>")[0]));
@@ -64,17 +63,12 @@ public static class ProcessCpData
 
         var activeCpList = new List<Checkpoint>();
 
-        var activeLines = activeCpField.Value.Split("\n");
-
-        for (var i = 0; i < activeLines.Length; i++)
+        for (var i = 5; i < embed.Fields.Length; i++)
         {
-            if (!activeLines[i].StartsWith("**"))
-                continue;
-
             activeCpList.Add(new Checkpoint
             {
-                Name = activeLines[i].Split(">")[1].Replace("**", "").TrimEnd(' ', '\t'),
-                Join = activeLines[i + 1].Split("`")[1].Replace("`", "")
+                Name = embed.Fields[i].Name.Split(">")[1].Replace("**", "").TrimEnd(' ', '\t'),
+                Join = embed.Fields[i].Value.Split("`")[1].Replace("`", "").Replace("  ", " ")
             });
         }
 
