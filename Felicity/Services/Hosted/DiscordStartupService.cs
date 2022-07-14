@@ -51,6 +51,8 @@ public class DiscordStartupService : BackgroundService
         _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
 
         _discordShardedClient.MessageReceived += OnMessageReceived;
+        _discordShardedClient.MessageUpdated += OnMessageUpdated;
+
         _discordShardedClient.InteractionCreated += OnInteractionCreated;
         _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
 
@@ -76,6 +78,14 @@ public class DiscordStartupService : BackgroundService
         {
             await _interactionService.RegisterCommandsGloballyAsync();
         }
+    }
+
+    private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2, ISocketMessageChannel arg3)
+    {
+        if (arg3.Id == BotVariables.CpChannelId)
+            ProcessCpData.Populate(arg2);
+
+        return Task.CompletedTask;
     }
 
     private static async Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
