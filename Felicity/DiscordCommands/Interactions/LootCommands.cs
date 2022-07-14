@@ -86,7 +86,10 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
 
             if (bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(tableLootId,
                     BungieLocales.EN, out var manifestItem))
-                result += $"\n{EmoteHelper.GetWeaponType(manifestItem)} [{manifestItem.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(tableLootId)})";
+                result +=
+                    $"\n{EmoteHelper.GetWeaponType(manifestItem)} " +
+                    $"[{manifestItem.DisplayProperties.Name.Replace("(Timelost)", "(TL)")}]" +
+                    $"({MiscUtils.GetLightGgLink(tableLootId)})";
         }
 
         return result;

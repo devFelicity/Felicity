@@ -100,7 +100,8 @@ public static class LootTables
         },
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Raid, Name = "Vault of Glass", Description = "Beneath Venus, evil stirs...",
+            ActivityType = ActivityType.Raid, Name = "Vault of Glass", Description = "Beneath Venus, evil stirs...\n\n" +
+                "Timelost weapons require challenge completion on that encounter while VoG is the active rotator raid.",
             Loot = new List<LootTable>
             {
                 new()
@@ -111,7 +112,8 @@ public static class LootTables
                         (uint)Armor.Gloves, (uint)Armor.Class,
                         DefinitionHashes.InventoryItems.FoundVerdict_3197270240,
                         DefinitionHashes.InventoryItems.CorrectiveMeasure_471518543,
-                        DefinitionHashes.InventoryItems.VisionofConfluence_3186018373
+                        DefinitionHashes.InventoryItems.VisionofConfluence_3186018373,
+                        DefinitionHashes.InventoryItems.VisionofConfluenceTimelost_690668916
                     }
                 },
                 new()
@@ -122,7 +124,8 @@ public static class LootTables
                         (uint)Armor.Gloves, (uint)Armor.Boots,
                         DefinitionHashes.InventoryItems.PraedythsRevenge_3653573172,
                         DefinitionHashes.InventoryItems.FoundVerdict_3197270240,
-                        DefinitionHashes.InventoryItems.VisionofConfluence_3186018373
+                        DefinitionHashes.InventoryItems.VisionofConfluence_3186018373,
+                        DefinitionHashes.InventoryItems.PraedythsRevengeTimelost_1987769101
                     }
                 },
                 new()
@@ -133,7 +136,8 @@ public static class LootTables
                         (uint)Armor.Gloves, (uint)Armor.Chest,
                         DefinitionHashes.InventoryItems.Fatebringer_2171478765,
                         DefinitionHashes.InventoryItems.VisionofConfluence_3186018373,
-                        DefinitionHashes.InventoryItems.CorrectiveMeasure_471518543
+                        DefinitionHashes.InventoryItems.CorrectiveMeasure_471518543,
+                        DefinitionHashes.InventoryItems.FatebringerTimelost_1216319404
                     }
                 },
                 new()
@@ -144,7 +148,8 @@ public static class LootTables
                         (uint)Armor.Helmet, (uint)Armor.Boots,
                         DefinitionHashes.InventoryItems.Fatebringer_2171478765,
                         DefinitionHashes.InventoryItems.FoundVerdict_3197270240,
-                        DefinitionHashes.InventoryItems.HezenVengeance_4050645223
+                        DefinitionHashes.InventoryItems.HezenVengeance_4050645223,
+                        DefinitionHashes.InventoryItems.HezenVengeanceTimelost_1921159786
                     }
                 },
                 new()
@@ -155,7 +160,8 @@ public static class LootTables
                         (uint)Armor.Helmet, (uint)Armor.Chest,
                         DefinitionHashes.InventoryItems.PraedythsRevenge_3653573172,
                         DefinitionHashes.InventoryItems.CorrectiveMeasure_471518543,
-                        DefinitionHashes.InventoryItems.HezenVengeance_4050645223
+                        DefinitionHashes.InventoryItems.HezenVengeance_4050645223,
+                        DefinitionHashes.InventoryItems.CorrectiveMeasureTimelost_3796510434
                     }
                 }
             }
