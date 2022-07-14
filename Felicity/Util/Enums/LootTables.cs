@@ -31,7 +31,8 @@ public enum Armor
     Gloves,
     Chest,
     Boots,
-    Class
+    Class,
+    Everything
 }
 
 public enum Encounter
@@ -298,6 +299,115 @@ public static class LootTables
                     {
                         DefinitionHashes.InventoryItems.ChatteringBone,
                         DefinitionHashes.InventoryItems.GlitteringKey
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Dungeon, Name = "Duality", Description = "Dive into the depths of the exiled emperor's mind in search of dark secrets.",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Sorrow Bearer",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.LingeringDread,
+                        DefinitionHashes.InventoryItems.TheEpicurean_2263839058
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "The Vault",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.Unforgiven,
+                        DefinitionHashes.InventoryItems.Stormchaser
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Calus' Greatest Shame",
+                    LootIds = new List<uint>
+                    {
+                        DefinitionHashes.InventoryItems.NewPurpose,
+                        DefinitionHashes.InventoryItems.FixedOdds_1642384931,
+                        (uint)Armor.Everything
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Dungeon, Name = "Grasp of Avarice", Description = "A cautionary tale for adventurers willing to trade their humanity for riches.",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Phry'zia, The Insatiable",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.Matador64
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Sunken Lair",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        DefinitionHashes.InventoryItems.HeroofAges
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Avarokk, The Covetous",
+                    LootIds = new List<uint>
+                    {
+                        DefinitionHashes.InventoryItems.Eyasluna,
+                        DefinitionHashes.InventoryItems.H1000YardStare,
+                        (uint)Armor.Everything
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Dungeon, Name = "Prophecy", Description = "Enter the realm of the Nine and ask the question: \"What is the nature of the Darkness?\"",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Phalanx Echo",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.Judgment_1476654960,
+                        DefinitionHashes.InventoryItems.TheLongWalk_3326850591
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "The Cube",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves,
+                        DefinitionHashes.InventoryItems.ASwiftVerdict_1626503676,
+                        DefinitionHashes.InventoryItems.TheLastBreath_507038823
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Kell Echo",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.DarkestBefore_2481758391,
+                        DefinitionHashes.InventoryItems.ASuddenDeath_2855157553
                     }
                 }
             }

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.4.0]
 ### Added
 - Timelost weapons to VoG loot tables.
+- Dungeon loot tables.
 
 ## [6.3.2]
 ### Added

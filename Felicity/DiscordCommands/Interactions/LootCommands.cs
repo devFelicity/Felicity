@@ -1,9 +1,11 @@
-﻿using Discord.Interactions;
+﻿using Discord;
+using Discord.Interactions;
 using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Util;
 using Felicity.Util.Enums;
+using ActivityType = Felicity.Util.Enums.ActivityType;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -36,7 +38,11 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var embed = Embeds.MakeBuilder();
         embed.Title = $"{requestedLootTable.Name} loot table:";
-        embed.Description = requestedLootTable.Description;
+        embed.Description = Format.Italics(requestedLootTable.Description);
+
+        if (requestedLootTable.ActivityType == ActivityType.Dungeon)
+            embed.Description += $"\n\n{Format.Bold("Secret chests can drop any previously acquired armor and weapons.")}";
+
         embed.ThumbnailUrl = requestedLootTable.ActivityType switch
         {
             ActivityType.Dungeon => BotVariables.Images.DungeonIcon,
@@ -67,6 +73,9 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
         {
             switch (tableLootId)
             {
+                case (uint)Armor.Everything:
+                    result += "\n <:consumables:996724235634491523> All Possible Drops";
+                    continue;
                 case (uint)Armor.Helmet:
                     result += "<:helmet:996490149728899122> ";
                     continue;

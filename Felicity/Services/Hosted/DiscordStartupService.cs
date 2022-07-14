@@ -130,7 +130,8 @@ public class DiscordStartupService : BackgroundService
         await BotVariables.DiscordLogChannel!.SendMessageAsync(embed: embed.Build());
     }
 
-    private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2, ISocketMessageChannel arg3)
+    private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2,
+        ISocketMessageChannel arg3)
     {
         if (arg3.Id == BotVariables.CpChannelId)
             ProcessCpData.Populate(arg2);
