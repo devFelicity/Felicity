@@ -2,7 +2,6 @@
 using Discord.Interactions;
 using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.HashReferences;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models;
@@ -148,7 +147,8 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 continue;
 
             if (reward.Item.Hash is DefinitionHashes.InventoryItems.PowerfulTrialsGear
-                or DefinitionHashes.InventoryItems.ResetRank_1514009869)
+                or DefinitionHashes.InventoryItems.ResetRank_1514009869
+                or DefinitionHashes.InventoryItems.ResetRank_2133694745)
                 continue;
 
             var plugHash1 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(3).Plug.Hash;
