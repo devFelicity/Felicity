@@ -51,6 +51,11 @@ public class DiscordStartupService : BackgroundService
         _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
 
         _discordShardedClient.MessageReceived += OnMessageReceived;
+        _discordShardedClient.MessageUpdated += OnMessageUpdated;
+
+        _discordShardedClient.JoinedGuild += OnJoinedGuild;
+        _discordShardedClient.LeftGuild += OnLeftGuild;
+
         _discordShardedClient.InteractionCreated += OnInteractionCreated;
         _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
 
@@ -76,6 +81,62 @@ public class DiscordStartupService : BackgroundService
         {
             await _interactionService.RegisterCommandsGloballyAsync();
         }
+    }
+
+    private static async Task OnJoinedGuild(SocketGuild arg)
+    {
+        await arg.DownloadUsersAsync();
+
+        var embed = Embeds.MakeBuilder();
+        embed.Author = new EmbedAuthorBuilder
+        {
+            Name = "Felicity was added to a server."
+        };
+        embed.Title = arg.Name;
+        embed.Fields = new List<EmbedFieldBuilder>
+        {
+            new()
+            {
+                Name = "Owner",
+                Value = arg.Owner,
+                IsInline = true
+            },
+            new()
+            {
+                Name = "Members",
+                Value = arg.MemberCount,
+                IsInline = true
+            }
+        };
+
+        if (arg.IconUrl != null)
+            embed.ThumbnailUrl = arg.IconUrl;
+
+        if (arg.Description != null)
+            embed.Description = arg.Description;
+
+        await BotVariables.DiscordLogChannel!.SendMessageAsync(embed: embed.Build());
+    }
+
+    private static async Task OnLeftGuild(SocketGuild arg)
+    {
+        var embed = Embeds.MakeBuilder();
+        embed.Author = new EmbedAuthorBuilder
+        {
+            Name = "Felicity was removed from a server."
+        };
+        embed.Title = arg.Name;
+
+        await BotVariables.DiscordLogChannel!.SendMessageAsync(embed: embed.Build());
+    }
+
+    private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2,
+        ISocketMessageChannel arg3)
+    {
+        if (arg3.Id == BotVariables.CpChannelId)
+            ProcessCpData.Populate(arg2);
+
+        return Task.CompletedTask;
     }
 
     private static async Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)
