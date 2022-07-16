@@ -49,6 +49,7 @@ public class DiscordStartupService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
+        _discordShardedClient.ShardDisconnected += OnShardDisconnected;
 
         _discordShardedClient.MessageReceived += OnMessageReceived;
         _discordShardedClient.MessageUpdated += OnMessageUpdated;
@@ -85,8 +86,6 @@ public class DiscordStartupService : BackgroundService
 
     private static async Task OnJoinedGuild(SocketGuild arg)
     {
-        await arg.DownloadUsersAsync();
-
         var embed = Embeds.MakeBuilder();
         embed.Author = new EmbedAuthorBuilder
         {
