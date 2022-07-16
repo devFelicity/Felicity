@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Discord;
 using Discord.Commands;
 using DotNetBungieAPI.Clients;
@@ -39,7 +39,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         ProcessCpData.Populate(msg);
     }
 
-    [Command("metrics")]
+    [Command("metrics", RunMode = RunMode.Async)]
     public async Task Metrics()
     {
         var serverList = Context.Client.Guilds;
