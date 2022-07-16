@@ -279,6 +279,19 @@ public class DiscordStartupService : BackgroundService
         return Task.CompletedTask;
     }
 
+    private static async Task OnShardDisconnected(Exception arg1, DiscordSocketClient arg2)
+    {
+        Log.Error(arg1, "Disconnected from gateway.");
+
+        if (arg1.InnerException is GatewayReconnectException &&
+            arg1.InnerException.Message == "Server missed last heartbeat")
+        {
+            await arg2.StopAsync();
+            await Task.Delay(10000);
+            await arg2.StartAsync();
+        }
+    }
+
     private Task WaitForReadyAsync(CancellationToken cancellationToken)
     {
         if (_taskCompletionSource is null)
