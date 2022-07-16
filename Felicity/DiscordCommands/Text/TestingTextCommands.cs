@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Discord;
 using Discord.Commands;
 using DotNetBungieAPI.Clients;
@@ -69,10 +69,10 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 
         embed.AddField("Bot Version", BotVariables.Version, true);
         embed.AddField("Bot Uptime", uptime.Humanize(), true);
-        embed.AddField("Discord Servers", serverList.Count, true);
-        embed.AddField("Discord Users", userList.Count, true);
+        embed.AddField("Discord Servers", $"{serverList.Count:n0}", true);
+        embed.AddField("Discord Users", $"{userList.Count:n0}", true);
         embed.AddField("Streams", _twitchStreamDb.TwitchStreams.ToList().Count, true);
-        embed.AddField("Registered Users", _userDb.Users.ToList().Count, true);
+        embed.AddField("Registered Users", $"{_userDb.Users.ToList().Count:n0}", true);
         embed.AddField("Manifest Version", manifest.Version, true);
 
         await Context.Message.ReplyAsync(embed: embed.Build());
