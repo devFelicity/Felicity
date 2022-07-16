@@ -49,6 +49,7 @@ public class DiscordStartupService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
+        _discordShardedClient.ShardDisconnected += OnShardDisconnected;
 
         _discordShardedClient.MessageReceived += OnMessageReceived;
         _discordShardedClient.MessageUpdated += OnMessageUpdated;
@@ -85,8 +86,6 @@ public class DiscordStartupService : BackgroundService
 
     private static async Task OnJoinedGuild(SocketGuild arg)
     {
-        await arg.DownloadUsersAsync();
-
         var embed = Embeds.MakeBuilder();
         embed.Author = new EmbedAuthorBuilder
         {
@@ -277,6 +276,19 @@ public class DiscordStartupService : BackgroundService
         _discordShardedClient.ShardReady -= OnShardReady;
 
         return Task.CompletedTask;
+    }
+
+    private static async Task OnShardDisconnected(Exception arg1, DiscordSocketClient arg2)
+    {
+        Log.Error(arg1, "Disconnected from gateway.");
+
+        if (arg1.InnerException is GatewayReconnectException &&
+            arg1.InnerException.Message == "Server missed last heartbeat")
+        {
+            await arg2.StopAsync();
+            await Task.Delay(10000);
+            await arg2.StartAsync();
+        }
     }
 
     private Task WaitForReadyAsync(CancellationToken cancellationToken)
