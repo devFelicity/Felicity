@@ -40,8 +40,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
                 Author = new EmbedAuthorBuilder
                 {
                     Name = "TheLastJoaquin",
-                    IconUrl =
-                        "https://cdn.discordapp.com/avatars/180174952492826624/15feb08b360bf7aed2b6e8463c531f65.png",
+                    IconUrl = BotVariables.Images.JoaquinAvatar,
                     Url = "https://twitter.com/TheLastJoaquin"
                 },
                 Color = Color.Red,
@@ -67,7 +66,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
             Author = new EmbedAuthorBuilder
             {
                 Name = "TheLastJoaquin",
-                IconUrl = "https://cdn.discordapp.com/avatars/180174952492826624/15feb08b360bf7aed2b6e8463c531f65.png",
+                IconUrl = BotVariables.Images.JoaquinAvatar,
                 Url = "https://twitter.com/TheLastJoaquin"
             },
             Title = "Memento Preview:",
