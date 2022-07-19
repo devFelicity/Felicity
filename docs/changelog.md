@@ -8,6 +8,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.4.3]
+### Changed
+- Added master challenge completion requirement for timelost weapons.
+
+## [6.4.2]
+### Changed
+- Multiple bug fixes and hopefully auto-reconnect on server disconnect.
+
+## [6.4.1]
+### Changed
+- Fixed `/vendor saint14` throwing a `key not present` error.
+
 ## [6.4.0]
 ### Added
 - Timelost weapons to VoG loot tables.
