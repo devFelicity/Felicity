@@ -4,7 +4,7 @@ template: overrides/main.html
 
 ## How do I add Felicity to my server?
 
-[Add Felicity :fontawesome-brands-discord:](https://discord.com/api/oauth2/authorize?client_id=709475072158728283&permissions=1505281368279&scope=bot%20applications.commands){ .md-button .md-button--primary }
+[Add Felicity :fontawesome-brands-discord:](https://discord.com/api/oauth2/authorize?client_id=709475072158728283&permissions=1505281630423&scope=bot%20applications.commands){ .md-button .md-button--primary }
 
 ## How do I join Felicity's support server?
 
