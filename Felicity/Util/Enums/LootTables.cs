@@ -102,7 +102,7 @@ public static class LootTables
         new LootTableDefinition
         {
             ActivityType = ActivityType.Raid, Name = "Vault of Glass", Description = "Beneath Venus, evil stirs...\n\n" +
-                "Timelost weapons require challenge completion on that encounter while VoG is the active rotator raid.",
+                "Timelost weapons require **Master** challenge completion on that encounter while VoG is the active rotator raid.",
             Loot = new List<LootTable>
             {
                 new()
