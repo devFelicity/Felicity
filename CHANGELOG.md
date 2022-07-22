@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `/vendor gunsmith` shows Banshee-44 weapon inventory.
 
+### Changed
+- Updated API libraries.
+
 ## [6.4.3]
 ### Changed
 - Added master challenge completion requirement for timelost weapons.
