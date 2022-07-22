@@ -103,8 +103,8 @@ public static class ProcessXurData
         };
         embed.Description = $"Xûr is currently selling his wares on {Format.Bold(GetXurLocation(self.XurLocation))}";
 
-        var exoticWeapons = PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Exotic, true);
-        var legendaryWeapons = PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Legendary, false);
+        var exoticWeapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Exotic, true);
+        var legendaryWeapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Legendary, false);
 
         var exoticArmors = "";
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
@@ -136,31 +136,6 @@ public static class ProcessXurData
         return embed.Build();
     }
 
-    private static string PopulateWeaponPerks(BaseSocketClient discordClient, List<Weapon> weapons, bool gunsmithLink)
-    {
-        var result = "";
-
-        foreach (var weapon in weapons)
-            if (weapon.Perks.Count == 0)
-            {
-                result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/)\n\n";
-            }
-            else
-            {
-                if (gunsmithLink)
-                    result += $"[{weapon.Name}]({WeaponHelper.BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
-                else
-                    result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/) | ";
-
-                foreach (var (_, value) in weapon.Perks)
-                    result += EmoteHelper.GetEmote(discordClient, value.IconPath!, value.Perkname!, value.PerkId);
-
-                result += "\n";
-            }
-
-        return result;
-    }
-
     private static string GetXurLocation(int xurLocation)
     {
         return xurLocation switch
@@ -170,62 +145,6 @@ public static class ProcessXurData
             2 => "Nessus (Watcher's Grave)",
             _ => "an unknown location."
         };
-    }
-
-    private static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg,
-        ItemTierType inventoryTierType,
-        DestinyItemSocketsComponent xurPerk)
-    {
-        var response = new Dictionary<string, Perk>();
-
-        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-        var goodPerkList = inventoryTierType switch
-        {
-            ItemTierType.Exotic => new[] { 1, 2, 3, 4 },
-            ItemTierType.Superior => new[] { 3, 4 },
-            _ => Array.Empty<int>()
-        };
-
-        if (goodPerkList.Length == 0)
-            return Task.FromResult(response);
-
-        var i = 0;
-
-        foreach (var destinyItemSocketState in xurPerk.Sockets)
-        {
-            if (goodPerkList.Contains(i))
-            {
-                if (destinyItemSocketState.Plug.Hash == null) continue;
-                if (!destinyItemSocketState.IsVisible) continue;
-
-                response.Add(response.Count.ToString(), new Perk
-                {
-                    PerkId = destinyItemSocketState.Plug.Hash
-                });
-            }
-
-            i++;
-        }
-
-        var fetchList = (from keyPair in response
-                         let valuePerkId = keyPair.Value.PerkId
-                         where valuePerkId != null
-                         select (uint)valuePerkId)
-            .ToList();
-
-        foreach (var fetchPerk in fetchList)
-        {
-            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(fetchPerk, lg,
-                out var manifestFetch);
-
-            foreach (var perk in response.Where(perk => perk.Value.PerkId == manifestFetch.Hash))
-            {
-                perk.Value.Perkname = manifestFetch.DisplayProperties.Name;
-                perk.Value.IconPath = manifestFetch.DisplayProperties.Icon.RelativePath;
-            }
-        }
-
-        return Task.FromResult(response);
     }
 
     public static async Task<XurCache?> FetchInventory(BungieLocales lg, User oauth, IBungieClient bungieClient)
@@ -352,7 +271,7 @@ public static class ProcessXurData
             {
                 Name = manifestItem.DisplayProperties.Name,
                 WeaponId = (uint)vendorItem.Item.Hash!,
-                Perks = await BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue,
+                Perks = await WeaponHelper.BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue,
                     xurSockets[vendorItem.VendorItemIndex])
             };
 

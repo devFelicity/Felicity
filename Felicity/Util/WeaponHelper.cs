@@ -1,4 +1,10 @@
 ﻿using System.Web;
+using Discord.WebSocket;
+using DotNetBungieAPI.Clients;
+using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Models.Destiny.Components;
+using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models.Caches;
 
 // ReSharper disable InconsistentNaming
@@ -8,24 +14,85 @@ namespace Felicity.Util;
 
 internal static class WeaponHelper
 {
-    public static string GetMasterworkType(uint hash)
+    public static string PopulateWeaponPerks(BaseSocketClient discordClient, List<Weapon> weapons, bool gunsmithLink)
     {
-        return hash switch
+        var result = "";
+
+        foreach (var weapon in weapons)
+            if (weapon.Perks.Count == 0)
+            {
+                result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/)\n\n";
+            }
+            else
+            {
+                if (gunsmithLink)
+                    result += $"[{weapon.Name}]({BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
+                else
+                    result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/) | ";
+
+                foreach (var (_, value) in weapon.Perks)
+                    result += EmoteHelper.GetEmote(discordClient, value.IconPath!, value.Perkname!, value.PerkId);
+
+                result += "\n";
+            }
+
+        return result;
+    }
+
+    public static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg,
+        ItemTierType inventoryTierType,
+        DestinyItemSocketsComponent weaponPerk)
+    {
+        var response = new Dictionary<string, Perk>();
+
+        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+        var goodPerkList = inventoryTierType switch
         {
-            150943607 => "Range",
-            199695019 => "Range",
-            518224747 => "Handling",
-            892374263 => "Accuracy",
-            1486919755 => "Impact",
-            1590375901 => "Stability",
-            2203506848 => "Draw Time",
-            3353797898 => "Charge Time",
-            3673787993 => "Shield Duration",
-            3928770367 => "Blast Radius",
-            4105787909 => "Velocity",
-            4283235143 => "Reload",
-            _ => "Unknown"
+            ItemTierType.Exotic => new[] { 1, 2, 3, 4 },
+            ItemTierType.Superior => new[] { 3, 4 },
+            _ => Array.Empty<int>()
         };
+
+        if (goodPerkList.Length == 0)
+            return Task.FromResult(response);
+
+        var i = 0;
+
+        foreach (var destinyItemSocketState in weaponPerk.Sockets)
+        {
+            if (goodPerkList.Contains(i))
+            {
+                if (destinyItemSocketState.Plug.Hash == null) continue;
+                if (!destinyItemSocketState.IsVisible) continue;
+
+                response.Add(response.Count.ToString(), new Perk
+                {
+                    PerkId = destinyItemSocketState.Plug.Hash
+                });
+            }
+
+            i++;
+        }
+
+        var fetchList = (from keyPair in response
+                         let valuePerkId = keyPair.Value.PerkId
+                         where valuePerkId != null
+                         select (uint)valuePerkId)
+            .ToList();
+
+        foreach (var fetchPerk in fetchList)
+        {
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(fetchPerk, lg,
+                out var manifestFetch);
+
+            foreach (var perk in response.Where(perk => perk.Value.PerkId == manifestFetch.Hash))
+            {
+                perk.Value.Perkname = manifestFetch.DisplayProperties.Name;
+                perk.Value.IconPath = manifestFetch.DisplayProperties.Icon.RelativePath;
+            }
+        }
+
+        return Task.FromResult(response);
     }
 
     public static string BuildLightGGLink(string armorLegendarySet)
@@ -35,7 +102,7 @@ internal static class WeaponHelper
         return $"https://www.light.gg/db/all?page=1&f=12({HttpUtility.UrlEncode(search.TrimEnd(' '))}),3";
     }
 
-    public static string BuildGunsmithLink(uint exoticWeaponWeaponId, Dictionary<string, Perk> exoticWeaponPerks)
+    private static string BuildGunsmithLink(uint exoticWeaponWeaponId, Dictionary<string, Perk> exoticWeaponPerks)
     {
         var result = $"https://d2gunsmith.com/w/{exoticWeaponWeaponId}?s=";
 
