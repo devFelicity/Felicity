@@ -101,7 +101,8 @@ public static class LootTables
         },
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Raid, Name = "Vault of Glass", Description = "Beneath Venus, evil stirs...\n\n" +
+            ActivityType = ActivityType.Raid, Name = "Vault of Glass", Description =
+                "Beneath Venus, evil stirs...\n\n" +
                 "Timelost weapons require **Master** challenge completion on that encounter while VoG is the active rotator raid.",
             Loot = new List<LootTable>
             {
@@ -305,7 +306,8 @@ public static class LootTables
         },
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Dungeon, Name = "Duality", Description = "Dive into the depths of the exiled emperor's mind in search of dark secrets.",
+            ActivityType = ActivityType.Dungeon, Name = "Duality",
+            Description = "Dive into the depths of the exiled emperor's mind in search of dark secrets.",
             Loot = new List<LootTable>
             {
                 new()
@@ -342,7 +344,8 @@ public static class LootTables
         },
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Dungeon, Name = "Grasp of Avarice", Description = "A cautionary tale for adventurers willing to trade their humanity for riches.",
+            ActivityType = ActivityType.Dungeon, Name = "Grasp of Avarice",
+            Description = "A cautionary tale for adventurers willing to trade their humanity for riches.",
             Loot = new List<LootTable>
             {
                 new()
@@ -377,7 +380,8 @@ public static class LootTables
         },
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Dungeon, Name = "Prophecy", Description = "Enter the realm of the Nine and ask the question: \"What is the nature of the Darkness?\"",
+            ActivityType = ActivityType.Dungeon, Name = "Prophecy",
+            Description = "Enter the realm of the Nine and ask the question: \"What is the nature of the Darkness?\"",
             Loot = new List<LootTable>
             {
                 new()

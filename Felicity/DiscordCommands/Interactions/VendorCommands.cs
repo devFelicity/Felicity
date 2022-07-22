@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
@@ -26,6 +26,29 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         _serverDb = serverDb;
         _userDb = userDb;
         _bungieClient = bungieClient;
+    }
+
+    [SlashCommand("gunsmith", "Fetch Banshee weapon inventory which includes D2Gunsmith and LightGG links.")]
+    public async Task Gunsmith()
+    {
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+        {
+            await FollowupAsync("Failed to fetch user profile.");
+            return;
+        }
+
+        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
+
+        // if (!File.Exists($"Data/gsCache-{lg}.json"))
+        //     await FollowupAsync("Populating vendor data, this might take some time...");
+
+        var gsCache = await ProcessGunsmithData.FetchInventory(lg, user, _bungieClient);
+
+        if (gsCache != null)
+            await FollowupAsync(embed: ProcessGunsmithData.BuildEmbed(gsCache, Context.Client));
+        else
+            await FollowupAsync("An error occurred trying to build inventory.");
     }
 
     [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]

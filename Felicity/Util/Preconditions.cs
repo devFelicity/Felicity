@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Serilog;
 
@@ -48,11 +48,9 @@ public class Preconditions
             if (user != null)
             {
                 if (user.OAuthRefreshExpires < nowTime)
-                {
                     errorEmbed.Description =
                         "Your information has expired and needs to be refreshed.\n" +
                         "Please run `/user register` and follow the instructions.";
-                }
 
                 if (user.OAuthTokenExpires < nowTime)
                 {
@@ -64,14 +62,14 @@ public class Preconditions
                 }
 
                 if (user.BungieMembershipId == 0)
-                {
-                    errorEmbed.Description = $"Your registration data is invalid, please run `/user register` again.\nIf the issue persists, {BotVariables.ErrorMessage}";
-                }
+                    errorEmbed.Description =
+                        $"Your registration data is invalid, please run `/user register` again.\nIf the issue persists, {BotVariables.ErrorMessage}";
             }
             else
             {
-                errorEmbed.Description = "This command requires you to be registered to provide user information to the API.\n" +
-                                         "Please use `/user register` and try again.";
+                errorEmbed.Description =
+                    "This command requires you to be registered to provide user information to the API.\n" +
+                    "Please use `/user register` and try again.";
             }
 
             if (string.IsNullOrEmpty(errorEmbed.Description))

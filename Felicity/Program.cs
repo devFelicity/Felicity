@@ -2,6 +2,8 @@
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
+using DotNetBungieAPI.DefinitionProvider.Sqlite;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
 using Felicity.Extensions;
@@ -86,28 +88,34 @@ try
             _ => { },
             textCommandsService => { textCommandsService.CaseSensitiveCommands = false; },
             builder.Configuration)
+        .AddLogging(options => options.AddSerilog(dispose: true))
         .UseBungieApiClient(bungieClient =>
         {
-            bungieClient.ApiKey = bungieApiOptions.ApiKey;
-            bungieClient.ApplicationScopes = ApplicationScopes.ReadBasicUserProfile |
-                                             ApplicationScopes.ReadDestinyInventoryAndVault |
-                                             ApplicationScopes.MoveEquipDestinyItems;
-            bungieClient.CacheDefinitions = true;
-            bungieClient.ClientId = bungieApiOptions.ClientId;
-            bungieClient.ClientSecret = bungieApiOptions.ClientSecret;
-            bungieClient.UsedLocales.Add(BungieLocales.EN);
+            if (bungieApiOptions.ApiKey != null)
+                bungieClient.ClientConfiguration.ApiKey = bungieApiOptions.ApiKey;
+
+            bungieClient.ClientConfiguration.ApplicationScopes = ApplicationScopes.ReadUserData |
+                                                                 ApplicationScopes.ReadBasicUserProfile |
+                                                                 ApplicationScopes.ReadDestinyInventoryAndVault |
+                                                                 ApplicationScopes.MoveEquipDestinyItems;
+
+            bungieClient.ClientConfiguration.CacheDefinitions = true;
+            bungieClient.ClientConfiguration.ClientId = bungieApiOptions.ClientId;
+
+            if (bungieApiOptions.ClientSecret != null)
+                bungieClient.ClientConfiguration.ClientSecret = bungieApiOptions.ClientSecret;
+
+            bungieClient.ClientConfiguration.UsedLocales.Add(BungieLocales.EN);
             bungieClient
-                .UseDefaultDefinitionProvider(definitionProvider =>
+                .DefinitionProvider.UseSqliteDefinitionProvider(definitionProvider =>
                 {
                     definitionProvider.ManifestFolderPath = bungieApiOptions.ManifestPath;
                     definitionProvider.AutoUpdateManifestOnStartup = true;
                     definitionProvider.FetchLatestManifestOnInitialize = true;
                     definitionProvider.DeleteOldManifestDataAfterUpdates = true;
-                })
-                .UseDefaultHttpClient(httpClient =>
-                {
-                    httpClient.SetRatelimitSettings(200, TimeSpan.FromSeconds(10));
                 });
+            bungieClient.DotNetBungieApiHttpClient.ConfigureDefaultHttpClient(options =>
+                options.SetRateLimitSettings(190, TimeSpan.FromSeconds(10)));
         })
         .AddHostedService<BungieClientStartupService>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();

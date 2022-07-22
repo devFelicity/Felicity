@@ -64,13 +64,11 @@ public static class ProcessCpData
         var activeCpList = new List<Checkpoint>();
 
         for (var i = 5; i < embed.Fields.Length; i++)
-        {
             activeCpList.Add(new Checkpoint
             {
                 Name = embed.Fields[i].Name.Split(">")[1].Replace("**", "").TrimEnd(' ', '\t'),
                 Join = embed.Fields[i].Value.Split("`")[1].Replace("`", "").Replace("  ", " ")
             });
-        }
 
         newCache.CpInventory.SavedCheckpoints = savedCpField.Value.Split("\n").Select(line =>
             new Checkpoint { Name = line.Split(">")[1].Replace("**", "").TrimEnd(' ', '\t') }).ToArray();

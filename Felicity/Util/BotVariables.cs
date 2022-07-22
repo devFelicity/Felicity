@@ -10,8 +10,10 @@ public static class BotVariables
     public const ulong CpChannelId = 973173481162285106;
     public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
     public const string BungieBaseUrl = "https://www.bungie.net/";
-    internal static string ErrorMessage = $"You can report this error either in our [Support Server]({DiscordInvite}) " +
-                                          "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
+
+    internal const string ErrorMessage = $"You can report this error either in our [Support Server]({DiscordInvite}) " +
+                                         "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
+
     internal static bool IsDebug;
     internal static string? Version;
 
@@ -50,9 +52,15 @@ public static class BotVariables
 
         public const string FelicitySquare = "https://cdn.tryfelicity.one/images/felicity.jpg";
 
-        public const string DungeonIcon = "https://bungie.net/common/destiny2_content/icons/4456b756d5b28e38a7c905fd68e557b7.png";
-        public const string RaidIcon = "https://bungie.net/common/destiny2_content/icons/8b1bfd1c1ce1cab51d23c78235a6e067.png";
+        public const string DungeonIcon =
+            "https://bungie.net/common/destiny2_content/icons/4456b756d5b28e38a7c905fd68e557b7.png";
+
+        public const string RaidIcon =
+            "https://bungie.net/common/destiny2_content/icons/8b1bfd1c1ce1cab51d23c78235a6e067.png";
 
         public const string JoaquinAvatar = "https://cdn.tryfelicity.one/images/joaquin-avatar.png";
+
+        public const string GunsmithVendorLogo =
+            "https://www.bungie.net/common/destiny2_content/icons/5fb7fa47a8f1dd04538017d289f4f910.png";
     }
 }

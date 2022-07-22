@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Records;
 using DotNetBungieAPI.Models.Destiny.Responses;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Util;
 using Felicity.Util.Enums;

@@ -168,12 +168,12 @@ public class DiscordStartupService : BackgroundService
         errorEmbed.AddField("Error", $"```{errorMessage}```");
 
         using (LogContext.PushProperty("context", new
-        {
-            Sender = arg2.User.ToString(),
-            CommandName = options.Name,
-            CommandParameters = JsonSerializer.Serialize(debugOptions),
-            ServerId = arg2.Interaction.GuildId ?? 0
-        }))
+               {
+                   Sender = arg2.User.ToString(),
+                   CommandName = options.Name,
+                   CommandParameters = JsonSerializer.Serialize(debugOptions),
+                   ServerId = arg2.Interaction.GuildId ?? 0
+               }))
         {
             Log.Error(errorMessage);
         }

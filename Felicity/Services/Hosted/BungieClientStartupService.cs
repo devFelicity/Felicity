@@ -1,4 +1,4 @@
-﻿using DotNetBungieAPI.Clients;
+﻿using DotNetBungieAPI.Service.Abstractions;
 
 namespace Felicity.Services.Hosted;
 

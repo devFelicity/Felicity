@@ -79,16 +79,6 @@ internal static class Craftables
         }
     };
 
-    public static class CraftSource
-    {
-        public const string SeasonHaunted = "Haunted";
-        public const string Leviathan = "Leviathan";
-        public const string SeasonRisen = "Risen";
-        public const string RaidVotD = "Vow of the Disciple";
-        public const string WqWellspring = "Wellspring";
-        public const string Wq = "Witch Queen";
-    }
-
     public static uint GetWeaponId(uint recordDefinitionHash)
     {
         return recordDefinitionHash switch
@@ -137,5 +127,15 @@ internal static class Craftables
             DefinitionHashes.Records.TheEnigma => DefinitionHashes.InventoryItems.TheEnigma_2595497736,
             _ => 0
         };
+    }
+
+    public static class CraftSource
+    {
+        public const string SeasonHaunted = "Haunted";
+        public const string Leviathan = "Leviathan";
+        public const string SeasonRisen = "Risen";
+        public const string RaidVotD = "Vow of the Disciple";
+        public const string WqWellspring = "Wellspring";
+        public const string Wq = "Witch Queen";
     }
 }

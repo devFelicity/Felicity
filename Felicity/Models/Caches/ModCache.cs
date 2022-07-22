@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
 using Discord;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.SandboxPerks;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
@@ -73,10 +73,10 @@ public static class ProcessModData
             var missing = "";
 
             foreach (var personalDestinyVendorSaleItemSetComponent in vendorData.Response.Sales.Data)
-                foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
-                    if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
-                        if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
-                            missing = "⚠️ ";
+            foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
+                if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
+                    if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
+                        missing = "⚠️ ";
 
             result = result + $"{missing}[{mod.Name}]({MiscUtils.GetLightGgLink(mod.Id)})\n" +
                      $"> {Format.Italics(mod.Description)}\n\n";

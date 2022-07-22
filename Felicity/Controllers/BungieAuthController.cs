@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.User;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Services;
 using Microsoft.AspNetCore.Authentication;

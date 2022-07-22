@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
-using DotNetBungieAPI.Authorization;
+using DotNetBungieAPI.Models.Authorization;
 using Microsoft.AspNetCore.Authentication.OAuth;
 
 namespace Felicity.Services;

@@ -10,9 +10,12 @@
 
     <ItemGroup>
       <PackageReference Include="Discord.Net" Version="3.7.2" />
-      <PackageReference Include="DotNetBungieAPI" Version="2.1.1" />
+      <PackageReference Include="DotNetBungieAPI" Version="2.4.0" />
       <PackageReference Include="DotNetBungieAPI.AspNet.Security.OAuth.Providers" Version="1.0.2" />
-      <PackageReference Include="DotNetBungieAPI.HashReferences" Version="1.8.0" />
+      <PackageReference Include="DotNetBungieAPI.DefinitionProvider.Sqlite" Version="1.1.0" />
+      <PackageReference Include="DotNetBungieAPI.HashReferences" Version="1.10.0" />
+      <PackageReference Include="DotNetBungieAPI.Models" Version="2.4.0" />
+      <PackageReference Include="DotNetBungieAPI.Service.Abstractions" Version="2.4.0" />
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
@@ -21,8 +24,8 @@
       <PackageReference Include="Sentry.AspNetCore" Version="3.19.0" />
       <PackageReference Include="Sentry.Serilog" Version="3.19.0" />
       <PackageReference Include="Serilog" Version="2.11.0" />
-      <PackageReference Include="Serilog.AspNetCore" Version="6.0.0" />
-      <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
       <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
       <PackageReference Include="TwitchLib" Version="3.3.0" />

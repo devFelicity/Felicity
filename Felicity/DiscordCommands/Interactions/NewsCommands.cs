@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models.Content;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
 
 // ReSharper disable UnusedType.Global

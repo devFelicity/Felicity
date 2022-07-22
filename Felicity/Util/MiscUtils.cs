@@ -47,6 +47,6 @@ public static class MiscUtils
             return BungieLocales.EN;
 
         return serverDb.Servers.FirstOrDefault(x => x.ServerId == contextGuild.Id)?.BungieLocale ??
-             BungieLocales.EN;
+               BungieLocales.EN;
     }
 }

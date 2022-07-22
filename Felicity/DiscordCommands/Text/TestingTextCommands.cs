@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 using Discord;
 using Discord.Commands;
-using DotNetBungieAPI.Clients;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Activities;
 using DotNetBungieAPI.Models.Destiny.Definitions.ActivityModes;
+using DotNetBungieAPI.Models.Requests;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
@@ -51,14 +53,14 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         var userList = new List<ulong>();
 
         foreach (var clientGuild in serverList)
-            foreach (var clientGuildUser in clientGuild.Users)
-            {
-                if (clientGuildUser.IsBot)
-                    continue;
+        foreach (var clientGuildUser in clientGuild.Users)
+        {
+            if (clientGuildUser.IsBot)
+                continue;
 
-                if (!userList.Contains(clientGuildUser.Id))
-                    userList.Add(clientGuildUser.Id);
-            }
+            if (!userList.Contains(clientGuildUser.Id))
+                userList.Add(clientGuildUser.Id);
+        }
 
         var manifest = await _bungieClient.DefinitionProvider.GetCurrentManifest();
         var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
@@ -78,6 +80,73 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         embed.AddField("Manifest Version", manifest.Version, true);
 
         await Context.Message.ReplyAsync(embed: embed.Build());
+    }
+
+    [Command("commonActivities", RunMode = RunMode.Async)]
+    public async Task CommonActivities(string targetName)
+    {
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+        {
+            await ReplyAsync("Failed to fetch user profile.");
+            return;
+        }
+
+        var activeCharacters = await _bungieClient.ApiAccess.Destiny2.GetProfile(user.DestinyMembershipType,
+            user.DestinyMembershipId, new[]
+            {
+                DestinyComponentType.Characters
+            });
+
+        var characterIdList = activeCharacters.Response.Characters.Data.Keys.ToList();
+
+        var activityList = new List<long>();
+
+        foreach (var characterId in characterIdList)
+        {
+            var listQuery = await _bungieClient.ApiAccess.Destiny2.GetActivityHistory(user.DestinyMembershipType,
+                user.DestinyMembershipId, characterId, 250);
+
+            activityList.AddRange(
+                listQuery.Response.Activities.Select(activity => activity.ActivityDetails.InstanceId));
+        }
+
+        var targetPlayer = await _bungieClient.ApiAccess.Destiny2.SearchDestinyPlayerByBungieName(
+            BungieMembershipType.All,
+            new ExactSearchRequest
+            {
+                DisplayName = targetName.Split("#")[0],
+                DisplayNameCode = Convert.ToInt16(targetName.Split("#")[1])
+            });
+
+        if (targetPlayer.Response.Count == 0)
+        {
+            await ReplyAsync("Target player not found.");
+            return;
+        }
+
+        var targetPlayerId = targetPlayer.Response.First().MembershipId;
+        var title =
+            $"Activities in common between: {user.BungieName} and {targetPlayer.Response.First().BungieGlobalDisplayName}#{targetPlayer.Response.First().BungieGlobalDisplayNameCode}";
+        var response = title + "\n";
+
+        foreach (var activityId in activityList)
+        {
+            var validPgcr = false;
+            var pgcr = await _bungieClient.ApiAccess.Destiny2.GetPostGameCarnageReport(activityId);
+
+            foreach (var destinyPostGameCarnageReportEntry in pgcr.Response.Entries)
+                if (destinyPostGameCarnageReportEntry.Player.DestinyUserInfo.MembershipId == targetPlayerId)
+                    validPgcr = true;
+
+            if (validPgcr)
+                response +=
+                    $"{pgcr.Response.Period:g} - {pgcr.Response.ActivityDetails.Mode} - {pgcr.Response.ActivityDetails.ActivityReference.Select(x => x.DisplayProperties.Name)}\n";
+        }
+
+        await File.WriteAllTextAsync("tmp.txt", response);
+
+        await Context.Channel.SendFileAsync("tmp.txt", "");
     }
 
     [Command("cpCount", RunMode = RunMode.Async)]
