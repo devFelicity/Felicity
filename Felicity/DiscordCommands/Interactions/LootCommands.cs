@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
 using Felicity.Util.Enums;
 using ActivityType = Felicity.Util.Enums.ActivityType;
@@ -41,7 +41,8 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.Description = Format.Italics(requestedLootTable.Description);
 
         if (requestedLootTable.ActivityType == ActivityType.Dungeon)
-            embed.Description += $"\n\n{Format.Bold("Secret chests can drop any previously acquired armor and weapons.")}";
+            embed.Description +=
+                $"\n\n{Format.Bold("Secret chests can drop any previously acquired armor and weapons.")}";
 
         embed.ThumbnailUrl = requestedLootTable.ActivityType switch
         {

@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using Discord;
 using Discord.Commands;
-using DotNetBungieAPI.Clients;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Activities;
 using DotNetBungieAPI.Models.Destiny.Definitions.ActivityModes;
 using DotNetBungieAPI.Models.Requests;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
@@ -52,14 +53,14 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         var userList = new List<ulong>();
 
         foreach (var clientGuild in serverList)
-            foreach (var clientGuildUser in clientGuild.Users)
-            {
-                if (clientGuildUser.IsBot)
-                    continue;
+        foreach (var clientGuildUser in clientGuild.Users)
+        {
+            if (clientGuildUser.IsBot)
+                continue;
 
-                if (!userList.Contains(clientGuildUser.Id))
-                    userList.Add(clientGuildUser.Id);
-            }
+            if (!userList.Contains(clientGuildUser.Id))
+                userList.Add(clientGuildUser.Id);
+        }
 
         var manifest = await _bungieClient.DefinitionProvider.GetCurrentManifest();
         var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
@@ -118,14 +119,15 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
                 DisplayNameCode = Convert.ToInt16(targetName.Split("#")[1])
             });
 
-        if (targetPlayer.Response.Length == 0)
+        if (targetPlayer.Response.Count == 0)
         {
             await ReplyAsync("Target player not found.");
             return;
         }
 
         var targetPlayerId = targetPlayer.Response.First().MembershipId;
-        var title = $"Activities in common between: {user.BungieName} and {targetPlayer.Response.First().BungieGlobalDisplayName}#{targetPlayer.Response.First().BungieGlobalDisplayNameCode}";
+        var title =
+            $"Activities in common between: {user.BungieName} and {targetPlayer.Response.First().BungieGlobalDisplayName}#{targetPlayer.Response.First().BungieGlobalDisplayNameCode}";
         var response = title + "\n";
 
         foreach (var activityId in activityList)

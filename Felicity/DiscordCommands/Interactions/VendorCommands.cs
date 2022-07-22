@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;

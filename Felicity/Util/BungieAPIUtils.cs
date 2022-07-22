@@ -1,8 +1,8 @@
-﻿using DotNetBungieAPI.Authorization;
-using DotNetBungieAPI.Clients;
-using DotNetBungieAPI.Models;
+﻿using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Models.Authorization;
 using DotNetBungieAPI.Models.Requests;
 using DotNetBungieAPI.Models.User;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 
 // ReSharper disable UnusedMember.Global
@@ -38,7 +38,7 @@ public static class BungieApiUtils
             });
 
         var response = userInfoCard.Response;
-        if (response == null || response.Length == 0)
+        if (response.Count == 0)
             return null;
 
         return await GetLatestProfile(bungieClient, response.First().MembershipId, response.First().MembershipType);
@@ -59,7 +59,7 @@ public static class BungieApiUtils
                     MembershipId = user.BungieMembershipId,
                     TokenType = "Bearer"
                 };
-                var refreshedUser = await client.Authentication.RenewToken(token);
+                var refreshedUser = await client.Authorization.RenewToken(token);
 
                 user.OAuthToken = refreshedUser.AccessToken;
                 user.OAuthTokenExpires = nowTime.AddSeconds(refreshedUser.ExpiresIn);

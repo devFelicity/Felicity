@@ -1,10 +1,10 @@
 ﻿using System.Web;
 using Discord.WebSocket;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models.Caches;
 
 // ReSharper disable InconsistentNaming
@@ -75,9 +75,9 @@ internal static class WeaponHelper
         }
 
         var fetchList = (from keyPair in response
-                         let valuePerkId = keyPair.Value.PerkId
-                         where valuePerkId != null
-                         select (uint)valuePerkId)
+                let valuePerkId = keyPair.Value.PerkId
+                where valuePerkId != null
+                select (uint)valuePerkId)
             .ToList();
 
         foreach (var fetchPerk in fetchList)

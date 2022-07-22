@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
-using DotNetBungieAPI.Clients;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
 using Serilog;
 
@@ -23,7 +24,8 @@ public static class ProcessGunsmithData
         var embed = Embeds.MakeBuilder();
         embed.Title = "Banshee-44";
         embed.ThumbnailUrl = BotVariables.Images.GunsmithVendorLogo;
-        embed.Description = "Banshee-44 has lived many lives. As master weaponsmith for the Tower, he supplies Guardians with only the best.";
+        embed.Description =
+            "Banshee-44 has lived many lives. As master weaponsmith for the Tower, he supplies Guardians with only the best.";
 
         var weapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.GunsmithInventory, false);
         embed.AddField("Weapons", weapons, true);

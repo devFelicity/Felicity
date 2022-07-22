@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DotNetBungieAPI.Authorization;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Models.Authorization;
+using DotNetBungieAPI.Service.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
@@ -27,7 +27,7 @@ public static class UserExtensions
 {
     public static async Task<User> RefreshToken(this User user, IBungieClient bungieClient, DateTime nowTime)
     {
-        var refreshedUser = await bungieClient.Authentication.RenewToken(user.GetTokenData());
+        var refreshedUser = await bungieClient.Authorization.RenewToken(user.GetTokenData());
 
         user.OAuthToken = refreshedUser.AccessToken;
         user.OAuthTokenExpires = nowTime.AddSeconds(refreshedUser.ExpiresIn);

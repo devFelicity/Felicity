@@ -1,15 +1,17 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Responses;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Util;
 using Felicity.Util.Enums;
+
+// ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -63,7 +65,8 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         if (!bungieTag.Contains('#'))
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
-            errorEmbed.Description = $"`{bungieTag}` is not a correct format for a Bungie name.\nTry again with the `<name>#<number>` format.";
+            errorEmbed.Description =
+                $"`{bungieTag}` is not a correct format for a Bungie name.\nTry again with the `<name>#<number>` format.";
             await FollowupAsync(embed: errorEmbed.Build());
             return;
         }
@@ -127,21 +130,21 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         foreach (var collectible in from collectible in manifestCollectibles
-                                    where !collectible.Redacted
-                                    where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
-                                    from manifestCollectibleParentNodeHash in collectible.ParentNodes
-                                    where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
-                                    select collectible)
+                 where !collectible.Redacted
+                 where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
+                 from manifestCollectibleParentNodeHash in collectible.ParentNodes
+                 where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
+                 select collectible)
         {
             emblemCount++;
 
             var value = profile.Response.ProfileCollectibles.Data.Collectibles[collectible.Hash];
 
             foreach (var unused in from emblem in manifestInventoryItems
-                                   where emblem.Collectible.Hash == collectible.Hash
-                                   where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                   where !emblemList.Contains(collectible)
-                                   select emblem) emblemList.Add(collectible);
+                     where emblem.Collectible.Hash == collectible.Hash
+                     where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                     where !emblemList.Contains(collectible)
+                     select emblem) emblemList.Add(collectible);
 
             if (value.State.HasFlag(DestinyCollectibleState.Invisible) &&
                 !value.State.HasFlag(DestinyCollectibleState.NotAcquired))
@@ -160,8 +163,9 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var embed = new EmbedBuilder
         {
             Title = bungieName,
-            Url = $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                  profile.Response.Profile.Data.UserInfo.MembershipId,
+            Url =
+                $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
+                profile.Response.Profile.Data.UserInfo.MembershipId,
             Color = Color.Purple,
             ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
             Footer = Embeds.MakeFooter()

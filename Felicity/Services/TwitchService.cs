@@ -271,7 +271,7 @@ public class TwitchService
                         _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
                     .GetMessageAsync(activeStream.MessageId);
 
-                (message as IUserMessage)?.ModifyAsync(delegate (MessageProperties properties)
+                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
                 {
                     properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
                     properties.Embed = embed.Build();

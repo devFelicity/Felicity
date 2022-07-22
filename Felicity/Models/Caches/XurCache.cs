@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
-using DotNetBungieAPI.Clients;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
@@ -9,6 +8,7 @@ using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.PresentationNodes;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
 using Serilog;
 
@@ -104,7 +104,8 @@ public static class ProcessXurData
         embed.Description = $"Xûr is currently selling his wares on {Format.Bold(GetXurLocation(self.XurLocation))}";
 
         var exoticWeapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Exotic, true);
-        var legendaryWeapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Legendary, false);
+        var legendaryWeapons =
+            WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Legendary, false);
 
         var exoticArmors = "";
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
