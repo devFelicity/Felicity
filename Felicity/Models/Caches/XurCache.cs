@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
@@ -42,6 +43,7 @@ public class Armor
 {
     public uint ArmorId { get; set; }
     public string? ArmorName { get; set; }
+    public DestinyItemSubType ArmorType { get; set; }
     public DestinyClass CharacterClass { get; set; } = DestinyClass.Unknown;
     public Stats Stats { get; set; } = new();
 }
@@ -65,6 +67,7 @@ public class WeaponType
 public class Weapon
 {
     public uint WeaponId { get; set; }
+    public DestinyItemSubType? DestinyItemType { get; set; }
     public string Name { get; set; } = "";
     public Dictionary<string, Perk> Perks { get; set; } = new();
 }
@@ -111,7 +114,7 @@ public static class ProcessXurData
         foreach (var exoticArmor in self.XurInventory.Armor.Exotic)
         {
             exoticArmors +=
-                $"[{exoticArmor.ArmorName}]({MiscUtils.GetLightGgLink(exoticArmor.ArmorId)}) [{WeaponHelper.TotalStats(exoticArmor.Stats)}]\n";
+                $"{EmoteHelper.GetItemType(exoticArmor.ArmorType)} [{exoticArmor.ArmorName}]({MiscUtils.GetLightGgLink(exoticArmor.ArmorId)}) [{WeaponHelper.TotalStats(exoticArmor.Stats)}]\n";
             exoticArmors +=
                 $"{EmoteHelper.GetEmote(discordClient, "", "Mobility", 0)} {exoticArmor.Stats.Mobility:00} ";
             exoticArmors +=
@@ -131,7 +134,7 @@ public static class ProcessXurData
         embed.AddField("\u200b", '\u200b');
         embed.AddField("Legendary Weapons", legendaryWeapons, true);
         embed.AddField("Legendary Armor",
-            $"[{self.XurInventory.Armor.LegendarySet}]({WeaponHelper.BuildLightGGLink(self.XurInventory.Armor.LegendarySet!)})",
+            $"{EmoteHelper.GetItemType(DestinyItemSubType.Ornament)} [{self.XurInventory.Armor.LegendarySet}]({WeaponHelper.BuildLightGGLink(self.XurInventory.Armor.LegendarySet!)})",
             true);
 
         return embed.Build();
@@ -230,14 +233,16 @@ public static class ProcessXurData
                     xurCache.XurInventory.Weapons.Exotic.Add(new Weapon
                     {
                         Name = manifestItem.DisplayProperties.Name,
-                        WeaponId = (uint)vendorItem.Item.Hash!
+                        WeaponId = vendorItem.Item.Select(x => x.Hash),
+                        DestinyItemType = vendorItem.Item.Select(x => x.ItemSubType)
                     });
                     break;
                 case DestinyItemType.Armor:
                     xurCache.XurInventory.Armor.Exotic.Add(new Armor
                     {
-                        ArmorId = (uint)vendorItem.Item.Hash!,
+                        ArmorId = vendorItem.Item.Select(x => x.Hash),
                         ArmorName = manifestItem.DisplayProperties.Name,
+                        ArmorType = manifestItem.ItemSubType,
                         CharacterClass = manifestItem.ClassType,
                         Stats = new Stats
                         {
@@ -271,7 +276,8 @@ public static class ProcessXurData
             var weapon = new Weapon
             {
                 Name = manifestItem.DisplayProperties.Name,
-                WeaponId = (uint)vendorItem.Item.Hash!,
+                WeaponId = vendorItem.Item.Select(x => x.Hash),
+                DestinyItemType = vendorItem.Item.Select(x => x.ItemSubType),
                 Perks = await WeaponHelper.BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue,
                     xurSockets[vendorItem.VendorItemIndex])
             };

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
@@ -12,6 +13,7 @@ using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util;
 using Humanizer;
+using RunMode = Discord.Commands.RunMode;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
@@ -21,14 +23,32 @@ namespace Felicity.DiscordCommands.Text;
 public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 {
     private readonly IBungieClient _bungieClient;
+    private readonly InteractionService _interactionService;
     private readonly TwitchStreamDb _twitchStreamDb;
     private readonly UserDb _userDb;
 
-    public BasicTextCommands(TwitchStreamDb twitchStreamDb, UserDb userDb, IBungieClient bungieClient)
+    public BasicTextCommands(TwitchStreamDb twitchStreamDb, UserDb userDb, IBungieClient bungieClient, InteractionService interactionService)
     {
         _twitchStreamDb = twitchStreamDb;
         _userDb = userDb;
         _bungieClient = bungieClient;
+        _interactionService = interactionService;
+    }
+
+    [Command("help")]
+    public async Task Help()
+    {
+        var commands = _interactionService.SlashCommands.ToList();
+        var embedBuilder = new EmbedBuilder();
+
+        foreach (var command in commands)
+        {
+            embedBuilder.Description += Format.Bold(command.Name) + "\n";
+            var description = command.Description ?? "No description available";
+            embedBuilder.Description += $"> {description}\n\n";
+        }
+
+        await ReplyAsync("Here's a list of commands and their description: ", false, embedBuilder.Build());
     }
 
     [Command("ping")]
@@ -53,14 +73,14 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         var userList = new List<ulong>();
 
         foreach (var clientGuild in serverList)
-        foreach (var clientGuildUser in clientGuild.Users)
-        {
-            if (clientGuildUser.IsBot)
-                continue;
+            foreach (var clientGuildUser in clientGuild.Users)
+            {
+                if (clientGuildUser.IsBot)
+                    continue;
 
-            if (!userList.Contains(clientGuildUser.Id))
-                userList.Add(clientGuildUser.Id);
-        }
+                if (!userList.Contains(clientGuildUser.Id))
+                    userList.Add(clientGuildUser.Id);
+            }
 
         var manifest = await _bungieClient.DefinitionProvider.GetCurrentManifest();
         var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;

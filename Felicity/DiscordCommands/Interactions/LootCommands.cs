@@ -75,7 +75,7 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
             switch (tableLootId)
             {
                 case (uint)Armor.Everything:
-                    result += "\n <:consumables:996724235634491523> All Possible Drops";
+                    result += "\n <:CS:996724235634491523> All Possible Drops";
                     continue;
                 case (uint)Armor.Helmet:
                     result += "<:helmet:996490149728899122> ";
@@ -97,7 +97,7 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
             if (bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(tableLootId,
                     BungieLocales.EN, out var manifestItem))
                 result +=
-                    $"\n{EmoteHelper.GetWeaponType(manifestItem)} " +
+                    $"\n{EmoteHelper.GetItemType(manifestItem)} " +
                     $"[{manifestItem.DisplayProperties.Name.Replace("(Timelost)", "(TL)")}]" +
                     $"({MiscUtils.GetLightGgLink(tableLootId)})";
         }

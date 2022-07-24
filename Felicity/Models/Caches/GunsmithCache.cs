@@ -80,6 +80,7 @@ public static class ProcessGunsmithData
             var weapon = new Weapon
             {
                 Name = itemDefinition.DisplayProperties.Name,
+                DestinyItemType = itemDefinition.ItemSubType,
                 WeaponId = itemDefinition.Hash,
                 Perks = await WeaponHelper.BuildPerks(bungieClient, lg, ItemTierType.Superior,
                     vendorData.Response.ItemComponents.Sockets.Data[itemIndex])
