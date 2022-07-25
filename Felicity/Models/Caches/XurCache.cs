@@ -84,11 +84,8 @@ public static class ProcessXurData
     public static Embed BuildUnavailableEmbed()
     {
         var embed = Embeds.MakeBuilder();
-        embed.Author = new EmbedAuthorBuilder
-        {
-            Name = "Xûr, Agent of the Nine",
-            IconUrl = BotVariables.Images.XurVendorLogo
-        };
+        embed.Title = "Xûr, Agent of the Nine";
+        embed.ThumbnailUrl = BotVariables.Images.XurVendorLogo;
         embed.Description =
             $"Xûr is not currently selling his wares.\nHe will arrive <t:{ResetUtils.GetNextWeeklyReset((int)DayOfWeek.Friday).GetTimestamp()}:R>.";
         embed.Color = Color.Red;
@@ -99,11 +96,8 @@ public static class ProcessXurData
     public static Embed BuildEmbed(XurCache self, BaseSocketClient discordClient)
     {
         var embed = Embeds.MakeBuilder();
-        embed.Author = new EmbedAuthorBuilder
-        {
-            Name = "Xûr, Agent of the Nine",
-            IconUrl = BotVariables.Images.XurVendorLogo
-        };
+        embed.Title = "Xûr, Agent of the Nine";
+        embed.ThumbnailUrl = BotVariables.Images.XurVendorLogo;
         embed.Description = $"Xûr is currently selling his wares on {Format.Bold(GetXurLocation(self.XurLocation))}";
 
         var exoticWeapons = WeaponHelper.PopulateWeaponPerks(discordClient, self.XurInventory.Weapons.Exotic, true);
