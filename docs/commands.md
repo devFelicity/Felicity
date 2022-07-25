@@ -1,10 +1,10 @@
 ---
 template: overrides/main.html
 ---
-    
+
 | **Command**           	| **Parameters**                                                                                                                                             	| **Description**                                                                                                            	|
 |-----------------------	|------------------------------------------------------------------------------------------------------------------------------------------------------------	|----------------------------------------------------------------------------------------------------------------------------	|
-| /byte                 	| byte                                                                                                                                                       	| Returns a byte about certain key individuals.                                                                              	|
+| /byte                 	| byte                                                                                                                                                       	| Commands that don't need their own slash command individuals.                                                                              	|
 | /checkpoint support   	| -                                                                                                                                                          	| Get an invite to the checkpoint server.                                                                                    	|
 | /checkpoint search    	| activity                                                                                                                                                   	| Retrieve a checkpoint for a given activity.                                                                                	|
 | /lookup wish          	| wish                                                                                                                                                       	| Look up patterns for wishes in the Last Wish raid.                                                                         	|
