@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
