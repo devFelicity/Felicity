@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
@@ -73,6 +72,9 @@ internal static class EmoteHelper
                 if (emotes != null)
                     return emotes;
             }
+
+        if (emoteConfig.Settings.Emotes.ContainsKey((uint)valuePerkId))
+            emoteConfig.Settings.Emotes.Remove((uint)valuePerkId);
 
         name = name.Replace(" ", "").Replace("-", "").Replace("'", "");
 
