@@ -33,11 +33,8 @@ public static class ProcessModData
     public static async Task<Embed> BuildEmbed(IBungieClient bungieClient, ModCache self, User user)
     {
         var embed = Embeds.MakeBuilder();
-        embed.Author = new EmbedAuthorBuilder
-        {
-            Name = "Mod Vendors:",
-            IconUrl = BotVariables.Images.ModVendorIcon
-        };
+        embed.Title = "Mod Vendors:";
+        embed.ThumbnailUrl = BotVariables.Images.ModVendorIcon;
         embed.Description = "Ada-1 and Banshee-44 can both be found in the Tower.";
 
         var adaMods = await GetMods(bungieClient, self, DefinitionHashes.Vendors.Ada1_350061650, user);
@@ -73,10 +70,10 @@ public static class ProcessModData
             var missing = "";
 
             foreach (var personalDestinyVendorSaleItemSetComponent in vendorData.Response.Sales.Data)
-            foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
-                if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
-                    if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
-                        missing = "⚠️ ";
+                foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
+                    if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
+                        if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
+                            missing = "⚠️ ";
 
             result = result + $"{missing}[{mod.Name}]({MiscUtils.GetLightGgLink(mod.Id)})\n" +
                      $"> {Format.Italics(mod.Description)}\n\n";

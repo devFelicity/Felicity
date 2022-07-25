@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models.Destiny;
-using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
@@ -132,11 +132,8 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         if (vendorData.Response.Vendor.Data.Progression.CurrentResetCount >= 3)
         {
             var errorEmbed = Embeds.MakeBuilder();
-            errorEmbed.Author = new EmbedAuthorBuilder
-            {
-                Name = "Saint-14",
-                IconUrl = BotVariables.Images.SaintVendorLogo
-            };
+            errorEmbed.Title = "Saint-14";
+            errorEmbed.ThumbnailUrl = BotVariables.Images.SaintVendorLogo;
 
             errorEmbed.Description =
                 $"Because you've reset your rank {Format.Bold(vendorData.Response.Vendor.Data.Progression.CurrentResetCount.ToString())} times, " +
@@ -146,21 +143,16 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(1).ItemIndexes;
+        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(3).ItemIndexes;
 
         var embed = Embeds.MakeBuilder();
-        embed.Author = new EmbedAuthorBuilder
-        {
-            Name = "Saint-14",
-            IconUrl = BotVariables.Images.SaintVendorLogo
-        };
+        embed.Title = "Saint-14";
+        embed.ThumbnailUrl = BotVariables.Images.SaintVendorLogo;
         embed.Description =
             "A legendary hero and the former Titan Vanguard, Saint-14 now manages the PvP game mode Trials of Osiris.\n\n"
-            + "These rewards change perks based on weekly reset.";
+            + "These rewards change perks on weekly reset.";
 
         var i = 0;
-
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         foreach (var repReward in repRewards)
         {
@@ -174,33 +166,21 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 or DefinitionHashes.InventoryItems.ResetRank_2133694745)
                 continue;
 
-            var plugHash1 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(3).Plug.Hash;
-            var plugHash2 = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(4).Plug.Hash;
-
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)reward.Item.Hash!,
-                lg, out var result1);
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash1!, lg,
-                out var result2);
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)plugHash2!, lg,
-                out var result3);
-
-            var manifestItems = new[]
-            {
-                result1,
-                result2,
-                result3
-            };
-
-            if (manifestItems[0].ItemType != DestinyItemType.Weapon)
+            if (reward.Item.Select(x => x.ItemType != DestinyItemType.Weapon))
                 continue;
 
             var fullMessage =
-                $"[{manifestItems[0].DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestItems[0].Hash)})\n";
+                $"{EmoteHelper.GetItemType(reward.Item.Select(x => x.ItemSubType))} " +
+                $"[{reward.Item.Select(x => x.DisplayProperties.Name)}]" +
+                $"({MiscUtils.GetLightGgLink(reward.Item.Select(x => x.Hash))})\n";
 
-            fullMessage += EmoteHelper.GetEmote(Context.Client, manifestItems[1].DisplayProperties.Icon.RelativePath,
-                manifestItems[1].DisplayProperties.Name, plugHash1);
-            fullMessage += EmoteHelper.GetEmote(Context.Client, manifestItems[2].DisplayProperties.Icon.RelativePath,
-                manifestItems[2].DisplayProperties.Name, plugHash2);
+            for (var j = 0; j < 4; j++)
+            {
+                var plug = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(j + 1).Plug;
+
+                fullMessage += EmoteHelper.GetEmote(Context.Client, plug.Select(x => x.DisplayProperties.Icon.RelativePath),
+                    plug.Select(x => x.DisplayProperties.Name), plug.Select(x => x.Hash));
+            }
 
             var fieldName = i == 0 ? "Rank 10" : "Rank 16";
 
