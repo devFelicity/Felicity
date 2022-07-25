@@ -74,6 +74,9 @@ internal static class EmoteHelper
                     return emotes;
             }
 
+        if (emoteConfig.Settings.Emotes.ContainsKey((uint)valuePerkId))
+            emoteConfig.Settings.Emotes.Remove((uint)valuePerkId);
+
         name = name.Replace(" ", "").Replace("-", "").Replace("'", "");
 
         var result = AddEmote(discordClient, imageUrl, name);
