@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -27,7 +28,8 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     private readonly TwitchStreamDb _twitchStreamDb;
     private readonly UserDb _userDb;
 
-    public BasicTextCommands(TwitchStreamDb twitchStreamDb, UserDb userDb, IBungieClient bungieClient, InteractionService interactionService)
+    public BasicTextCommands(TwitchStreamDb twitchStreamDb, UserDb userDb, IBungieClient bungieClient,
+        InteractionService interactionService)
     {
         _twitchStreamDb = twitchStreamDb;
         _userDb = userDb;

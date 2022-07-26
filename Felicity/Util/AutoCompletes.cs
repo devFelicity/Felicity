@@ -1,5 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.Models.Destiny.Definitions.Metrics;
+using DotNetBungieAPI.Service.Abstractions;
 using Felicity.DiscordCommands.Interactions;
 using Felicity.Models;
 using Felicity.Models.Caches;
@@ -61,6 +64,36 @@ public class RunByteAutocomplete : AutocompleteHandler
     }
 }
 
+public class MetricAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var resultList = new List<AutocompleteResult>();
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        var metricsList = services.GetService<IBungieClient>()!.Repository.GetAll<DestinyMetricDefinition>();
+
+        if (currentSearch != null)
+            resultList.AddRange(from destinyMetricDefinition in metricsList
+                                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
+                                select new AutocompleteResult(
+                                    $"{destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)} - {destinyMetricDefinition.DisplayProperties.Name}",
+                                    destinyMetricDefinition.Hash));
+        else
+            resultList.AddRange(from destinyMetricDefinition in metricsList
+                                select new AutocompleteResult(
+                                    $"{destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)} - {destinyMetricDefinition.DisplayProperties.Name}",
+                                    destinyMetricDefinition.Hash));
+
+        return AutocompletionResult.FromSuccess(resultList.Take(25));
+    }
+}
+
 public class CheckpointAutocomplete : AutocompleteHandler
 {
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
@@ -105,8 +138,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         await Task.Delay(0);
 
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
-            where autocompleteOption.Name == "source"
-            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+                      where autocompleteOption.Name == "source"
+                      select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
 
         var memCache = ProcessMementoData.ReadJson();
 
@@ -121,8 +154,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var results = (from weapon in goodSource.WeaponList
-            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
-            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+                       where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+                       select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
 
         results = results.OrderBy(x => x.Name).ToList();
 
