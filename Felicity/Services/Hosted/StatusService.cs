@@ -20,7 +20,7 @@ public class StatusService : BackgroundService
         new Game("Spire of Stars"),
         new Game("you 👀", ActivityType.Watching),
         new Game("Leaf break stuff 🔨", ActivityType.Watching),
-        new Game("what does air taste like?", ActivityType.CustomStatus),
+        new Game("with fire"),
         new Game("you break the rules", ActivityType.Watching),
         new Game("Juice WRLD", ActivityType.Listening),
         new Game("Google Chrome"),
