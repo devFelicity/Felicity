@@ -82,15 +82,15 @@ public class MetricAutocomplete : AutocompleteHandler
             resultList.AddRange(from destinyMetricDefinition in metricsList
                                 where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
                                 select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)} - {destinyMetricDefinition.DisplayProperties.Name}",
+                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
                                     destinyMetricDefinition.Hash));
         else
             resultList.AddRange(from destinyMetricDefinition in metricsList
                                 select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)} - {destinyMetricDefinition.DisplayProperties.Name}",
+                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
                                     destinyMetricDefinition.Hash));
 
-        return AutocompletionResult.FromSuccess(resultList.Take(25));
+        return AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25));
     }
 }
 

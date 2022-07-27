@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.7.0]
+### Added
+- Status cycling service.
+
+### Changed
+- Randomise suggestions for `/metrics` and reformat autocompletes.
+
 ## [6.6.0]
 ### Added
 - `/metrics` command to fetch various information from stat trackers / profile metrics.

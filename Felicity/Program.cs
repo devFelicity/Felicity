@@ -122,6 +122,8 @@ try
 
     builder.Services.Configure<TwitchOptions>(builder.Configuration.GetSection("Twitch")).AddSingleton<TwitchService>();
     builder.Services.AddHostedService<TwitchStartupService>();
+    builder.Services.AddHostedService<ResetService>();
+    builder.Services.AddHostedService<StatusService>();
 
     builder.Services
         .AddAuthentication(options =>
