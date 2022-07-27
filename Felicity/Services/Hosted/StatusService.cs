@@ -1,0 +1,71 @@
+﻿using Discord;
+using Discord.WebSocket;
+using DotNetBungieAPI.Models.Requests;
+using Felicity.Util;
+using Serilog;
+
+namespace Felicity.Services.Hosted;
+
+public class StatusService : BackgroundService
+{
+    private readonly DiscordShardedClient _discordClient;
+
+    private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
+
+    private static Game LastGame { get; set; } = null!;
+
+    private static readonly List<Game> GameList = new()
+    {
+        new Game("Destiny 3"),
+        new Game("Spire of Stars"),
+        new Game("you 👀", ActivityType.Watching),
+        new Game("Leaf break stuff 🔨", ActivityType.Watching),
+        new Game("what does air taste like?", ActivityType.CustomStatus),
+        new Game("you break the rules", ActivityType.Watching),
+        new Game("Juice WRLD", ActivityType.Listening),
+        new Game("Google Chrome"),
+        new Game("$10k qp tourney", ActivityType.Competing),
+        new Game("ttv/", ActivityType.Watching),
+        new Game("sweet bird sounds", ActivityType.Listening),
+        new Game("Felicity ... wait", ActivityType.Watching),
+        new Game($"v.{BotVariables.Version}"),
+        new Game("/lookup", ActivityType.Watching),
+        new Game("/metrics", ActivityType.Watching),
+        new Game("/vendor", ActivityType.Watching),
+        new Game("/loot-table", ActivityType.Watching),
+        new Game("/recipes", ActivityType.Watching),
+        new Game("/memento", ActivityType.Watching)
+    };
+
+    public StatusService(DiscordShardedClient discordClient)
+    {
+        _discordClient = discordClient;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            Game newGame;
+            do
+            {
+                newGame = GameList[Random.Shared.Next(GameList.Count)];
+            } while (newGame == LastGame);
+
+            try
+            {
+                await _discordClient.SetActivityAsync(newGame);
+                Log.Information($"Set game to: {newGame.Name}");
+                LastGame = newGame;
+            }
+            catch
+            {
+                // ignored
+            }
+
+            await Task.Delay(_delay, stoppingToken);
+        }
+    }
+}
