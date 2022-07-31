@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Web;
+using Discord;
 using Discord.WebSocket;
 using Felicity.Models;
 using Felicity.Options;
@@ -110,13 +111,15 @@ public class TwitchService
                     new()
                     {
                         Name = "Game",
-                        Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                        Value = string.IsNullOrEmpty(e.Stream.GameName)
+                            ? "> No Game"
+                            : $"> [{e.Stream.GameName}](https://www.twitch.tv/directory/game/{HttpUtility.UrlEncode(e.Stream.GameName)})",
                         IsInline = true
                     },
                     new()
                     {
                         Name = "Started",
-                        Value = $"<t:{timeStarted}:R>",
+                        Value = $"> <t:{timeStarted}:R>",
                         IsInline = true
                     }
                 }
@@ -212,18 +215,20 @@ public class TwitchService
                     {
                         new()
                         {
-                            Name = "Started", Value = $"<t:{unixTimestamp}:f>",
+                            Name = "Started", Value = $"> <t:{unixTimestamp}:f>",
                             IsInline = true
                         },
                         new()
                         {
-                            Name = "Duration", Value = vod.Duration,
+                            Name = "Duration", Value = $"> {vod.Duration}",
                             IsInline = true
                         },
                         new()
                         {
                             Name = "Game",
-                            Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                            Value = string.IsNullOrEmpty(e.Stream.GameName)
+                                ? "> No Game"
+                                : $"> [{e.Stream.GameName}](https://www.twitch.tv/directory/game/{HttpUtility.UrlEncode(e.Stream.GameName)})",
                             IsInline = true
                         }
                     }
@@ -271,7 +276,7 @@ public class TwitchService
                         _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
                     .GetMessageAsync(activeStream.MessageId);
 
-                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
+                (message as IUserMessage)?.ModifyAsync(delegate (MessageProperties properties)
                 {
                     properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
                     properties.Embed = embed.Build();
