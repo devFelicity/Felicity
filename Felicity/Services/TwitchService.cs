@@ -258,7 +258,9 @@ public class TwitchService
                         new()
                         {
                             Name = "Game",
-                            Value = string.IsNullOrEmpty(e.Stream.GameName) ? "No Game" : e.Stream.GameName,
+                            Value = string.IsNullOrEmpty(e.Stream.GameName)
+                                ? "> No Game"
+                                : $"> [{e.Stream.GameName}](https://www.twitch.tv/directory/game/{HttpUtility.UrlEncode(e.Stream.GameName)})",
                             IsInline = true
                         }
                     }
