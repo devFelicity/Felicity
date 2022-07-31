@@ -33,8 +33,13 @@ public static class ProcessModData
     public static async Task<Embed> BuildEmbed(IBungieClient bungieClient, ModCache self, User user)
     {
         var embed = Embeds.MakeBuilder();
-        embed.Title = "Mod Vendors:";
-        embed.ThumbnailUrl = BotVariables.Images.ModVendorIcon;
+
+        embed.Author = new EmbedAuthorBuilder
+        {
+            Name = "Mod Vendors:",
+            IconUrl = BotVariables.Images.ModVendorIcon
+        };
+
         embed.Description = "Ada-1 and Banshee-44 can both be found in the Tower.";
 
         var adaMods = await GetMods(bungieClient, self, DefinitionHashes.Vendors.Ada1_350061650, user);

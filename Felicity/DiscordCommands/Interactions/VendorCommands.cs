@@ -146,8 +146,13 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(3).ItemIndexes;
 
         var embed = Embeds.MakeBuilder();
-        embed.Title = "Saint-14";
-        embed.ThumbnailUrl = BotVariables.Images.SaintVendorLogo;
+
+        embed.Author = new EmbedAuthorBuilder
+        {
+            Name = "Saint-14",
+            IconUrl = BotVariables.Images.SaintVendorLogo
+        };
+
         embed.Description =
             "A legendary hero and the former Titan Vanguard, Saint-14 now manages the PvP game mode Trials of Osiris.\n\n"
             + "These rewards change perks on weekly reset.";
