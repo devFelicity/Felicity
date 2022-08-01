@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using DotNetBungieAPI.Models.Requests;
 using Felicity.Util;
 using Serilog;
 
@@ -25,7 +24,7 @@ public class StatusService : BackgroundService
         new Game("Juice WRLD", ActivityType.Listening),
         new Game("Google Chrome"),
         new Game("$10k qp tourney", ActivityType.Competing),
-        new Game("ttv/", ActivityType.Watching),
+        new Game("ttv/fake_positivity", ActivityType.Watching),
         new Game("sweet bird sounds", ActivityType.Listening),
         new Game("Felicity ... wait", ActivityType.Watching),
         new Game($"v.{BotVariables.Version}"),
