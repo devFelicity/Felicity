@@ -18,7 +18,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.Leviathan, new List<uint>
+            CraftSource.Opulent, new List<uint>
             {
                 DefinitionHashes.Records.Austringer,
                 DefinitionHashes.Records.Beloved,
@@ -132,7 +132,7 @@ internal static class Craftables
     public static class CraftSource
     {
         public const string SeasonHaunted = "Haunted";
-        public const string Leviathan = "Leviathan";
+        public const string Opulent = "Opulent";
         public const string SeasonRisen = "Risen";
         public const string RaidVotD = "Vow of the Disciple";
         public const string WqWellspring = "Wellspring";
