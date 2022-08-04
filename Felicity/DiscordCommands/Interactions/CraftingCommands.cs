@@ -76,7 +76,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         {
             craftableList.Remove(Craftables.CraftSource.SeasonRisen);
             craftableList.Remove(Craftables.CraftSource.SeasonHaunted);
-            craftableList.Remove(Craftables.CraftSource.Leviathan);
+            craftableList.Remove(Craftables.CraftSource.Opulent);
         }
 
         foreach (var (source, weaponList) in craftableList)
