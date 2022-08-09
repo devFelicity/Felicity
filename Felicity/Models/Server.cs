@@ -40,6 +40,6 @@ public class ServerDb : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
-        optionsBuilder.UseMySql(_connectionString, serverVersion);
+        optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
     }
 }
