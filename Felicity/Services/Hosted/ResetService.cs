@@ -55,7 +55,7 @@ public class ResetService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in ResetService\n{e.GetType()}: {e.Message}");
+            Log.Error($"Exception in ResetService\n{e.GetType()}: {e.Message}");
         }
     }
 }

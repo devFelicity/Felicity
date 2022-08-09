@@ -87,7 +87,7 @@ public class DiscordStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in DiscordStartupService\n{e.GetType()}: {e.Message}");
+            Log.Error($"Exception in DiscordStartupService\n{e.GetType()}: {e.Message}");
         }
     }
 
