@@ -12,7 +12,7 @@ using Felicity.Util;
 namespace Felicity.DiscordCommands.Interactions;
 
 [RequireContext(ContextType.Guild)]
-[Preconditions.RequireBotModerator]
+[DefaultMemberPermissions(GuildPermission.ManageGuild)]
 [Group("server", "Collection of server management commands for setting up your server.")]
 public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
 {

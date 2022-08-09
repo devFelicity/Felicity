@@ -48,39 +48,46 @@ public class DiscordStartupService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
-        _discordShardedClient.ShardDisconnected += OnShardDisconnected;
-
-        _discordShardedClient.MessageReceived += OnMessageReceived;
-        _discordShardedClient.MessageUpdated += OnMessageUpdated;
-
-        _discordShardedClient.JoinedGuild += OnJoinedGuild;
-        _discordShardedClient.LeftGuild += OnLeftGuild;
-
-        _discordShardedClient.InteractionCreated += OnInteractionCreated;
-        _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
-
-        _discordShardedClient.UserJoined += HandleJoin;
-        _discordShardedClient.UserLeft += HandleLeft;
-
-        PrepareClientAwaiter();
-        await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
-        await _discordShardedClient.StartAsync();
-
-        await WaitForReadyAsync(stoppingToken);
-
-        await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
-        await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
-
-        if (BotVariables.IsDebug)
+        try
         {
-            await _discordShardedClient.Rest.DeleteAllGlobalCommandsAsync();
+            _discordShardedClient.Log += async logMessage => { await _adapter.Log(logMessage); };
+            _discordShardedClient.ShardDisconnected += OnShardDisconnected;
 
-            await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
+            _discordShardedClient.MessageReceived += OnMessageReceived;
+            _discordShardedClient.MessageUpdated += OnMessageUpdated;
+
+            _discordShardedClient.JoinedGuild += OnJoinedGuild;
+            _discordShardedClient.LeftGuild += OnLeftGuild;
+
+            _discordShardedClient.InteractionCreated += OnInteractionCreated;
+            _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
+
+            _discordShardedClient.UserJoined += HandleJoin;
+            _discordShardedClient.UserLeft += HandleLeft;
+
+            PrepareClientAwaiter();
+            await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
+            await _discordShardedClient.StartAsync();
+
+            await WaitForReadyAsync(stoppingToken);
+
+            await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
+            await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
+
+            if (BotVariables.IsDebug)
+            {
+                await _discordShardedClient.Rest.DeleteAllGlobalCommandsAsync();
+
+                await _interactionService.RegisterCommandsToGuildAsync(_discordBotOptions.Value.LogServerId);
+            }
+            else
+            {
+                await _interactionService.RegisterCommandsGloballyAsync();
+            }
         }
-        else
+        catch (Exception e)
         {
-            await _interactionService.RegisterCommandsGloballyAsync();
+            Console.WriteLine($"Exception in DiscordStartupService\n{e.GetType()}: {e.Message}");
         }
     }
 
@@ -168,12 +175,12 @@ public class DiscordStartupService : BackgroundService
         errorEmbed.AddField("Error", $"```{errorMessage}```");
 
         using (LogContext.PushProperty("context", new
-               {
-                   Sender = arg2.User.ToString(),
-                   CommandName = options.Name,
-                   CommandParameters = JsonSerializer.Serialize(debugOptions),
-                   ServerId = arg2.Interaction.GuildId ?? 0
-               }))
+        {
+            Sender = arg2.User.ToString(),
+            CommandName = options.Name,
+            CommandParameters = JsonSerializer.Serialize(debugOptions),
+            ServerId = arg2.Interaction.GuildId ?? 0
+        }))
         {
             Log.Error(errorMessage);
         }

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Text.Json;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
