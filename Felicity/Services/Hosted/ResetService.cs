@@ -19,36 +19,43 @@ public class ResetService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            await _bungieClient.ResetService.WaitForNextDailyReset(_delay, stoppingToken);
-
-            Log.Information("Reset task starting.");
-
-            switch (DateTime.UtcNow.DayOfWeek)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                case DayOfWeek.Monday:
-                    break;
-                case DayOfWeek.Tuesday:
-                    // weekly reset
-                    break;
-                case DayOfWeek.Wednesday:
-                    // gunsmith weird perk reset time
-                    break;
-                case DayOfWeek.Thursday:
-                    break;
-                case DayOfWeek.Friday:
-                    // xur & trials
-                    break;
-                case DayOfWeek.Saturday:
-                    break;
-                case DayOfWeek.Sunday:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                await _bungieClient.ResetService.WaitForNextDailyReset(_delay, stoppingToken);
 
-            // do stuff
+                Log.Information("Reset task starting.");
+
+                switch (DateTime.UtcNow.DayOfWeek)
+                {
+                    case DayOfWeek.Monday:
+                        break;
+                    case DayOfWeek.Tuesday:
+                        // weekly reset
+                        break;
+                    case DayOfWeek.Wednesday:
+                        // gunsmith weird perk reset time
+                        break;
+                    case DayOfWeek.Thursday:
+                        break;
+                    case DayOfWeek.Friday:
+                        // xur & trials
+                        break;
+                    case DayOfWeek.Saturday:
+                        break;
+                    case DayOfWeek.Sunday:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                // do stuff
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Exception in ResetService\n{e.GetType()}: {e.Message}");
         }
     }
 }

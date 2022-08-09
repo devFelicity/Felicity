@@ -11,7 +11,14 @@ public class TwitchStartupService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _twitchService.ConfigureMonitor();
+        try
+        {
+            _twitchService.ConfigureMonitor();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
+        }
 
         return Task.CompletedTask;
     }

@@ -43,28 +43,35 @@ public class StatusService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
-
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            Game newGame;
-            do
-            {
-                newGame = GameList[Random.Shared.Next(GameList.Count)];
-            } while (newGame == LastGame);
+            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
 
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                await _discordClient.SetActivityAsync(newGame);
-                Log.Information($"Set game to: {newGame.Name}");
-                LastGame = newGame;
-            }
-            catch
-            {
-                // ignored
-            }
+                Game newGame;
+                do
+                {
+                    newGame = GameList[Random.Shared.Next(GameList.Count)];
+                } while (newGame == LastGame);
 
-            await Task.Delay(_delay, stoppingToken);
+                try
+                {
+                    await _discordClient.SetActivityAsync(newGame);
+                    Log.Information($"Set game to: {newGame.Name}");
+                    LastGame = newGame;
+                }
+                catch
+                {
+                    // ignored
+                }
+
+                await Task.Delay(_delay, stoppingToken);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Exception in StatusService\n{e.GetType()}: {e.Message}");
         }
     }
 }
