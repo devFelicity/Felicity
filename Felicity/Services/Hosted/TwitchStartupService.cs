@@ -1,5 +1,3 @@
-using Serilog;
-
 namespace Felicity.Services.Hosted;
 
 public class TwitchStartupService : BackgroundService
@@ -19,7 +17,7 @@ public class TwitchStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            Log.Error($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
+            Console.WriteLine($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
         }
 
         return Task.CompletedTask;

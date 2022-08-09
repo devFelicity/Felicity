@@ -71,7 +71,7 @@ public class StatusService : BackgroundService
         }
         catch (Exception e)
         {
-            Log.Error($"Exception in StatusService\n{e.GetType()}: {e.Message}");
+            Console.WriteLine($"Exception in StatusService\n{e.GetType()}: {e.Message}");
         }
     }
 }
