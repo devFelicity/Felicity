@@ -1,4 +1,5 @@
 ﻿using DotNetBungieAPI.Service.Abstractions;
+using Serilog;
 
 namespace Felicity.Services.Hosted;
 
@@ -21,7 +22,7 @@ public class BungieClientStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
+            Log.Error($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
         }
     }
 }
