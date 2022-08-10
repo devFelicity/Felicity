@@ -82,7 +82,7 @@ try
             discordClient =>
             {
                 discordClient.GatewayIntents = GatewayIntents.AllUnprivileged;
-                discordClient.AlwaysDownloadUsers = true;
+                discordClient.AlwaysDownloadUsers = false;
             },
             _ => { },
             textCommandsService => { textCommandsService.CaseSensitiveCommands = false; },
