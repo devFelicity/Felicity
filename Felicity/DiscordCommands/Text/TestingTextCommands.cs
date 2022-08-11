@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -36,6 +36,34 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         _interactionService = interactionService;
     }
 
+    [Command("clarity")]
+    public async Task Clarity(uint itemHash)
+    {
+        var clarityDb = await ClarityParser.Fetch();
+
+        var clarityValue = clarityDb?[itemHash.ToString()];
+
+        var returnString = new StringBuilder();
+
+        switch (clarityValue?.Type)
+        {
+            case TypeEnum.ArmorExotic:
+                returnString.Append($"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n**Item:** {clarityValue.ItemName} ({clarityValue.ItemHash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
+                break;
+            case TypeEnum.WeaponMod:
+            case TypeEnum.WeaponOriginTrait:
+            case TypeEnum.WeaponPerk:
+            case TypeEnum.WeaponPerkEnhanced:
+                returnString.Append($"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
+                break;
+            default:
+                await ReplyAsync("Unknown type.");
+                return;
+        }
+
+        await ReplyAsync(returnString.ToString());
+    }
+
     [Command("help")]
     public async Task Help()
     {
@@ -70,7 +98,17 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     public async Task Metrics()
     {
         var serverList = Context.Client.Guilds;
-        await Context.Client.DownloadUsersAsync(serverList);
+
+        try
+        {
+            await Context.Client.DownloadUsersAsync(serverList);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
         var userList = new List<ulong>();
 
         foreach (var clientGuild in serverList)

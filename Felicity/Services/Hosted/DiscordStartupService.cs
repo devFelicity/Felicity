@@ -110,7 +110,8 @@ public class DiscordStartupService : BackgroundService
             new()
             {
                 Name = "Members",
-                Value = arg.MemberCount,
+                // Value = arg.MemberCount,
+                Value = "disabled.",
                 IsInline = true
             }
         };
@@ -129,9 +130,11 @@ public class DiscordStartupService : BackgroundService
         var embed = Embeds.MakeBuilder();
         embed.Author = new EmbedAuthorBuilder
         {
-            Name = "Felicity was removed from a server."
+            Name = $"Felicity was removed from a server ({arg.Id})."
         };
-        embed.Title = arg.Name;
+
+        if (arg.Name != null)
+            embed.Title = arg.Name;
 
         await BotVariables.DiscordLogChannel!.SendMessageAsync(embed: embed.Build());
     }
