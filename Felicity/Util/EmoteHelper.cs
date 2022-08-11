@@ -88,6 +88,25 @@ internal static class EmoteHelper
         return result;
     }
 
+    public static string StaticEmote(string input)
+    {
+        var output = input.ToLower() switch
+        {
+            "primary" => "<:primary:1006946858318434364>",
+            "special" => "<:special:1006946861078290523>",
+            "heavy" => "<:heavy:1006946859610296510>",
+            "pve" => "<:pve:1006939958013079643>",
+            "pvp" => "<:pvp:1006939951843246120>",
+            "arc" => "<:arc:1006939955718783098>",
+            "solar" => "<:solar:1006939954364039228>",
+            "void" => "<:void:1006939953139294269>",
+            "stasis" => "<:stasis:1006939956901580894>",
+            _ => ""
+        };
+
+        return output;
+    }
+
     public static string GetItemType(DestinyInventoryItemDefinition manifestItem)
     {
         var result = manifestItem.ItemSubType switch

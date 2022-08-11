@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using Discord;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
@@ -56,7 +57,9 @@ public static class ProcessModData
 
     private static async Task<string> GetMods(IBungieClient bungieClient, ModCache self, uint vendor, User user)
     {
-        var result = "";
+        var clarityDb = await ClarityParser.Fetch();
+
+        var result = new StringBuilder();
 
         var characterIdTask = await bungieClient.ApiAccess.Destiny2.GetProfile(user.DestinyMembershipType,
             user.DestinyMembershipId, new[]
@@ -80,11 +83,21 @@ public static class ProcessModData
                         if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
                             missing = "⚠️ ";
 
-            result = result + $"{missing}[{mod.Name}]({MiscUtils.GetLightGgLink(mod.Id)})\n" +
-                     $"> {Format.Italics(mod.Description)}\n\n";
+            Clarity? clarityValue = null;
+
+            if (clarityDb != null && clarityDb.ContainsKey(mod.Id.ToString()))
+                clarityValue = clarityDb[mod.Id.ToString()];
+
+            result.Append($"{missing}[{mod.Name}]({MiscUtils.GetLightGgLink(mod.Id)})\n" +
+                          $"> {Format.Italics(mod.Description)}\n");
+
+            if (clarityValue != null)
+                result.Append($"> [Clarity](https://www.d2clarity.com/): {clarityValue.Description}\n");
+
+            result.Append("\n");
         }
 
-        return result;
+        return result.ToString();
     }
 
     public static async Task<ModCache> FetchInventory(IBungieClient bungieClient, BungieLocales lg, User oauth)
