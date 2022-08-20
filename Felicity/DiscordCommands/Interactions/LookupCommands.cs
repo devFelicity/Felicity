@@ -58,11 +58,11 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
     public async Task LookupAccountShare(
         [Summary("bungie-name",
             "Bungie name of the requested user (name#1234).")]
-        string bungieTag)
+        string bungieTag = "")
     {
         await DeferAsync();
 
-        if (!bungieTag.Contains('#'))
+        if (!string.IsNullOrEmpty(bungieTag) && !bungieTag.Contains('#'))
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
             errorEmbed.Description =
@@ -71,21 +71,46 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var name = bungieTag.Split("#").First();
-        var code = Convert.ToInt16(bungieTag.Split("#").Last());
+        long membershipId;
+        BungieMembershipType membershipType;
+        string bungieName;
 
-        var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-        if (goodProfile == null)
+        if (string.IsNullOrEmpty(bungieTag))
         {
-            var errorEmbed = Embeds.MakeErrorEmbed();
-            errorEmbed.Description = $"No profiles found matching `{bungieTag}`.";
-            await FollowupAsync(embed: errorEmbed.Build());
-            return;
-        }
+            var currentUser = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
 
-        var membershipId = goodProfile.MembershipId;
-        var membershipType = goodProfile.MembershipType;
-        var bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
+            if (currentUser == null)
+            {
+                var errorEmbed = Embeds.MakeErrorEmbed();
+                errorEmbed.Description =
+                    "You did not specify a Bungie name to lookup, so this command defaults to your current user, however you are not registered.\n" +
+                    "Please `/user register` and try again, or specify a name to lookup.";
+                await FollowupAsync(embed: errorEmbed.Build());
+                return;
+            }
+
+            membershipId = currentUser.DestinyMembershipId;
+            membershipType = currentUser.DestinyMembershipType;
+            bungieName = currentUser.BungieName;
+        }
+        else
+        {
+            var name = bungieTag.Split("#").First();
+            var code = Convert.ToInt16(bungieTag.Split("#").Last());
+
+            var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
+            if (goodProfile == null)
+            {
+                var errorEmbed = Embeds.MakeErrorEmbed();
+                errorEmbed.Description = $"No profiles found matching `{bungieTag}`.";
+                await FollowupAsync(embed: errorEmbed.Build());
+                return;
+            }
+
+            membershipId = goodProfile.MembershipId;
+            membershipType = goodProfile.MembershipType;
+            bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
+        }
 
         var profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new[]
         {
