@@ -8,6 +8,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.8.1]
+### Changed
+- Bug fixes.
+- `/lookup account-share` can now be used without arguments to look yourself up. Not sure why you'd want it but it's there.
+
+## [6.8.0]
+### Added
+- Clarity for DIM: integrated into `/vendor mods`
+
+## [6.7.3]
+### Changed
+- Emergency fixes.
+
+## [6.7.2]
+### Changed
+- Rename Leviathan => Opulent
+
+## [6.7.1]
+### Changed
+- Removed status that was causing it to clear.
+- Visual updates for `/lookup account-share`.
+- Visual updates for Twitch embeds.
+- Move vendor icon back to author to prevent unwanted line wrapping.
+
+## [6.7.0]
+### Added
+- Status cycling service.
+
+### Changed
+- Randomise suggestions for `/metrics` and reformat autocompletes.
+
+## [6.6.0]
+### Added
+- `/metrics` command to fetch various information from stat trackers / profile metrics.
+
+### Changed
+- Updated dependencies.
+
+## [6.5.3]
+### Changed
+- Fixed an error if an emote was deleted from emote banks.
+
+## [6.5.2]
+### Changed
+- Fixed an error caused by Saint-14 category change.
+
+## [6.5.1]
+### Changed
+- Added emotes to vendor items to show their item type.
+
+## [6.5.0]
+### Added
+- `/vendor gunsmith` shows Banshee-44 weapon inventory.
+
+### Changed
+- Updated API libraries.
+
 ## [6.4.3]
 ### Changed
 - Added master challenge completion requirement for timelost weapons.
