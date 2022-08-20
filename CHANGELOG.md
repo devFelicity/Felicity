@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.8.1]
+### Changed
+- Bug fixes.
+- `/lookup account-share` can now be used without arguments to look yourself up. Not sure why you'd want it but it's there.
+
 ## [6.8.0]
 ### Added
 - Clarity for DIM: integrated into `/vendor mods`
