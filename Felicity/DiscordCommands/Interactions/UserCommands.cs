@@ -29,7 +29,7 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
                             "If you do not consent to us storing your data, please do not continue.\n\n" +
                             $"[Click here to register.](https://api.tryfelicity.one:8082/auth/bungie_net/{Context.User.Id})";
 
-        await FollowupAsync(embed: embed.Build());
+        await FollowupAsync(embed: embed.Build(), ephemeral: true);
     }
 
     [SlashCommand("remove", "Remove your profile link from the bot.")]
@@ -55,6 +55,6 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
             embed.Description = "You are not currently registered with Felicity.";
         }
 
-        await RespondAsync(embed: embed.Build());
+        await RespondAsync(embed: embed.Build(), ephemeral: true);
     }
 }

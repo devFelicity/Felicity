@@ -94,7 +94,7 @@ public static class ProcessModData
             if (clarityValue != null)
                 result.Append($"> [Clarity](https://www.d2clarity.com/): {clarityValue.Description}\n");
 
-            result.Append("\n");
+            result.Append('\n');
         }
 
         return result.ToString();
