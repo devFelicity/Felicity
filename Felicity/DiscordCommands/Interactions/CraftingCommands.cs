@@ -126,7 +126,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             embed.AddField(field);
 
-            if (embed.Fields.Count is 2 or 5)
+            if (embed.Fields.Count is 2 or 5 or 8 or 11) // there has to be a better way
                 embed.AddField("\u200b", '\u200b');
         }
 
