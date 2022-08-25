@@ -101,6 +101,17 @@ internal static class EmoteHelper
             "solar" => "<:solar:1006939954364039228>",
             "void" => "<:void:1006939953139294269>",
             "stasis" => "<:stasis:1006939956901580894>",
+            "reload" => "<:reload:1012036849239339038>",
+            "range" => "<:range:1012038268285632572>",
+            "handling" => "<:handling:1012038277726994472>",
+            "stability" => "<:stability:1012038265911644312>",
+            "accuracy" => "<:accuracy:1012038270026272871>",
+            "damage" => "<:damage:1012038275269152870>",
+            "draw_time" => "<:draw_time:1012038272106647562>",
+            "charge_time" => "<:charge_time:1012038273583038546>",
+            "projectile_speed" => "<:projectile_speed:1012038279887065209>",
+            "shield_duration" => "<:shield_duration:1012038262006755488>",
+            "blast_radius" => "<:blast_radius:1012038264158425109>",
             _ => ""
         };
 

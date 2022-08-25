@@ -25,13 +25,24 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
         var memCache = ProcessMementoData.ReadJson();
         if (memCache == null)
         {
-            await RespondAsync("Error fetching memento cache.");
+            await FollowupAsync("Error fetching memento cache.");
             return;
         }
 
-        var goodSource = memCache.MementoInventory?.FirstOrDefault(x => x.Source == memSource);
-        var goodWeapon = goodSource?.WeaponList?.FirstOrDefault(x => x.WeaponName == memWeapon);
-        var goodMemento = goodWeapon?.TypeList?.FirstOrDefault(x => x.Type == memType)?.Memento;
+        MementoCache.MementoWeaponList goodWeapon = null!;
+
+        foreach (var mementoInventoryElement in memCache.MementoInventory!)
+        foreach (var weapon in mementoInventoryElement.WeaponList!)
+            if (weapon.WeaponName == memWeapon)
+                goodWeapon = weapon;
+
+        if (goodWeapon == null!)
+        {
+            await FollowupAsync("An error occurred while fetching memento, try filling arguments in order.");
+            return;
+        }
+        
+        var goodMemento = goodWeapon.TypeList?.FirstOrDefault(x => x.Type == memType)?.Memento;
 
         if (goodMemento?.Credit == "NoImage")
         {
@@ -45,7 +56,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
                 },
                 Color = Color.Red,
                 Description =
-                    $"Sorry! We don't currently have the Memento image for **{goodWeapon?.WeaponName}** ({memType}) :(\n\n" +
+                    $"Sorry! We don't currently have the Memento image for **{goodWeapon.WeaponName}** ({memType}) :(\n\n" +
                     $"If you have it and would like to submit it, please head to our [Support Server]({BotVariables.DiscordInvite}) and send it to us there!"
             };
 
@@ -71,7 +82,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
             },
             Title = "Memento Preview:",
             Description =
-                $"This is what **{goodWeapon?.WeaponName}** looks like with a **{memType}** Memento equipped.",
+                $"This is what **{goodWeapon.WeaponName}** looks like with a **{memType}** Memento equipped.",
             Color = embedColor,
             Fields = new List<EmbedFieldBuilder>
             {

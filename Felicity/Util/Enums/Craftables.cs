@@ -7,6 +7,39 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonPlunder, new List<uint>
+            {
+                DefinitionHashes.Records.TarnishedMettle,
+                DefinitionHashes.Records.BrigandsLaw,
+                DefinitionHashes.Records.BloodFeud,
+                DefinitionHashes.Records.NoReprieve,
+                DefinitionHashes.Records.SailspyPitchglass,
+                DefinitionHashes.Records.PlancksStride
+            }
+        },
+        {
+            CraftSource.Anniversary, new List<uint>
+            {
+                DefinitionHashes.Records.BxR55Battler,
+                DefinitionHashes.Records.PardonOurDust,
+                DefinitionHashes.Records.WastelanderM5,
+                DefinitionHashes.Records.RetracedPath,
+                DefinitionHashes.Records.HalfTruths,
+                DefinitionHashes.Records.TheOtherHalf
+            }
+        },
+        {
+            CraftSource.Unknown, new List<uint>
+            {
+                DefinitionHashes.Records.AmmitAR2,
+                DefinitionHashes.Records.Taipan4fr,
+                DefinitionHashes.Records.ImperialDecree,
+                DefinitionHashes.Records.Goldtusk,
+                DefinitionHashes.Records.DeathsRazor,
+                DefinitionHashes.Records.ThroneCleaver
+            }
+        },
+        {
             CraftSource.SeasonHaunted, new List<uint>
             {
                 DefinitionHashes.Records.BumpintheNight,
@@ -125,17 +158,38 @@ internal static class Craftables
             DefinitionHashes.Records.RedHerring => DefinitionHashes.InventoryItems.RedHerring_3175851496,
             DefinitionHashes.Records.Syncopation53 => DefinitionHashes.InventoryItems.Syncopation53_2856514843,
             DefinitionHashes.Records.TheEnigma => DefinitionHashes.InventoryItems.TheEnigma_2595497736,
+            DefinitionHashes.Records.AmmitAR2 => DefinitionHashes.InventoryItems.AmmitAR2_2119346509,
+            DefinitionHashes.Records.Taipan4fr => DefinitionHashes.InventoryItems.Taipan4fr_1911060537,
+            DefinitionHashes.Records.ImperialDecree => DefinitionHashes.InventoryItems.ImperialDecree,
+            DefinitionHashes.Records.Goldtusk => DefinitionHashes.InventoryItems.Goldtusk,
+            DefinitionHashes.Records.DeathsRazor => DefinitionHashes.InventoryItems.DeathsRazor,
+            DefinitionHashes.Records.ThroneCleaver => DefinitionHashes.InventoryItems.ThroneCleaver,
+            DefinitionHashes.Records.BxR55Battler => DefinitionHashes.InventoryItems.BxR55Battler_2708806099,
+            DefinitionHashes.Records.PardonOurDust => DefinitionHashes.InventoryItems.PardonOurDust_3849810018,
+            DefinitionHashes.Records.WastelanderM5 => DefinitionHashes.InventoryItems.WastelanderM5_1679868061,
+            DefinitionHashes.Records.RetracedPath => DefinitionHashes.InventoryItems.RetracedPath_548958835,
+            DefinitionHashes.Records.HalfTruths => DefinitionHashes.InventoryItems.HalfTruths_3257091166,
+            DefinitionHashes.Records.TheOtherHalf => DefinitionHashes.InventoryItems.TheOtherHalf_3257091167,
+            DefinitionHashes.Records.TarnishedMettle => DefinitionHashes.InventoryItems.TarnishedMettle_2218569744,
+            DefinitionHashes.Records.BrigandsLaw => DefinitionHashes.InventoryItems.BrigandsLaw_1298815317,
+            DefinitionHashes.Records.BloodFeud => DefinitionHashes.InventoryItems.BloodFeud_1509167284,
+            DefinitionHashes.Records.NoReprieve => DefinitionHashes.InventoryItems.NoReprieve_2531963421,
+            DefinitionHashes.Records.SailspyPitchglass => DefinitionHashes.InventoryItems.SailspyPitchglass_1184309824,
+            DefinitionHashes.Records.PlancksStride => DefinitionHashes.InventoryItems.PlancksStride_820890091,
             _ => 0
         };
     }
 
     public static class CraftSource
     {
+        public const string SeasonPlunder = "Plunder";
         public const string SeasonHaunted = "Haunted";
         public const string Opulent = "Opulent";
         public const string SeasonRisen = "Risen";
         public const string RaidVotD = "Vow of the Disciple";
         public const string WqWellspring = "Wellspring";
         public const string Wq = "Witch Queen";
+        public const string Anniversary = "30th Anniversary";
+        public const string Unknown = "Unknown";
     }
 }
