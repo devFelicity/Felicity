@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny.Definitions.Metrics;
@@ -81,15 +80,15 @@ public class MetricAutocomplete : AutocompleteHandler
 
         if (currentSearch != null)
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
-                                select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                                    destinyMetricDefinition.Hash));
+                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
+                select new AutocompleteResult(
+                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                    destinyMetricDefinition.Hash));
         else
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                                select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                                    destinyMetricDefinition.Hash));
+                select new AutocompleteResult(
+                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                    destinyMetricDefinition.Hash));
 
         return AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25));
     }
@@ -139,8 +138,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         await Task.Delay(0);
 
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
-                      where autocompleteOption.Name == "source"
-                      select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+            where autocompleteOption.Name == "source"
+            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
 
         var memCache = ProcessMementoData.ReadJson();
 
@@ -155,8 +154,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var results = (from weapon in goodSource.WeaponList
-                       where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
-                       select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
 
         results = results.OrderBy(x => x.Name).ToList();
 
@@ -243,20 +242,20 @@ public class RollFinderAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var resultList = new List<Roll>();
-            
-        resultList.AddRange(currentSearch != null
-            ? rollList.Where(x => x.WeaponName != null && x.WeaponName.ToLower().Contains(currentSearch.ToLower()))
-            : rollList);
 
-        var autocompleteList = new List<AutocompleteResult>();
+        if (string.IsNullOrEmpty(currentSearch))
+            resultList.AddRange(rollList);
+        else
+            foreach (var roll in rollList.Where(roll =>
+                         roll.WeaponName != null && roll.WeaponName.ToLower().Contains(currentSearch.ToLower())))
+                if (!resultList.Select(r => r.WeaponName == roll.WeaponName).Any())
+                    resultList.Add(roll);
 
-        foreach (var item in resultList
-                     .Select(roll => new AutocompleteResult(roll.WeaponName, roll.WeaponId))
-                     .Where(item => !autocompleteList.Contains(item)))
-        {
-            autocompleteList.Add(item);
-        }
+        var autocompleteList =
+            resultList.Select(roll => new AutocompleteResult(roll.WeaponName, roll.WeaponId)).ToList();
 
-        return AutocompletionResult.FromSuccess(autocompleteList.OrderBy(_ => Random.Shared.Next()).Take(25));
+        return AutocompletionResult.FromSuccess(string.IsNullOrEmpty(currentSearch)
+            ? autocompleteList.OrderBy(_ => Random.Shared.Next()).Take(25)
+            : autocompleteList.OrderBy(x => x.Name).Take(25));
     }
 }
