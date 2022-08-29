@@ -150,7 +150,7 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
                     EmoteHelper.StaticEmote(weaponPerkDefinition.Plug.PlugCategoryIdentifier.Split('.').Last()));
             else
                 perkList.Append(EmoteHelper.GetEmote(Context.Client,
-                    weaponPerkDefinition.DisplayProperties.Icon.AbsolutePath,
+                    weaponPerkDefinition.DisplayProperties.Icon.RelativePath,
                     weaponPerkDefinition.DisplayProperties.Name, weaponPerkDefinition.Hash));
 
             perkList.Append(weaponPerkDefinition.DisplayProperties.Name);
