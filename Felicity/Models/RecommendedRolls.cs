@@ -4,6 +4,8 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 
+using System.Text.Json;
+
 namespace Felicity.Models;
 
 public class RecommendedRolls
@@ -61,5 +63,18 @@ public enum WeaponSource
     SeasonalChosen,
     SeasonalSplicer,
     SeasonalLost,
-    SeasonalRisen
+    SeasonalRisen,
+    SeasonalHaunted
+}
+
+public static class ProcessRollData
+{
+    private const string JsonFile = "Data/weaponRolls.json";
+
+    public static RecommendedRolls? FromJson()
+    {
+        return File.Exists(JsonFile) 
+            ? JsonSerializer.Deserialize<RecommendedRolls>(File.ReadAllText(JsonFile)) 
+            : null;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text.Json;
+using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny.Definitions.Metrics;
@@ -211,5 +212,51 @@ public class WishAutocomplete : AutocompleteHandler
             .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number)).ToList();
 
         return AutocompletionResult.FromSuccess(autocompleteList);
+    }
+}
+
+public class RollFinderAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var weaponList = ProcessRollData.FromJson();
+
+        if (weaponList == null)
+            return AutocompletionResult.FromError(InteractionCommandError.ParseFailed, "Failed to parse weapon rolls.");
+
+        var mode = Convert.ToInt32(autocompleteInteraction.Data.Options.First().Value);
+
+        var rollList = mode switch
+        {
+            0 => weaponList.PvE,
+            1 => weaponList.PvP,
+            _ => null
+        };
+
+        if (rollList == null)
+            return AutocompletionResult.FromError(InteractionCommandError.ParseFailed, "Failed to parse weapon rolls.");
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        var resultList = new List<Roll>();
+            
+        resultList.AddRange(currentSearch != null
+            ? rollList.Where(x => x.WeaponName != null && x.WeaponName.ToLower().Contains(currentSearch.ToLower()))
+            : rollList);
+
+        var autocompleteList = new List<AutocompleteResult>();
+
+        foreach (var item in resultList
+                     .Select(roll => new AutocompleteResult(roll.WeaponName, roll.WeaponId))
+                     .Where(item => !autocompleteList.Contains(item)))
+        {
+            autocompleteList.Add(item);
+        }
+
+        return AutocompletionResult.FromSuccess(autocompleteList.OrderBy(_ => Random.Shared.Next()).Take(25));
     }
 }

@@ -41,6 +41,7 @@ public enum Encounter
     Second,
     Third,
     Fourth,
+    Fifth,
     Boss
 }
 
@@ -48,6 +49,74 @@ public static class LootTables
 {
     public static readonly List<LootTableDefinition> KnownTables = new()
     {
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Raid, Name = "King's Fall", Description = "Classified",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Gate",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Class
+                        // Doom of Chelchis
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Totems",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class
+                        // Doom of Chelchis
+                        // Qullim's Terminus
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Third, EncounterName = "Warpriest",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest
+                        // Smite of Merain
+                        // Defiance of Yasmin
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Fourth, EncounterName = "Golgoroth",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Boots
+                        // Zaouli's Bane
+                        // Midha's Reckoning
+                        // Qullim's Terminus
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Fifth, EncounterName = "Daughters",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest
+                        // Smite of Merain
+                        // Zaouli's Bane
+                        // Qullim's Terminus
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Oryx, The Taken King",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet
+                        // Touch of Malice
+                        // Midha's Reckoning
+                    }
+                }
+            }
+        },
         new LootTableDefinition
         {
             ActivityType = ActivityType.Raid, Name = "Vow of the Disciple", Description = "The disciple beckons...",
