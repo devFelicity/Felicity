@@ -41,7 +41,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
             await FollowupAsync("An error occurred while fetching memento, try filling arguments in order.");
             return;
         }
-        
+
         var goodMemento = goodWeapon.TypeList?.FirstOrDefault(x => x.Type == memType)?.Memento;
 
         if (goodMemento?.Credit == "NoImage")

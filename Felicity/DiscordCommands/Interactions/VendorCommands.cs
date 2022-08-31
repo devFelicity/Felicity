@@ -183,7 +183,8 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             {
                 var plug = vendorData.Response.ItemComponents.Sockets.Data[repReward].Sockets.ElementAt(j + 1).Plug;
 
-                fullMessage += EmoteHelper.GetEmote(Context.Client, plug.Select(x => x.DisplayProperties.Icon.RelativePath),
+                fullMessage += EmoteHelper.GetEmote(Context.Client,
+                    plug.Select(x => x.DisplayProperties.Icon.RelativePath),
                     plug.Select(x => x.DisplayProperties.Name), plug.Select(x => x.Hash));
             }
 

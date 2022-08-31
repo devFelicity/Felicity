@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using Discord;
@@ -51,13 +51,15 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         switch (clarityValue?.Type)
         {
             case TypeEnum.ArmorExotic:
-                returnString.Append($"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n**Item:** {clarityValue.ItemName} ({clarityValue.ItemHash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
+                returnString.Append(
+                    $"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n**Item:** {clarityValue.ItemName} ({clarityValue.ItemHash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
                 break;
             case TypeEnum.WeaponMod:
             case TypeEnum.WeaponOriginTrait:
             case TypeEnum.WeaponPerk:
             case TypeEnum.WeaponPerkEnhanced:
-                returnString.Append($"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
+                returnString.Append(
+                    $"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
                 break;
             default:
                 await ReplyAsync("Unknown type.");
@@ -115,14 +117,14 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         var userList = new List<ulong>();
 
         foreach (var clientGuild in serverList)
-            foreach (var clientGuildUser in clientGuild.Users)
-            {
-                if (clientGuildUser.IsBot)
-                    continue;
+        foreach (var clientGuildUser in clientGuild.Users)
+        {
+            if (clientGuildUser.IsBot)
+                continue;
 
-                if (!userList.Contains(clientGuildUser.Id))
-                    userList.Add(clientGuildUser.Id);
-            }
+            if (!userList.Contains(clientGuildUser.Id))
+                userList.Add(clientGuildUser.Id);
+        }
 
         var manifest = await _bungieClient.DefinitionProvider.GetCurrentManifest();
         var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;

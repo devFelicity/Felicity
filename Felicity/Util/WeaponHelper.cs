@@ -20,10 +20,7 @@ internal static class WeaponHelper
 
         foreach (var weapon in weapons)
         {
-            if (weapon.DestinyItemType != null)
-            {
-                result += EmoteHelper.GetItemType(weapon.DestinyItemType);
-            }
+            if (weapon.DestinyItemType != null) result += EmoteHelper.GetItemType(weapon.DestinyItemType);
 
             if (weapon.Perks.Count == 0)
             {
@@ -82,9 +79,9 @@ internal static class WeaponHelper
         }
 
         var fetchList = (from keyPair in response
-                         let valuePerkId = keyPair.Value.PerkId
-                         where valuePerkId != null
-                         select (uint)valuePerkId)
+                let valuePerkId = keyPair.Value.PerkId
+                where valuePerkId != null
+                select (uint)valuePerkId)
             .ToList();
 
         foreach (var fetchPerk in fetchList)

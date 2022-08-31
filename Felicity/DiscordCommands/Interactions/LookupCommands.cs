@@ -155,21 +155,21 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         foreach (var collectible in from collectible in manifestCollectibles
-                                    where !collectible.Redacted
-                                    where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
-                                    from manifestCollectibleParentNodeHash in collectible.ParentNodes
-                                    where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
-                                    select collectible)
+                 where !collectible.Redacted
+                 where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
+                 from manifestCollectibleParentNodeHash in collectible.ParentNodes
+                 where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
+                 select collectible)
         {
             emblemCount++;
 
             var value = profile.Response.ProfileCollectibles.Data.Collectibles[collectible.Hash];
 
             foreach (var unused in from emblem in manifestInventoryItems
-                                   where emblem.Collectible.Hash == collectible.Hash
-                                   where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                   where !emblemList.Contains(collectible)
-                                   select emblem) emblemList.Add(collectible);
+                     where emblem.Collectible.Hash == collectible.Hash
+                     where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                     where !emblemList.Contains(collectible)
+                     select emblem) emblemList.Add(collectible);
 
             if (value.State.HasFlag(DestinyCollectibleState.Invisible) &&
                 !value.State.HasFlag(DestinyCollectibleState.NotAcquired))

@@ -10,7 +10,6 @@ using Felicity.Util;
 using Humanizer;
 
 // ReSharper disable UnusedMember.Global
-
 // ReSharper disable UnusedType.Global
 
 namespace Felicity.DiscordCommands.Interactions;

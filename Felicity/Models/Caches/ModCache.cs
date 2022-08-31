@@ -78,10 +78,10 @@ public static class ProcessModData
             var missing = "";
 
             foreach (var personalDestinyVendorSaleItemSetComponent in vendorData.Response.Sales.Data)
-                foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
-                    if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
-                        if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
-                            missing = "⚠️ ";
+            foreach (var destinyVendorSaleItemComponent in personalDestinyVendorSaleItemSetComponent.Value.SaleItems)
+                if (destinyVendorSaleItemComponent.Value.Item.Hash == mod.Id)
+                    if (destinyVendorSaleItemComponent.Value.SaleStatus == VendorItemStatus.Success)
+                        missing = "⚠️ ";
 
             Clarity? clarityValue = null;
 

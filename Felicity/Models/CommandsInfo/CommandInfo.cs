@@ -8,13 +8,14 @@ namespace Felicity.Models.CommandsInfo;
 [DebuggerDisplay("{CommandPath}, Parameters count = {ParametersInfo.Count}")]
 public class CommandInfo
 {
-    public string CommandPath { get; }
-    public string CommandDescription { get; }
-    public List<CommandParameterInfo> ParametersInfo { get; }
     public CommandInfo(string path, string desc)
     {
         CommandPath = path;
         CommandDescription = desc;
         ParametersInfo = new List<CommandParameterInfo>();
     }
+
+    public string CommandPath { get; }
+    public string CommandDescription { get; }
+    public List<CommandParameterInfo> ParametersInfo { get; }
 }
