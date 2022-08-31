@@ -64,7 +64,9 @@ public enum WeaponSource
     SeasonalSplicer,
     SeasonalLost,
     SeasonalRisen,
-    SeasonalHaunted
+    SeasonalHaunted,
+    SeasonalPlunder,
+    KingsFall
 }
 
 public static class ProcessRollData
