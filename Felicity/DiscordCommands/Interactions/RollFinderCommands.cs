@@ -122,6 +122,7 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
             case WeaponSource.SeasonalLost:
             case WeaponSource.SeasonalRisen:
             case WeaponSource.SeasonalHaunted:
+            case WeaponSource.SeasonalPlunder:
                 var split = source.Humanize().Split(' ');
                 return $"{split[0]} ({split[1]})";
             default:
