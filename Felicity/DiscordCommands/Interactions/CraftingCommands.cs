@@ -32,13 +32,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
         [Summary("hide-complete", "Hide completed recipes? (default: true)")]
-        bool hideComplete = true,
-        [Summary("show-wq", "Show Witch Queen recipes? (default: true)")]
-        bool showWq = true,
-        [Summary("show-raid", "Show raid recipes? (default: true)")]
-        bool showRaid = true,
-        [Summary("show-seasonal", "Show seasonal recipes? (default: true)")]
-        bool showSeasonal = true)
+        bool hideComplete = true)
     {
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
@@ -63,22 +57,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var craftableList = Craftables.CraftableList;
 
-        if (!showWq)
-        {
-            craftableList.Remove(Craftables.CraftSource.Wq);
-            craftableList.Remove(Craftables.CraftSource.WqWellspring);
-        }
-
-        if (!showRaid)
-            craftableList.Remove(Craftables.CraftSource.RaidVotD);
-
-        if (!showSeasonal)
-        {
-            craftableList.Remove(Craftables.CraftSource.SeasonRisen);
-            craftableList.Remove(Craftables.CraftSource.SeasonHaunted);
-            craftableList.Remove(Craftables.CraftSource.Opulent);
-        }
-
         foreach (var (source, weaponList) in craftableList)
         {
             var field = new EmbedFieldBuilder
@@ -89,6 +67,9 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             foreach (var weaponId in weaponList)
             {
+                if (embed.Fields.Count is 2 or 5 or 8 or 11) // there has to be a better way
+                    embed.AddField("\u200b", '\u200b');
+
                 _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
                     out var manifestRecord);
 
@@ -125,9 +106,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             if (string.IsNullOrEmpty((string?)field.Value)) continue;
 
             embed.AddField(field);
-
-            if (embed.Fields.Count is 2 or 5 or 8 or 11) // there has to be a better way
-                embed.AddField("\u200b", '\u200b');
         }
 
         if (updateDescription)
