@@ -51,7 +51,7 @@ public static class LootTables
     {
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Raid, Name = "King's Fall", Description = "Classified",
+            ActivityType = ActivityType.Raid, Name = "King's Fall", Description = "Long live the King...",
             Loot = new List<LootTable>
             {
                 new()
@@ -59,8 +59,8 @@ public static class LootTables
                     EncounterType = Encounter.First, EncounterName = "Gate",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Class
-                        // Doom of Chelchis
+                        (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.DoomofChelchis_1937552980
                     }
                 },
                 new()
@@ -68,9 +68,9 @@ public static class LootTables
                     EncounterType = Encounter.Second, EncounterName = "Totems",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class
-                        // Doom of Chelchis
-                        // Qullim's Terminus
+                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.DoomofChelchis_1937552980,
+                        DefinitionHashes.InventoryItems.QullimsTerminus_1321506184
                     }
                 },
                 new()
@@ -78,9 +78,9 @@ public static class LootTables
                     EncounterType = Encounter.Third, EncounterName = "Warpriest",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Gloves, (uint)Armor.Chest
-                        // Smite of Merain
-                        // Defiance of Yasmin
+                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
+                        DefinitionHashes.InventoryItems.DefianceofYasmin_3228096719
                     }
                 },
                 new()
@@ -88,10 +88,10 @@ public static class LootTables
                     EncounterType = Encounter.Fourth, EncounterName = "Golgoroth",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Helmet, (uint)Armor.Boots
-                        // Zaouli's Bane
-                        // Midha's Reckoning
-                        // Qullim's Terminus
+                        (uint)Armor.Helmet, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
+                        DefinitionHashes.InventoryItems.ZaoulisBane_431721920,
+                        DefinitionHashes.InventoryItems.MidhasReckoning_3969066556
                     }
                 },
                 new()
@@ -99,10 +99,10 @@ public static class LootTables
                     EncounterType = Encounter.Fifth, EncounterName = "Daughters",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Gloves, (uint)Armor.Chest
-                        // Smite of Merain
-                        // Zaouli's Bane
-                        // Qullim's Terminus
+                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
+                        DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
+                        DefinitionHashes.InventoryItems.ZaoulisBane_431721920
                     }
                 },
                 new()
@@ -110,9 +110,9 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Oryx, The Taken King",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Helmet
-                        // Touch of Malice
-                        // Midha's Reckoning
+                        (uint)Armor.Helmet,
+                        DefinitionHashes.InventoryItems.MidhasReckoning_3969066556,
+                        DefinitionHashes.InventoryItems.TouchofMalice_1802135586
                     }
                 }
             }

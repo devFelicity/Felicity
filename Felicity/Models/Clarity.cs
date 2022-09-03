@@ -160,8 +160,10 @@ internal class TypeEnumConverter : JsonConverter
 {
     public static readonly TypeEnumConverter Singleton = new();
 
-    public override bool CanConvert(Type t) =>
-        t == typeof(TypeEnum) || t == typeof(TypeEnum?);
+    public override bool CanConvert(Type t)
+    {
+        return t == typeof(TypeEnum) || t == typeof(TypeEnum?);
+    }
 
     public override object? ReadJson(JsonReader reader, Type t, object? existingValue, JsonSerializer serializer)
     {

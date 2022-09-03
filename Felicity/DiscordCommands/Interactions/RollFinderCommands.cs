@@ -10,7 +10,6 @@ using Felicity.Util;
 using Humanizer;
 
 // ReSharper disable UnusedMember.Global
-
 // ReSharper disable UnusedType.Global
 
 namespace Felicity.DiscordCommands.Interactions;
@@ -123,10 +122,10 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
             case WeaponSource.SeasonalRisen:
             case WeaponSource.SeasonalHaunted:
             case WeaponSource.SeasonalPlunder:
-                var split = source.Humanize().Split(' ');
+                var split = source.Humanize(LetterCasing.Title).Split(' ');
                 return $"{split[0]} ({split[1]})";
             default:
-                return source.Humanize();
+                return source.Humanize(LetterCasing.Title);
         }
     }
 

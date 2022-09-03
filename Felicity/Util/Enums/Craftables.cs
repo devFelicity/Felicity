@@ -7,33 +7,44 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.KingsFall, new List<uint>
+            {
+                DefinitionHashes.Records.DefianceofYasmin,
+                DefinitionHashes.Records.DoomofChelchis,
+                DefinitionHashes.Records.MidhasReckoning,
+                DefinitionHashes.Records.QullimsTerminus,
+                DefinitionHashes.Records.SmiteofMerain,
+                DefinitionHashes.Records.ZaoulisBane
+            }
+        },
+        {
             CraftSource.SeasonPlunder, new List<uint>
             {
-                DefinitionHashes.Records.TarnishedMettle,
-                DefinitionHashes.Records.BrigandsLaw,
                 DefinitionHashes.Records.BloodFeud,
+                DefinitionHashes.Records.BrigandsLaw,
                 DefinitionHashes.Records.NoReprieve,
+                DefinitionHashes.Records.PlancksStride,
                 DefinitionHashes.Records.SailspyPitchglass,
-                DefinitionHashes.Records.PlancksStride
+                DefinitionHashes.Records.TarnishedMettle
             }
         },
         {
             CraftSource.Anniversary, new List<uint>
             {
                 DefinitionHashes.Records.BxR55Battler,
-                DefinitionHashes.Records.PardonOurDust,
-                DefinitionHashes.Records.WastelanderM5,
-                DefinitionHashes.Records.RetracedPath,
                 DefinitionHashes.Records.HalfTruths,
-                DefinitionHashes.Records.TheOtherHalf
+                DefinitionHashes.Records.PardonOurDust,
+                DefinitionHashes.Records.RetracedPath,
+                DefinitionHashes.Records.TheOtherHalf,
+                DefinitionHashes.Records.WastelanderM5
             }
         },
         {
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                DefinitionHashes.Records.Taipan4fr,
                 DefinitionHashes.Records.ImperialDecree,
+                DefinitionHashes.Records.Taipan4fr,
                 DefinitionHashes.Records.Goldtusk,
                 DefinitionHashes.Records.DeathsRazor,
                 DefinitionHashes.Records.ThroneCleaver
@@ -176,20 +187,27 @@ internal static class Craftables
             DefinitionHashes.Records.NoReprieve => DefinitionHashes.InventoryItems.NoReprieve_2531963421,
             DefinitionHashes.Records.SailspyPitchglass => DefinitionHashes.InventoryItems.SailspyPitchglass_1184309824,
             DefinitionHashes.Records.PlancksStride => DefinitionHashes.InventoryItems.PlancksStride_820890091,
+            DefinitionHashes.Records.DefianceofYasmin => DefinitionHashes.InventoryItems.DefianceofYasmin_3228096719,
+            DefinitionHashes.Records.DoomofChelchis => DefinitionHashes.InventoryItems.DoomofChelchis_1937552980,
+            DefinitionHashes.Records.MidhasReckoning => DefinitionHashes.InventoryItems.MidhasReckoning_3969066556,
+            DefinitionHashes.Records.QullimsTerminus => DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
+            DefinitionHashes.Records.SmiteofMerain => DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
+            DefinitionHashes.Records.ZaoulisBane => DefinitionHashes.InventoryItems.ZaoulisBane_431721920,
             _ => 0
         };
     }
 
-    public static class CraftSource
+    private static class CraftSource
     {
         public const string SeasonPlunder = "Plunder";
         public const string SeasonHaunted = "Haunted";
-        public const string Opulent = "Opulent";
         public const string SeasonRisen = "Risen";
+        public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
         public const string WqWellspring = "Wellspring";
         public const string Wq = "Witch Queen";
         public const string Anniversary = "30th Anniversary";
         public const string Unknown = "Unknown";
+        public const string KingsFall = "Kings Fall";
     }
 }

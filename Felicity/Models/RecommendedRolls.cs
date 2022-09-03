@@ -75,8 +75,8 @@ public static class ProcessRollData
 
     public static RecommendedRolls? FromJson()
     {
-        return File.Exists(JsonFile) 
-            ? JsonSerializer.Deserialize<RecommendedRolls>(File.ReadAllText(JsonFile)) 
+        return File.Exists(JsonFile)
+            ? JsonSerializer.Deserialize<RecommendedRolls>(File.ReadAllText(JsonFile))
             : null;
     }
 }

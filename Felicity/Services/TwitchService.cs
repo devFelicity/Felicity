@@ -191,7 +191,8 @@ public class TwitchService
             var channelInfo = channelInfoTask.Users.FirstOrDefault();
 
             var vodList =
-                await _twitchApi.Helix.Videos.GetVideoAsync(userId: e.Stream.UserId, type: VideoType.Archive, first: 1);
+                await _twitchApi.Helix.Videos.GetVideosAsync(userId: e.Stream.UserId, type: VideoType.Archive,
+                    first: 1);
 
             var vodUrl = string.Empty;
             EmbedBuilder embed;
@@ -278,7 +279,7 @@ public class TwitchService
                         _twitchStreamDb.TwitchStreams.FirstOrDefault(x => x.Id == activeStream.ConfigId)!.ChannelId))
                     .GetMessageAsync(activeStream.MessageId);
 
-                (message as IUserMessage)?.ModifyAsync(delegate (MessageProperties properties)
+                (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
                 {
                     properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
                     properties.Embed = embed.Build();

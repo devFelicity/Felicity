@@ -7,12 +7,6 @@ namespace Felicity.Services.Hosted;
 
 public class StatusService : BackgroundService
 {
-    private readonly DiscordShardedClient _discordClient;
-
-    private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
-
-    private static Game LastGame { get; set; } = null!;
-
     private static readonly List<Game> GameList = new()
     {
         new Game("Destiny 3"),
@@ -36,10 +30,15 @@ public class StatusService : BackgroundService
         new Game("/memento", ActivityType.Watching)
     };
 
+    private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
+    private readonly DiscordShardedClient _discordClient;
+
     public StatusService(DiscordShardedClient discordClient)
     {
         _discordClient = discordClient;
     }
+
+    private static Game LastGame { get; set; } = null!;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

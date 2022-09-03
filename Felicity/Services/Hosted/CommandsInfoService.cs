@@ -68,10 +68,7 @@ public class CommandsInfoService : ICommandsInfoService
                         commandParameterInfo.Name = parameter.Name!;
                     }
 
-                    if (autoCompleteAttribute is not null)
-                    {
-                        commandParameterInfo.IsAutocomplete = true;
-                    }
+                    if (autoCompleteAttribute is not null) commandParameterInfo.IsAutocomplete = true;
 
                     commandInfo.ParametersInfo.Add(commandParameterInfo);
                 }

@@ -7,9 +7,9 @@ namespace Felicity.Services.Hosted;
 public class ResetService : BackgroundService
 {
     private readonly IBungieClient _bungieClient;
-    private readonly DiscordShardedClient _discordClient;
 
     private readonly TimeSpan _delay = TimeSpan.FromMinutes(10);
+    private readonly DiscordShardedClient _discordClient;
 
     public ResetService(IBungieClient bungieClient, DiscordShardedClient discordClient)
     {
