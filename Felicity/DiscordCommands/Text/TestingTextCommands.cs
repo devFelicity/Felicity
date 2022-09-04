@@ -1,19 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using System.Text.Json;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
-using DotNetBungieAPI.Models.Destiny.Definitions.Activities;
-using DotNetBungieAPI.Models.Destiny.Definitions.ActivityModes;
-using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Requests;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
-using Felicity.Models.Caches;
 using Felicity.Util;
 using Humanizer;
 using RunMode = Discord.Commands.RunMode;
@@ -37,6 +32,34 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         _userDb = userDb;
         _bungieClient = bungieClient;
         _interactionService = interactionService;
+    }
+
+    [Command("serverList")]
+    public async Task ServerList()
+    {
+        var serverList = Context.Client.Guilds;
+
+        var sb = new StringBuilder();
+
+        foreach (var socketGuild in serverList)
+            sb.Append($"{socketGuild.Id} - {socketGuild.Name} [{socketGuild.Owner.Mention}]\n");
+
+        await File.WriteAllTextAsync("serverList.txt", sb.ToString());
+
+        await Context.Channel.SendFileAsync("serverList.txt");
+    }
+
+    [Command("leaveServer")]
+    public async Task LeaveServer(ulong serverId)
+    {
+        try
+        {
+            await Context.Client.GetGuild(serverId).LeaveAsync();
+        }
+        catch (Exception e)
+        {
+            await ReplyAsync($"{e.GetType()}: {e.Message}");
+        }
     }
 
     [Command("clarity")]
@@ -90,13 +113,6 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     {
         // ReSharper disable once StringLiteralTypo
         await Context.Message.ReplyAsync("<:NOOOOOOOOOOOOOT:855149582177533983>");
-    }
-
-    [Command("fillCPs")]
-    public async Task FillCPs(ulong messageId)
-    {
-        var msg = await Context.Channel.GetMessageAsync(messageId);
-        ProcessCpData.Populate(msg);
     }
 
     [Command("metrics", RunMode = RunMode.Async)]
@@ -211,114 +227,5 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         await File.WriteAllTextAsync("tmp.txt", response);
 
         await Context.Channel.SendFileAsync("tmp.txt", "");
-    }
-
-    [Command("cpCount", RunMode = RunMode.Async)]
-    public async Task ActivityList(int mode)
-    {
-        if (mode != 4 && mode != 82)
-        {
-            await ReplyAsync("Unknown mode, use 4 for raid or 82 for dungeon.");
-            return;
-        }
-
-        var bungieNameList = new List<string>
-        {
-            "ScrubsInTubs#4331", "ttvLuckstruck9#0961", "ttvScrubsInTubs#8727",
-            "ttvScrubsInTubs#0188", "ttvScrubsInTubs#3580", "ttvScrubsInTubs#1409",
-            "ttvScrubsInTubs#2378", "ttvScrubsInTubs#7098", "ttvScrubsInTubs#2264",
-            "ttvScrubsInTubs#0252", "ttvScrubsInTubs#5319"
-        };
-
-        var activityList = new List<ActivityReport>();
-        var previousWeeklyReset = ResetUtils.GetNextWeeklyReset(DayOfWeek.Tuesday).AddDays(-7);
-
-        foreach (var bungieName in bungieNameList)
-        {
-            var player = await BungieApiUtils.GetLatestProfile(_bungieClient, bungieName.Split("#")[0],
-                Convert.ToInt16(bungieName.Split("#")[1]));
-
-            if (player == null)
-            {
-                await ReplyAsync("Could not find player.");
-                continue;
-            }
-
-            var characterTask = await _bungieClient.ApiAccess.Destiny2.GetProfile(player.MembershipType,
-                player.MembershipId, new[]
-                {
-                    DestinyComponentType.Characters
-                });
-
-            var characterIds = characterTask.Response.Characters.Data.Keys.ToList();
-
-            foreach (var characterId in characterIds)
-            {
-                Console.WriteLine($"Checking character {characterId}...");
-
-                var t = await _bungieClient.ApiAccess.Destiny2.GetActivityHistory(player.MembershipType,
-                    player.MembershipId,
-                    characterId, 100, (DestinyActivityModeType)mode);
-
-                foreach (var historicalStat in t.Response.Activities)
-                    if (historicalStat.Period > previousWeeklyReset)
-                    {
-                        Console.WriteLine(
-                            $"Adding {historicalStat.ActivityDetails.InstanceId} from {historicalStat.Period}");
-                        activityList.Add(new ActivityReport
-                        {
-                            ActivityId = historicalStat.ActivityDetails.ActivityReference.Hash,
-                            InstanceId = historicalStat.ActivityDetails.InstanceId
-                        });
-                    }
-            }
-        }
-
-        var grouped = activityList.GroupBy(x => x.ActivityId).ToList();
-
-        var response = Format.Bold($"Since {previousWeeklyReset}") +
-                       $", {activityList.Count} instances have been used to give out:\n";
-
-        var responseList = new Dictionary<string, string>();
-
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (var keyPair in grouped)
-        {
-            if (keyPair.Key == null)
-                continue;
-
-            if (!_bungieClient.Repository.TryGetDestinyDefinition<DestinyActivityDefinition>((uint)keyPair.Key,
-                    BungieLocales.EN,
-                    out var activityDef))
-                continue;
-
-            var theList = keyPair.ToList();
-
-            var characterList = new List<long>();
-
-            foreach (var activityReport in theList)
-            {
-                var pgcr =
-                    await _bungieClient.ApiAccess.Destiny2.GetPostGameCarnageReport(activityReport.InstanceId);
-
-                foreach (var destinyPostGameCarnageReportEntry in pgcr.Response.Entries)
-                    if (!characterList.Contains(destinyPostGameCarnageReportEntry.CharacterId))
-                        characterList.Add(destinyPostGameCarnageReportEntry.CharacterId);
-            }
-
-            responseList.Add(activityDef.DisplayProperties.Name,
-                $"{characterList.Count} checkpoints on {Format.Bold(activityDef.DisplayProperties.Name)}.\n");
-        }
-
-        response = responseList.OrderBy(x => x.Key)
-            .Aggregate(response, (current, keyValuePair) => current + keyValuePair.Value);
-
-        await ReplyAsync(response);
-    }
-
-    private class ActivityReport
-    {
-        public uint? ActivityId { get; init; }
-        public long InstanceId { get; init; }
     }
 }

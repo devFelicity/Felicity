@@ -94,41 +94,6 @@ public class MetricAutocomplete : AutocompleteHandler
     }
 }
 
-public class CheckpointAutocomplete : AutocompleteHandler
-{
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
-        IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
-    {
-        await Task.Delay(0);
-
-        var cpCache = ProcessCpData.ReadJson();
-
-        var result = new List<AutocompleteResult>();
-
-        if (cpCache?.CpInventory.Checkpoints != null)
-            foreach (var activeCp in cpCache.CpInventory.Checkpoints)
-            {
-                var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
-
-                if (!string.IsNullOrEmpty(currentSearch))
-                    if (!activeCp.Name.ToLower().Contains(currentSearch))
-                        continue;
-
-                result.Add(new AutocompleteResult(activeCp.Name, activeCp.Name));
-            }
-        else
-            return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful,
-                "Failed to fetch checkpoints from cache.");
-
-        result = result.OrderBy(x => x.Name).ToList();
-
-        result.Add(new AutocompleteResult("--- Others", "Other"));
-
-        return AutocompletionResult.FromSuccess(result);
-    }
-}
-
 public class MementoWeaponAutocomplete : AutocompleteHandler
 {
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,

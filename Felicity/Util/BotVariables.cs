@@ -7,7 +7,6 @@ public static class BotVariables
 {
     // TODO: move these to settings
     public const ulong BotOwnerId = 684854397871849482;
-    public const ulong CpChannelId = 973173481162285106;
     public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
     public const string BungieBaseUrl = "https://www.bungie.net/";
 
