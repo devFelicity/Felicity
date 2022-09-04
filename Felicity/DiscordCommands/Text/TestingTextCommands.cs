@@ -37,12 +37,10 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     [Command("serverList")]
     public async Task ServerList()
     {
-        var serverList = Context.Client.Guilds;
-
         var sb = new StringBuilder();
 
-        foreach (var socketGuild in serverList)
-            sb.Append($"{socketGuild.Id} - {socketGuild.Name} [{socketGuild.Owner.Mention}]\n");
+        foreach (var socketGuild in Context.Client.Guilds) 
+            sb.Append($"{socketGuild.Id} - {socketGuild.Name}\n");
 
         await File.WriteAllTextAsync("serverList.txt", sb.ToString());
 
