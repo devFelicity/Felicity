@@ -5,7 +5,6 @@ using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Models;
-using Felicity.Models.Caches;
 using Felicity.Options;
 using Felicity.Util;
 using Microsoft.Extensions.Options;
@@ -142,9 +141,6 @@ public class DiscordStartupService : BackgroundService
     private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2,
         ISocketMessageChannel arg3)
     {
-        if (arg3.Id == BotVariables.CpChannelId)
-            ProcessCpData.Populate(arg2);
-
         return Task.CompletedTask;
     }
 
@@ -195,13 +191,6 @@ public class DiscordStartupService : BackgroundService
     {
         if (socketMessage is not SocketUserMessage socketUserMessage)
             return;
-
-        if (socketUserMessage.Author.IsBot)
-            if (socketUserMessage.Channel.Id == BotVariables.CpChannelId)
-            {
-                ProcessCpData.Populate(socketMessage);
-                return;
-            }
 
         var argPos = 0;
         if (!socketUserMessage.HasStringPrefix(_discordBotOptions.Value.Prefix, ref argPos))
