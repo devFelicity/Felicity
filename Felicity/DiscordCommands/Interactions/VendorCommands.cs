@@ -143,7 +143,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(1).ItemIndexes;
+        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(3).ItemIndexes;
 
         var embed = Embeds.MakeBuilder();
 
