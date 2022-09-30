@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.13.0]
+### Added
+- New command `/crafted` (shows weapons that you have crafted in your inventory and their levels.)
+- If reading this and you have an Osteo Striga with a weapon level over 5000, please message us a screenshot... and then seek help.
+
+### Changed
+- Changed "Unknown" to "Quest / Unknown", the Quest category only has 2 items for now so not worth it's own.
+- Reverted the change to `/recipes hide-complete` => `/recipes show-complete` as it makes more sense.
+
 ## [6.12.0]
 ### Added
 - Backend management commands.
