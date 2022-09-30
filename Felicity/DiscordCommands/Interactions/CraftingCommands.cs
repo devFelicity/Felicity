@@ -1,7 +1,10 @@
-﻿using Discord;
+﻿using System.Text;
+using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.Records;
 using DotNetBungieAPI.Models.Destiny.Responses;
 using DotNetBungieAPI.Service.Abstractions;
@@ -29,10 +32,91 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         _serverDb = serverDb;
     }
 
+    [SlashCommand("crafted", "View all crafted weapon levels.")]
+    public async Task Crafted()
+    {
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
+
+        var request = await _bungieClient.ApiAccess.Destiny2.GetProfile(user!.DestinyMembershipType,
+            user.DestinyMembershipId,
+            new[]
+            {
+                DestinyComponentType.CharacterEquipment,
+                DestinyComponentType.CharacterInventories,
+                DestinyComponentType.ProfileInventories
+            }, user.GetTokenData());
+
+        var allItems = request.Response.ProfileInventory.Data.Items.Where(x =>
+            x.ItemInstanceId != null && x.State.HasFlag(ItemState.Crafted)).ToList();
+        allItems.AddRange(request.Response.CharacterInventories.Data.Values.SelectMany(d =>
+            d.Items.Where(x => x.ItemInstanceId != null && x.State.HasFlag(ItemState.Crafted))));
+        allItems.AddRange(request.Response.CharacterEquipment.Data.Values.SelectMany(d =>
+            d.Items.Where(x => x.ItemInstanceId != null && x.State.HasFlag(ItemState.Crafted))));
+
+        var embed = Embeds.MakeBuilder();
+        embed.Title = "Crafted List";
+        embed.Description = "List of crafted weapons and your weapon level on them.";
+        embed.ThumbnailUrl =
+            "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
+
+        var craftedList = Craftables.CraftedList;
+
+        var sb = new StringBuilder();
+
+        foreach (var (source, weaponList) in craftedList)
+        {
+            var field = new EmbedFieldBuilder
+            {
+                Name = source,
+                IsInline = true
+            };
+
+            foreach (var weaponId in weaponList)
+            {
+                if (embed.Fields.Count is 2 or 5 or 8 or 11)
+                    embed.AddField("\u200b", '\u200b');
+
+                var item = allItems.FirstOrDefault(x => x.Item.Select(y => y.Hash) == weaponId);
+
+                if (item == null)
+                    continue;
+
+                _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(weaponId,
+                    serverLanguage,
+                    out var manifestRecord);
+
+                var getItemRequest = await _bungieClient.ApiAccess.Destiny2.GetItem(user.DestinyMembershipType,
+                    user.DestinyMembershipId, (long)item.ItemInstanceId!, new[]
+                    {
+                        DestinyComponentType.ItemPlugObjectives
+                    });
+
+                if (!Craftables.GetWeaponLevel(getItemRequest.Response, out var weaponLevel)) weaponLevel = "N/A";
+
+                sb.Append(
+                    $"\n> {EmoteHelper.StaticEmote("pattern")} lv.{weaponLevel} - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
+            }
+
+            if (string.IsNullOrEmpty(sb.ToString()))
+                continue;
+
+            field.Value = sb.ToString();
+            sb.Clear();
+
+            embed.AddField(field);
+        }
+
+        if (embed.Fields.Count == 0)
+            embed.Description = "You do not have any crafted weapons.";
+
+        await FollowupAsync(embed: embed.Build());
+    }
+
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
-        [Summary("hide-complete", "Hide completed recipes? (default: true)")]
-        bool hideComplete = true)
+        [Summary("show-complete", "Show completed recipes? (default: false)")]
+        bool showComplete = false)
     {
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
@@ -76,7 +160,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 var record = request.Response.ProfileRecords.Data.Records[weaponId];
                 var obj = record.Objectives.First();
 
-                if (obj.IsComplete && hideComplete)
+                if (obj.IsComplete && !showComplete)
                     continue;
 
                 field.Value += "\n > ";

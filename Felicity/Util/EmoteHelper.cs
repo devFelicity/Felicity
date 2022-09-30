@@ -112,6 +112,15 @@ internal static class EmoteHelper
             "projectile_speed" => "<:projectile_speed:1012038279887065209>",
             "shield_duration" => "<:shield_duration:1012038262006755488>",
             "blast_radius" => "<:blast_radius:1012038264158425109>",
+            "barrier" => "<:barrier:1021748090954317917>",
+            "overload" => "<:overload:1021748088299331736>",
+            "unstop" => "<:unstoppable:1021748089645699102>",
+            "helmet" => "<:helmet:996490149728899122>",
+            "gloves" => "<:gloves:996490148025995385>",
+            "chest" => "<:chest:996490146922901655>",
+            "boots" => "<:boots:996490145224200292>",
+            "class" => "<:class:996490144066572288>",
+            "pattern" => "<:pattern:1025358845649891409>",
             _ => ""
         };
 
@@ -155,11 +164,11 @@ internal static class EmoteHelper
             DestinyItemSubType.TraceRifle => "<:TR:996495569650466929> ",
             DestinyItemSubType.Bow => "<:BW:996493602354114640> ",
             DestinyItemSubType.Glaive => "<:GV:996495571126845491> ",
-            DestinyItemSubType.HelmetArmor => "<:helmet:996490149728899122> ",
-            DestinyItemSubType.GauntletsArmor => "<:gloves:996490148025995385> ",
-            DestinyItemSubType.ChestArmor => "<:chest:996490146922901655> ",
-            DestinyItemSubType.LegArmor => "<:boots:996490145224200292> ",
-            DestinyItemSubType.ClassArmor => "<:class:996490144066572288> ",
+            DestinyItemSubType.HelmetArmor => $"{StaticEmote("helmet")} ",
+            DestinyItemSubType.GauntletsArmor => $"{StaticEmote("gloves")} ",
+            DestinyItemSubType.ChestArmor => $"{StaticEmote("chest")} ",
+            DestinyItemSubType.LegArmor => $"{StaticEmote("boots")} ",
+            DestinyItemSubType.ClassArmor => $"{StaticEmote("class")} ",
             _ => string.Empty
         };
 

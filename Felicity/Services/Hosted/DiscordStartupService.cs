@@ -103,7 +103,7 @@ public class DiscordStartupService : BackgroundService
             new()
             {
                 Name = "Owner",
-                Value = arg.Owner,
+                Value = $"ID: {arg.OwnerId}",
                 IsInline = true
             },
             new()

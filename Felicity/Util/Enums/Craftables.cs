@@ -1,4 +1,5 @@
 ﻿using DotNetBungieAPI.HashReferences;
+using DotNetBungieAPI.Models.Destiny.Responses;
 
 namespace Felicity.Util.Enums;
 
@@ -123,6 +124,121 @@ internal static class Craftables
         }
     };
 
+    public static readonly Dictionary<string, List<uint>> CraftedList = new()
+    {
+        {
+            CraftSource.KingsFall, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.DefianceofYasmin_3228096719,
+                DefinitionHashes.InventoryItems.DoomofChelchis_1937552980,
+                DefinitionHashes.InventoryItems.MidhasReckoning_3969066556,
+                DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
+                DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
+                DefinitionHashes.InventoryItems.ZaoulisBane_431721920
+            }
+        },
+        {
+            CraftSource.SeasonPlunder, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.BloodFeud_1509167284,
+                DefinitionHashes.InventoryItems.BrigandsLaw_1298815317,
+                DefinitionHashes.InventoryItems.NoReprieve_2531963421,
+                DefinitionHashes.InventoryItems.PlancksStride_820890091,
+                DefinitionHashes.InventoryItems.SailspyPitchglass_1184309824,
+                DefinitionHashes.InventoryItems.TarnishedMettle_2218569744
+            }
+        },
+        {
+            CraftSource.Anniversary, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.BxR55Battler_2708806099,
+                DefinitionHashes.InventoryItems.HalfTruths_3257091166,
+                DefinitionHashes.InventoryItems.PardonOurDust_3849810018,
+                DefinitionHashes.InventoryItems.RetracedPath_548958835,
+                DefinitionHashes.InventoryItems.TheOtherHalf_3257091167,
+                DefinitionHashes.InventoryItems.WastelanderM5_1679868061
+            }
+        },
+        {
+            CraftSource.Unknown, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.AmmitAR2_2119346509,
+                DefinitionHashes.InventoryItems.Taipan4fr_1911060537
+            }
+        },
+        {
+            CraftSource.SeasonHaunted, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.BumpintheNight_1959650777,
+                DefinitionHashes.InventoryItems.Firefright_2778013407,
+                DefinitionHashes.InventoryItems.HollowDenial_2323544076,
+                DefinitionHashes.InventoryItems.NezarecsWhisper_254636484,
+                DefinitionHashes.InventoryItems.TearsofContrition_1366394399,
+                DefinitionHashes.InventoryItems.WithoutRemorse_1478986057
+            }
+        },
+        {
+            CraftSource.Opulent, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Austringer_3055790362,
+                DefinitionHashes.InventoryItems.Beloved_3107853529,
+                DefinitionHashes.InventoryItems.CALUSMiniTool_2490988246,
+                DefinitionHashes.InventoryItems.DrangBaroque_502356570,
+                DefinitionHashes.InventoryItems.FixedOdds_2194955522,
+                DefinitionHashes.InventoryItems.TheEpicurean_2263839058
+            }
+        },
+        {
+            CraftSource.SeasonRisen, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.ExplosivePersonality_4096943616,
+                DefinitionHashes.InventoryItems.PieceofMind_2097055732,
+                DefinitionHashes.InventoryItems.RecurrentImpact_1572896086,
+                DefinitionHashes.InventoryItems.SweetSorrow_1248372789,
+                DefinitionHashes.InventoryItems.Thoughtless_4067556514,
+                DefinitionHashes.InventoryItems.UnderYourSkin_232928045
+            }
+        },
+        {
+            CraftSource.RaidVotD, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Cataclysmic_999767358,
+                DefinitionHashes.InventoryItems.Deliverance_768621510,
+                DefinitionHashes.InventoryItems.Forbearance_613334176,
+                DefinitionHashes.InventoryItems.Insidious_3428521585,
+                DefinitionHashes.InventoryItems.LubraesRuin_2534546147,
+                DefinitionHashes.InventoryItems.Submission_3886416794
+            }
+        },
+        {
+            CraftSource.WqWellspring, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.CometoPass_927567426,
+                DefinitionHashes.InventoryItems.EdgeofAction_2535142413,
+                DefinitionHashes.InventoryItems.EdgeofConcurrence_542203595,
+                DefinitionHashes.InventoryItems.EdgeofIntent_14194600,
+                DefinitionHashes.InventoryItems.FathersSins_3865728990,
+                DefinitionHashes.InventoryItems.FelTaradiddle_1399109800,
+                DefinitionHashes.InventoryItems.Tarnation_2721157927
+            }
+        },
+        {
+            CraftSource.Wq, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.EmpiricalEvidence_2607304614,
+                DefinitionHashes.InventoryItems.ForensicNightmare_1526296434,
+                DefinitionHashes.InventoryItems.LikelySuspect_1994645182,
+                DefinitionHashes.InventoryItems.OsteoStriga_46524085,
+                DefinitionHashes.InventoryItems.PalmyraB_3489657138,
+                DefinitionHashes.InventoryItems.PointedInquiry_297296830,
+                DefinitionHashes.InventoryItems.RagnhildD_4225322581,
+                DefinitionHashes.InventoryItems.RedHerring_3175851496,
+                DefinitionHashes.InventoryItems.Syncopation53_2856514843,
+                DefinitionHashes.InventoryItems.TheEnigma_2595497736
+            }
+        }
+    };
+
     public static uint GetWeaponId(uint recordDefinitionHash)
     {
         return recordDefinitionHash switch
@@ -197,6 +313,24 @@ internal static class Craftables
         };
     }
 
+    public static bool GetWeaponLevel(DestinyItemResponse response, out string weaponLevel)
+    {
+        weaponLevel = string.Empty;
+
+        var weaponObjective = response.PlugObjectives.Data.ObjectivesPerPlug
+            .First(x => x.Key.Hash
+                is DefinitionHashes.InventoryItems.ShapedWeapon_1922808508
+                or DefinitionHashes.InventoryItems.ShapedWeapon_659359923
+                or DefinitionHashes.InventoryItems.ShapedWeapon_4029346515).Value;
+
+        var obj = weaponObjective.FirstOrDefault(x => x.Objective.Hash == 3077315735);
+        if (obj == null)
+            return false;
+
+        weaponLevel = obj.Progress.ToString() ?? string.Empty;
+        return true;
+    }
+
     private static class CraftSource
     {
         public const string SeasonPlunder = "Plunder";
@@ -207,7 +341,7 @@ internal static class Craftables
         public const string WqWellspring = "Wellspring";
         public const string Wq = "Witch Queen";
         public const string Anniversary = "30th Anniversary";
-        public const string Unknown = "Unknown";
+        public const string Unknown = "Quest / Unknown";
         public const string KingsFall = "Kings Fall";
     }
 }
