@@ -147,7 +147,7 @@ public class TwitchService
                     var message = await _discordClient.GetGuild(stream.ServerId)
                         .GetTextChannel(stream.ChannelId)
                         .SendMessageAsync(
-                            $"{mentionUser} is now live: <https://twitch.tv/{e.Stream.UserName}>\n\n{mention}",
+                            $"{Format.Bold(mentionUser.Replace("_", @"\_"))} is now live: <https://twitch.tv/{e.Stream.UserName.Replace("_", @"\_")}>\n\n{mention}",
                             false, embed.Build());
 
                     activeStream.MessageId = message.Id;
@@ -281,7 +281,7 @@ public class TwitchService
 
                 (message as IUserMessage)?.ModifyAsync(delegate(MessageProperties properties)
                 {
-                    properties.Content = $"{Format.Bold(e.Channel)} was live:{vodUrl}";
+                    properties.Content = $"{Format.Bold(e.Channel.Replace("_", @"\_"))} was live:{vodUrl}";
                     properties.Embed = embed.Build();
                 });
 
