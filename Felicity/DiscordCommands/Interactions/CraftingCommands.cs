@@ -77,25 +77,42 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 if (embed.Fields.Count is 2 or 5 or 8 or 11)
                     embed.AddField("\u200b", '\u200b');
 
-                var item = allItems.FirstOrDefault(x => x.Item.Select(y => y.Hash) == weaponId);
+                var itemList = allItems.Where(x => x.Item.Select(y => y.Hash) == weaponId).ToList();
 
-                if (item == null)
+                if (!itemList.Any())
                     continue;
+
+                var highestWeaponLevel = 0;
+
+                foreach (var destinyItemComponent in itemList)
+                {
+                    var getItemRequest = await _bungieClient.ApiAccess.Destiny2.GetItem(user.DestinyMembershipType,
+                        user.DestinyMembershipId, (long)destinyItemComponent.ItemInstanceId!, new[]
+                        {
+                            DestinyComponentType.ItemPlugObjectives
+                        });
+
+                    // ReSharper disable once InvertIf
+                    if (Craftables.GetWeaponLevel(getItemRequest.Response, out var weaponLevel))
+                    {
+                        if (!int.TryParse(weaponLevel, out var currentWeaponLevel))
+                            continue;
+
+                        if (highestWeaponLevel < currentWeaponLevel)
+                            highestWeaponLevel = currentWeaponLevel;
+                    }
+                }
 
                 _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(weaponId,
                     serverLanguage,
                     out var manifestRecord);
 
-                var getItemRequest = await _bungieClient.ApiAccess.Destiny2.GetItem(user.DestinyMembershipType,
-                    user.DestinyMembershipId, (long)item.ItemInstanceId!, new[]
-                    {
-                        DestinyComponentType.ItemPlugObjectives
-                    });
-
-                if (!Craftables.GetWeaponLevel(getItemRequest.Response, out var weaponLevel)) weaponLevel = "N/A";
-
                 sb.Append(
-                    $"\n> {EmoteHelper.StaticEmote("pattern")} lv.{weaponLevel} - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
+                    $"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
+
+                if (itemList.Count > 1 && !embed.Description.Contains("* = "))
+                    embed.Description +=
+                        "\n\n* = Multiple crafted weapons are in your inventory, only the highest level is returned.";
             }
 
             if (string.IsNullOrEmpty(sb.ToString()))
@@ -111,6 +128,30 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             embed.Description = "You do not have any crafted weapons.";
 
         await FollowupAsync(embed: embed.Build());
+    }
+
+    private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
+    {
+        var sb = new StringBuilder();
+        sb.Append("`lv.");
+
+        switch (weaponLevel.ToString().Length)
+        {
+            case 1:
+                sb.Append("  ");
+                break;
+            case 2:
+                sb.Append(' ');
+                break;
+        }
+
+        sb.Append(weaponLevel);
+
+        sb.Append(isMultiple ? '*' : ' ');
+
+        sb.Append('`');
+
+        return sb.ToString();
     }
 
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
