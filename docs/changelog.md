@@ -8,6 +8,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.13.3]
+### Changed
+- Fixed an issue causing Saint-14 command to crash.
+
+## [6.13.2]
+### Changed
+- Fixed an issue where twitch usernames ending with an underscore would cause Discord to attempt formatting as italics.
+
+## [6.13.1]
+### Changed
+- Slight tweaks to `/crafted` command that will now show when multiple instances of the weapon are found and only display highest level.
+
+## [6.13.0]
+### Added
+- New command `/crafted` (shows weapons that you have crafted in your inventory and their levels.)
+- If reading this and you have an Osteo Striga with a weapon level over 5000, please message us a screenshot... and then seek help.
+
+### Changed
+- Changed "Unknown" to "Quest / Unknown", the Quest category only has 2 items for now so not worth it's own.
+- Reverted the change to `/recipes hide-complete` => `/recipes show-complete` as it makes more sense.
+
+## [6.12.0]
+### Added
+- Backend management commands.
+
+### Removed
+- `/checkpoint` commands.
+
+## [6.11.0]
+### Added
+- King's Fall craftables.
+- King's Fall loot table.
+
+### Changed
+- Removed optional parameters from `/recipes`.
+- Update dependencies.
+
+## [6.10.2]
+### Changed
+- Added KingsFall and Plunder weapon rolls.
+
+## [6.10.1]
+### Changed
+- Fixed an issue where weapons with multiple rolls would have multiple options in autocomplete.
+
+## [6.10.0]
+### Added
+- King's Fall loot table (missing weapons due to classified items)
+- New command: `/roll-finder` uses curated weapon rolls to provide recommended rolls for PvE/PvP
+
+## [6.9.0]
+### Added
+- New craftable weapons.
+- Preparations for upcoming release.
+
+### Changed
+- Fixed Saint14's inventory change due to new season.
+- Updated dependencies.
+- Fix `/memento` command relying on the source parameter.
+
 ## [6.8.1]
 ### Changed
 - Bug fixes.
