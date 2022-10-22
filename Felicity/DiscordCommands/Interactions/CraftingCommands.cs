@@ -2,7 +2,9 @@
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
+using DotNetBungieAPI.Models.Authorization;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.Records;
@@ -130,6 +132,37 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
+    private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,
+        long destinyMembershipId, AuthorizationTokenData tokenData)
+    {
+        var characterIdTask = await _bungieClient.ApiAccess.Destiny2.GetProfile(destinyMembershipType,
+            destinyMembershipId, new[]
+            {
+                DestinyComponentType.Characters
+            }, tokenData);
+
+        var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
+            characterIdTask.Response.Characters.Data.Keys.First(), vendorId, new[]
+            {
+                DestinyComponentType.Vendors, DestinyComponentType.VendorCategories, DestinyComponentType.VendorSales,
+                DestinyComponentType.ItemSockets
+            }, tokenData);
+
+        var categoryIndex = vendorId switch
+        {
+            DefinitionHashes.Vendors.StarChart => 6,
+            DefinitionHashes.Vendors.CrownofSorrow => 5,
+            DefinitionHashes.Vendors.WarTable => 3,
+            _ => 0
+        };
+
+        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes
+            .ElementAt(1);
+
+        return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
+            .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+    }
+
     private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
     {
         var sb = new StringBuilder();
@@ -178,7 +211,15 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.ThumbnailUrl =
             "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
 
-        var updateDescription = false;
+        var plunderDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.StarChart,
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData());
+        var crownDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.CrownofSorrow,
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData());
+        var risenDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable, user.DestinyMembershipType,
+            user.DestinyMembershipId, user.GetTokenData());
+
+        var invDescription = false;
+        var buyDescription = false;
 
         var craftableList = Craftables.CraftableList;
 
@@ -216,11 +257,22 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     if (inventoryItemCount > 0)
                     {
                         field.Value += $"{obj.Progress + inventoryItemCount}/{obj.CompletionValue} ⚠️ ";
-                        updateDescription = true;
+                        invDescription = true;
                     }
                     else
                     {
                         field.Value += $"{obj.Progress}/{obj.CompletionValue}";
+                    }
+
+                    if ((source is "Plunder" && plunderDeepsight) ||
+                        (source is "Haunted" or "Opulent" && crownDeepsight) || (source is "Risen" && risenDeepsight))
+                    {
+                        if (field.Value.ToString()!.Contains("⚠️"))
+                            field.Value += "💰 ";
+                        else
+                            field.Value += " 💰 ";
+
+                        buyDescription = true;
                     }
                 }
 
@@ -233,8 +285,11 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             embed.AddField(field);
         }
 
-        if (updateDescription)
+        if (invDescription)
             embed.Description += "\n\n⚠️ = Includes incomplete deepsight weapons.";
+
+        if (buyDescription)
+            embed.Description += "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
 
         if (embed.Fields.Count == 0)
             embed.Description = "You have completed all available patterns.";
