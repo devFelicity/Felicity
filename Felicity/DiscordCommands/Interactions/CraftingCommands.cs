@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -159,8 +159,15 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes
             .ElementAt(1);
 
-        return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
-            .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+        try
+        {
+            return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
+                .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
