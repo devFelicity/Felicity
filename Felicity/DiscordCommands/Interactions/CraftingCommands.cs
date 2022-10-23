@@ -159,8 +159,15 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes
             .ElementAt(1);
 
-        return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
-            .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+        try
+        {
+            return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
+                .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
@@ -256,16 +263,17 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     var inventoryItemCount = GetItemCount(request, manifestRecord.Hash);
                     if (inventoryItemCount > 0)
                     {
-                        field.Value += $"{obj.Progress + inventoryItemCount}/{obj.CompletionValue} ⚠️ ";
+                        field.Value += $"`{obj.Progress + inventoryItemCount}/{obj.CompletionValue}` ⚠️ ";
                         invDescription = true;
                     }
                     else
                     {
-                        field.Value += $"{obj.Progress}/{obj.CompletionValue}";
+                        field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
                     }
 
                     if ((source is "Plunder" && plunderDeepsight) ||
-                        (source is "Haunted" or "Opulent" && crownDeepsight) || (source is "Risen" && risenDeepsight))
+                        (source is "Haunted" or "Opulent" && crownDeepsight) ||
+                        (source is "Risen" && risenDeepsight))
                     {
                         if (field.Value.ToString()!.Contains("⚠️"))
                             field.Value += "💰 ";
