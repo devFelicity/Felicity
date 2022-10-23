@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.14.1]
+### Changed
+- Fixed an issue where War Table deepsight being claimed will crash /recipes.
+- Added ticks for better /recipes readability.
+
 ## [6.14.0]
 ### Added
 - A little money bag to the /recipes command if you can currently buy a deepsight from the vendors.
