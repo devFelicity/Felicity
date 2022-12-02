@@ -44,11 +44,11 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                DefinitionHashes.Records.ImperialDecree,
-                DefinitionHashes.Records.Taipan4fr,
-                DefinitionHashes.Records.Goldtusk,
-                DefinitionHashes.Records.DeathsRazor,
-                DefinitionHashes.Records.ThroneCleaver
+                DefinitionHashes.Records.Taipan4fr
+                // DefinitionHashes.Records.ImperialDecree,
+                // DefinitionHashes.Records.Goldtusk,
+                // DefinitionHashes.Records.DeathsRazor,
+                // DefinitionHashes.Records.ThroneCleaver
             }
         },
         {
