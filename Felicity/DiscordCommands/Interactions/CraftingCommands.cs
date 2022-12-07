@@ -76,7 +76,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             foreach (var weaponId in weaponList)
             {
-                if (embed.Fields.Count is 2 or 5 or 8 or 11)
+                if (embed.Fields.Count % 3 == 2)
                     embed.AddField("\u200b", '\u200b');
 
                 var itemList = allItems.Where(x => x.Item.Select(y => y.Hash) == weaponId).ToList();
@@ -133,31 +133,24 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
     }
 
     private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,
-        long destinyMembershipId, AuthorizationTokenData tokenData)
+        long destinyMembershipId, AuthorizationTokenData tokenData, long characterId)
     {
-        var characterIdTask = await _bungieClient.ApiAccess.Destiny2.GetProfile(destinyMembershipType,
-            destinyMembershipId, new[]
-            {
-                DestinyComponentType.Characters
-            }, tokenData);
-
         var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
-            characterIdTask.Response.Characters.Data.Keys.First(), vendorId, new[]
+            characterId, vendorId, new[]
             {
-                DestinyComponentType.Vendors, DestinyComponentType.VendorCategories, DestinyComponentType.VendorSales,
+                DestinyComponentType.VendorCategories,
                 DestinyComponentType.ItemSockets
             }, tokenData);
 
         var categoryIndex = vendorId switch
         {
-            DefinitionHashes.Vendors.StarChart => 6,
+            DefinitionHashes.Vendors.StarChart => 5,
             DefinitionHashes.Vendors.CrownofSorrow => 5,
             DefinitionHashes.Vendors.WarTable => 3,
             _ => 0
         };
 
-        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes
-            .ElementAt(1);
+        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes.ElementAt(1);
 
         try
         {
@@ -206,6 +199,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             user.DestinyMembershipId,
             new[]
             {
+                DestinyComponentType.Characters,
                 DestinyComponentType.Records,
                 DestinyComponentType.CharacterEquipment,
                 DestinyComponentType.CharacterInventories,
@@ -219,11 +213,11 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
 
         var plunderDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.StarChart,
-            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData());
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
         var crownDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.CrownofSorrow,
-            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData());
-        var risenDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable, user.DestinyMembershipType,
-            user.DestinyMembershipId, user.GetTokenData());
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
+        var risenDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable, user.DestinyMembershipType, 
+            user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
 
         var invDescription = false;
         var buyDescription = false;
@@ -240,7 +234,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
             foreach (var weaponId in weaponList)
             {
-                if (embed.Fields.Count is 2 or 5 or 8 or 11) // there has to be a better way
+                if (embed.Fields.Count % 3 == 2)
                     embed.AddField("\u200b", '\u200b');
 
                 _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
