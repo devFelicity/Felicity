@@ -8,6 +8,32 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonSeraph, new List<uint>
+            {
+                DefinitionHashes.Records.Disparity,
+                DefinitionHashes.Records.FireandForget,
+                DefinitionHashes.Records.IKELOS_HC_v103,
+                DefinitionHashes.Records.IKELOS_SG_v103,
+                DefinitionHashes.Records.IKELOS_SMG_v103,
+                DefinitionHashes.Records.IKELOS_SR_v103,
+                DefinitionHashes.Records.JudgmentofKelgorath,
+                DefinitionHashes.Records.PathofLeastResistance,
+                DefinitionHashes.Records.RetrofitEscapade,
+                DefinitionHashes.Records.TripwireCanary
+            }
+        },
+        {
+            CraftSource.DeepStoneCrypt, new List<uint>
+            {
+                DefinitionHashes.Records.Bequest,
+                DefinitionHashes.Records.Commemoration,
+                DefinitionHashes.Records.Heritage,
+                DefinitionHashes.Records.Posterity,
+                DefinitionHashes.Records.Succession,
+                DefinitionHashes.Records.Trustee
+            }
+        },
+        {
             CraftSource.KingsFall, new List<uint>
             {
                 DefinitionHashes.Records.DefianceofYasmin,
@@ -126,6 +152,32 @@ internal static class Craftables
 
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
+        {
+            CraftSource.SeasonSeraph, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Disparity_1751893422,
+                DefinitionHashes.InventoryItems.FireandForget_2272041093,
+                DefinitionHashes.InventoryItems.IKELOS_HC_v103_1731355324,
+                DefinitionHashes.InventoryItems.IKELOS_SG_v103_1168625549,
+                DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
+                DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
+                DefinitionHashes.InventoryItems.JudgmentofKelgorath_2978226043,
+                DefinitionHashes.InventoryItems.PathofLeastResistance_2827764482,
+                DefinitionHashes.InventoryItems.RetrofitEscapade_3103325054,
+                DefinitionHashes.InventoryItems.TripwireCanary_3849444474
+            }
+        },
+        {
+            CraftSource.DeepStoneCrypt, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Bequest_3366545721,
+                DefinitionHashes.InventoryItems.Commemoration_4230965989,
+                DefinitionHashes.InventoryItems.Heritage_4248569242,
+                DefinitionHashes.InventoryItems.Posterity_3281285075,
+                DefinitionHashes.InventoryItems.Succession_2990047042,
+                DefinitionHashes.InventoryItems.Trustee_1392919471
+            }
+        },
         {
             CraftSource.KingsFall, new List<uint>
             {
@@ -333,15 +385,17 @@ internal static class Craftables
 
     private static class CraftSource
     {
-        public const string SeasonPlunder = "Plunder";
-        public const string SeasonHaunted = "Haunted";
-        public const string SeasonRisen = "Risen";
+        public const string Anniversary = "30th Anniversary";
+        public const string DeepStoneCrypt = "Deep Stone Crypt";
+        public const string KingsFall = "Kings Fall";
         public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
-        public const string WqWellspring = "Wellspring";
-        public const string Wq = "Witch Queen";
-        public const string Anniversary = "30th Anniversary";
+        public const string SeasonHaunted = "Haunted";
+        public const string SeasonPlunder = "Plunder";
+        public const string SeasonRisen = "Risen";
+        public const string SeasonSeraph = "Seraph";
         public const string Unknown = "Quest / Unknown";
-        public const string KingsFall = "Kings Fall";
+        public const string Wq = "Witch Queen";
+        public const string WqWellspring = "Wellspring";
     }
 }
