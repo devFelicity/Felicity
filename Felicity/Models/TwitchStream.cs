@@ -36,7 +36,7 @@ public class ActiveStream
 
 public class TwitchStreamDb : DbContext
 {
-    private readonly string _connectionString;
+    private readonly string? _connectionString;
 
     public TwitchStreamDb(IConfiguration configuration)
     {
@@ -49,6 +49,7 @@ public class TwitchStreamDb : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
-        optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
+        if (_connectionString != null)
+            optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
     }
 }

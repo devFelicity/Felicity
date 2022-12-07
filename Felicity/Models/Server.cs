@@ -27,7 +27,7 @@ public class Server
 
 public class ServerDb : DbContext
 {
-    private readonly string _connectionString;
+    private readonly string? _connectionString;
 
     public ServerDb(IConfiguration configuration)
     {
@@ -40,6 +40,7 @@ public class ServerDb : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
-        optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
+        if (_connectionString != null)
+            optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
     }
 }
