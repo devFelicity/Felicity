@@ -53,7 +53,7 @@ public static class UserExtensions
 
 public class UserDb : DbContext
 {
-    private readonly string _connectionString;
+    private readonly string? _connectionString;
 
     public UserDb(IConfiguration configuration)
     {
@@ -66,6 +66,7 @@ public class UserDb : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var serverVersion = new MariaDbServerVersion(new Version(10, 2, 21));
-        optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
+        if (_connectionString != null)
+            optionsBuilder.UseMySql(_connectionString, serverVersion, builder => builder.EnableRetryOnFailure());
     }
 }
