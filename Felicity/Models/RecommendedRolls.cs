@@ -61,14 +61,15 @@ public enum WeaponSource
     ThroneWorld,
     Leviathan,
     Event,
-    SeasonalHunt,
-    SeasonalChosen,
-    SeasonalSplicer,
-    SeasonalLost,
-    SeasonalRisen,
-    SeasonalHaunted,
-    SeasonalPlunder,
-    KingsFall
+    KingsFall,
+    SeasonalHunt = 112,
+    SeasonalChosen = 113,
+    SeasonalSplicer = 114,
+    SeasonalLost = 115,
+    SeasonalRisen = 116,
+    SeasonalHaunted = 117,
+    SeasonalPlunder = 118,
+    SeasonalSeraph = 119
 }
 
 public static class ProcessRollData
