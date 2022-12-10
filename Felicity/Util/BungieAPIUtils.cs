@@ -4,6 +4,7 @@ using DotNetBungieAPI.Models.Requests;
 using DotNetBungieAPI.Models.User;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
+using Serilog;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -12,6 +13,24 @@ namespace Felicity.Util;
 
 public static class BungieApiUtils
 {
+    public static async Task<bool> CheckApi(IBungieClient client)
+    {
+        var apiInfo = await client.ApiAccess.Misc.GetCommonSettings();
+
+        try
+        {
+            if (apiInfo.Response.Systems.TryGetValue("Destiny2", out var d2Value))
+                if (d2Value.IsEnabled)
+                    return true;
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "API check failure.");
+        }
+
+        return false;
+    }
+
     public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(IBungieClient client, long membershipId,
         BungieMembershipType membershipType)
     {

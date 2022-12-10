@@ -60,7 +60,8 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             "Bungie name of the requested user (name#1234).")]
         string bungieTag = "")
     {
-        await DeferAsync();
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
 
         if (!string.IsNullOrEmpty(bungieTag) && !bungieTag.Contains('#'))
         {
@@ -220,7 +221,8 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         [Summary("bungie-name", "Bungie name of the requested user (name#1234). Defaults to your own.")]
         string bungieTag = "")
     {
-        await DeferAsync();
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
 
         long membershipId;
         BungieMembershipType membershipType;

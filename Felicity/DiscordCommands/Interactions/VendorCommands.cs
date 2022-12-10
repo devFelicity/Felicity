@@ -31,6 +31,9 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("gunsmith", "Fetch Banshee weapon inventory which includes D2Gunsmith and LightGG links.")]
     public async Task Gunsmith()
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (user == null)
         {
@@ -54,6 +57,9 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("xur", "Fetch Xûr inventory which includes D2Gunsmith and LightGG links.")]
     public async Task Xur()
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         if (ProcessXurData.IsXurHere())
         {
             var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
@@ -86,6 +92,9 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("mods", "Get list of mods currently available at vendors.")]
     public async Task Mods()
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (user == null)
         {
@@ -106,6 +115,9 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("saint14", "Fetch Saint-14 (Trials of Osiris) reputation rewards for the week.")]
     public async Task Saint14()
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (user == null)
         {
