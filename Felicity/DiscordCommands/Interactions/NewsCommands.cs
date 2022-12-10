@@ -25,6 +25,8 @@ public class NewsCommands : InteractionModuleBase<ShardedInteractionContext>
         string search =
             "")
     {
+        await DeferAsync();
+
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
 
