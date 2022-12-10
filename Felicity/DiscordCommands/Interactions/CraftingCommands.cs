@@ -37,6 +37,9 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
     [SlashCommand("crafted", "View all crafted weapon levels.")]
     public async Task Crafted()
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
 
@@ -132,66 +135,14 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,
-        long destinyMembershipId, AuthorizationTokenData tokenData, long characterId)
-    {
-        var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
-            characterId, vendorId, new[]
-            {
-                DestinyComponentType.VendorCategories,
-                DestinyComponentType.ItemSockets
-            }, tokenData);
-
-        var categoryIndex = vendorId switch
-        {
-            DefinitionHashes.Vendors.StarChart => 5,
-            DefinitionHashes.Vendors.CrownofSorrow => 5,
-            DefinitionHashes.Vendors.WarTable => 3,
-            _ => 0
-        };
-
-        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes.ElementAt(1);
-
-        try
-        {
-            return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
-                .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
-    {
-        var sb = new StringBuilder();
-        sb.Append("`lv.");
-
-        switch (weaponLevel.ToString().Length)
-        {
-            case 1:
-                sb.Append("  ");
-                break;
-            case 2:
-                sb.Append(' ');
-                break;
-        }
-
-        sb.Append(weaponLevel);
-
-        sb.Append(isMultiple ? '*' : ' ');
-
-        sb.Append('`');
-
-        return sb.ToString();
-    }
-
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
         [Summary("show-complete", "Show completed recipes? (default: false)")]
         bool showComplete = false)
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
 
@@ -297,6 +248,61 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             embed.Description = "You have completed all available patterns.";
 
         await FollowupAsync(embed: embed.Build());
+    }
+
+    private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,
+        long destinyMembershipId, AuthorizationTokenData tokenData, long characterId)
+    {
+        var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
+            characterId, vendorId, new[]
+            {
+                DestinyComponentType.VendorCategories,
+                DestinyComponentType.ItemSockets
+            }, tokenData);
+
+        var categoryIndex = vendorId switch
+        {
+            DefinitionHashes.Vendors.StarChart => 5,
+            DefinitionHashes.Vendors.CrownofSorrow => 5,
+            DefinitionHashes.Vendors.WarTable => 3,
+            _ => 0
+        };
+
+        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes.ElementAt(1);
+
+        try
+        {
+            return request.Response.ItemComponents.Sockets.Data[vendorItemIndex].Sockets.Last().Plug
+                .Select(x => x.DisplayProperties.Name).Contains("Deepsight");
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)
+    {
+        var sb = new StringBuilder();
+        sb.Append("`lv.");
+
+        switch (weaponLevel.ToString().Length)
+        {
+            case 1:
+                sb.Append("  ");
+                break;
+            case 2:
+                sb.Append(' ');
+                break;
+        }
+
+        sb.Append(weaponLevel);
+
+        sb.Append(isMultiple ? '*' : ' ');
+
+        sb.Append('`');
+
+        return sb.ToString();
     }
 
     private static int GetItemCount(BungieResponse<DestinyProfileResponse> request, uint recordDefinitionHash)

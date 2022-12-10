@@ -29,6 +29,9 @@ public class MetricsCommands : InteractionModuleBase<ShardedInteractionContext>
         [Autocomplete(typeof(MetricAutocomplete))] [Summary("query", "Specific metric you want to pull values for.")]
         uint metricId)
     {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
         var currentUser = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
         if (currentUser == null)
         {
