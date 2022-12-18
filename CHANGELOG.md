@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.17.2]
+### Changed
+- Fixed an issue where UserCannotResolveCentralAccount would crash the command.
+- Fixed an issue where certain commands through DMs would crash.
+
 ## [6.17.1]
 ### Changed
 - Fixed accidental deletion of the most important part of the command.
