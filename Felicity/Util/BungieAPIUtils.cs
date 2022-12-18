@@ -57,7 +57,7 @@ public static class BungieApiUtils
             });
 
         var response = userInfoCard.Response;
-        if (response.Count == 0)
+        if (response == null || response.Count == 0)
             return null;
 
         return await GetLatestProfile(bungieClient, response.First().MembershipId, response.First().MembershipType);
