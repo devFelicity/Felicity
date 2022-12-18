@@ -41,7 +41,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             throw new Exception("Bungie API is down or unresponsive.");
 
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
+        var serverLanguage = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         var request = await _bungieClient.ApiAccess.Destiny2.GetProfile(user!.DestinyMembershipType,
             user.DestinyMembershipId,
@@ -144,7 +144,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             throw new Exception("Bungie API is down or unresponsive.");
 
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        var serverLanguage = MiscUtils.GetServer(_serverDb, Context.Guild.Id).BungieLocale;
+        var serverLanguage = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         var request = await _bungieClient.ApiAccess.Destiny2.GetProfile(user!.DestinyMembershipType,
             user.DestinyMembershipId,
