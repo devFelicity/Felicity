@@ -1,5 +1,8 @@
-﻿using Discord;
+﻿using System.Text;
+using Discord;
 using Discord.Interactions;
+using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
@@ -270,14 +273,18 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var player = _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new[]
         {
-            DestinyComponentType.Characters
+            DestinyComponentType.Characters,
+            DestinyComponentType.Collectibles,
+            DestinyComponentType.Metrics
         });
 
-        await FollowupAsync(embed: GenerateLookupEmbed(await player, bungieName, membershipId, membershipType));
+        await FollowupAsync(embed: await GenerateLookupEmbed(await player, bungieName, membershipId, membershipType,
+            _bungieClient));
     }
 
-    private static Embed GenerateLookupEmbed(BungieResponse<DestinyProfileResponse> playerResponse, string bungieName,
-        long membershipId, BungieMembershipType membershipType)
+    private static async Task<Embed> GenerateLookupEmbed(BungieResponse<DestinyProfileResponse> playerResponse,
+        string bungieName,
+        long membershipId, BungieMembershipType membershipType, IBungieClient bungieClient)
     {
         DestinyCharacterComponent? goodChar = null;
 
@@ -296,6 +303,8 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             return errorEmbed.Build();
         }
 
+        var memTypeAndId = $"{(int)membershipType}/{membershipId}";
+
         var embed = new EmbedBuilder
         {
             Color = Color.DarkMagenta,
@@ -304,25 +313,131 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             Description =
                 $"{Format.Code($"/invite {bungieName}")} | " +
                 $"{Format.Code($"/join {bungieName}")}",
-            ThumbnailUrl = BotVariables.BungieBaseUrl + goodChar.EmblemPath
+            ThumbnailUrl = BotVariables.BungieBaseUrl + goodChar.EmblemPath,
+            Url = $"https://www.bungie.net/7/en/User/Profile/{memTypeAndId}"
         };
 
-        var memTypeAndId = $"{(int)membershipType}/{membershipId}";
+        embed.AddField("Current Season Rank",
+            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonoftheSeraphRank].ObjectiveProgress.Progress:n0}", true);
+        embed.AddField("Raid Completions", $"> {GetRaidCompletions(playerResponse.Response.Metrics.Data):n0}", true);
+        embed.AddField("Triumph Score",
+            $"> **Active**: {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.ActiveTriumphScore].ObjectiveProgress.Progress:n0}\n" +
+            $"> **Lifetime**: {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.TotalTriumphScore].ObjectiveProgress.Progress:n0}",
+            true);
 
         embed.AddField("General",
             $"[Braytech](https://bray.tech/{memTypeAndId})\n" +
             $"[D2Timeline](https://mijago.github.io/D2Timeline/#/display/{memTypeAndId})\n" +
             $"[Guardian.Report](https://guardian.report/?view=PVE&guardians={membershipId})\n", true);
         embed.AddField("PvE",
-            $"[Dungeons]({GetReportLink(membershipType, membershipId, "dungeon")})\n" +
-            $"[Nightfalls](https://nightfall.report/guardian/{memTypeAndId})\n" +
-            $"[Raids]({GetReportLink(membershipType, membershipId, "raid")})", true);
+            $"[Dungeon.Report]({GetReportLink(membershipType, membershipId, "dungeon")})\n" +
+            $"[Nightfall.Report](https://nightfall.report/guardian/{memTypeAndId})\n" +
+            $"[Raid.Report]({GetReportLink(membershipType, membershipId, "raid")})", true);
         embed.AddField("PvP",
-            $"[Crucible](https://crucible.report/report/{memTypeAndId})\n" +
+            $"[Crucible.Report](https://crucible.report/report/{memTypeAndId})\n" +
             $"[DestinyTracker](https://destinytracker.com/destiny-2/profile/bungie/{membershipId}/overview?perspective=pvp)\n" +
-            $"[Trials](https://trials.report/report/{memTypeAndId})", true);
+            $"[Trials.Report](https://trials.report/report/{memTypeAndId})", true);
+
+        var importantCollectibles = new StringBuilder();
+
+        var importantIdList = new List<uint>
+        {
+            DefinitionHashes.Collectibles.Arbalest,
+            DefinitionHashes.Collectibles.Divinity,
+            DefinitionHashes.Collectibles.Gjallarhorn,
+            DefinitionHashes.Collectibles.IzanagisBurden,
+            DefinitionHashes.Collectibles.LegendofAcrius,
+            DefinitionHashes.Collectibles.OneThousandVoices,
+            DefinitionHashes.Collectibles.OutbreakPerfected,
+            DefinitionHashes.Collectibles.Parasite,
+            DefinitionHashes.Collectibles.Riskrunner,
+            DefinitionHashes.Collectibles.SleeperSimulant,
+            DefinitionHashes.Collectibles.Taipan4fr,
+            DefinitionHashes.Collectibles.TheHothead,
+            DefinitionHashes.Collectibles.TheLament,
+            DefinitionHashes.Collectibles.TheWardcliffCoil,
+            DefinitionHashes.Collectibles.Thunderlord,
+            DefinitionHashes.Collectibles.TractorCannon,
+            DefinitionHashes.Collectibles.Witherhoard,
+            DefinitionHashes.Collectibles.Xenophage,
+            DefinitionHashes.Collectibles.AeonSafe,
+            DefinitionHashes.Collectibles.AeonSoul,
+            DefinitionHashes.Collectibles.AeonSwift,
+            DefinitionHashes.Collectibles.CelestialNighthawk,
+            DefinitionHashes.Collectibles.CuirassoftheFallingStar,
+            DefinitionHashes.Collectibles.LunafactionBoots
+        };
+
+        var importantList = new List<DestinyCollectibleDefinition>();
+        foreach (var u in importantIdList)
+            importantList.Add(
+                await bungieClient.DefinitionProvider
+                    .LoadDefinition<DestinyCollectibleDefinition>(u, BungieLocales.EN));
+
+        var i = 0;
+        var state = false;
+
+        var profileCollectibles = playerResponse.Response.ProfileCollectibles.Data.Collectibles;
+        var characterCollectibles = playerResponse.Response.CharacterCollectibles.Data.First().Value.Collectibles
+            .ToDictionary(collectible => collectible.Key, collectible => collectible.Value);
+
+        foreach (var collectibleDefinition in importantList)
+        {
+            if (profileCollectibles.ContainsKey(collectibleDefinition.Hash))
+            {
+                var item = profileCollectibles[collectibleDefinition.Hash];
+
+                if (!item.State.HasFlag(DestinyCollectibleState.NotAcquired))
+                    state = true;
+            }
+            else
+            {
+                if (characterCollectibles.ContainsKey(collectibleDefinition.Hash))
+                {
+                    var item = characterCollectibles[collectibleDefinition.Hash];
+
+                    if (!item.State.HasFlag(DestinyCollectibleState.NotAcquired))
+                        state = true;
+                }
+            }
+
+            importantCollectibles.Append(state ? '✅' : '❌');
+            importantCollectibles.Append(
+                $" - {EmoteHelper.GetItemType(collectibleDefinition.Item.Select(x => x.ItemSubType))} {collectibleDefinition.DisplayProperties.Name}\n");
+
+            i++;
+            state = false;
+
+            // ReSharper disable once InvertIf
+            if (i is 9 or 18 or 24)
+            {
+                embed.AddField("Collectibles", importantCollectibles.ToString(), i is not 24);
+                importantCollectibles.Clear();
+            }
+        }
 
         return embed.Build();
+    }
+
+    private static int GetRaidCompletions(DestinyMetricsComponent metricsData)
+    {
+        var raidList = new List<uint>
+        {
+            DefinitionHashes.Metrics.LeviathanCompletions,
+            DefinitionHashes.Metrics.EaterofWorldsCompletions,
+            DefinitionHashes.Metrics.SpireofStarsCompletions,
+            DefinitionHashes.Metrics.LastWishCompletions,
+            DefinitionHashes.Metrics.ScourgeofthePastCompletions,
+            DefinitionHashes.Metrics.CrownofSorrowCompletions,
+            DefinitionHashes.Metrics.GardenofSalvationCompletions,
+            DefinitionHashes.Metrics.DeepStoneCryptCompletions,
+            DefinitionHashes.Metrics.VaultofGlassCompletions,
+            DefinitionHashes.Metrics.VowoftheDiscipleCompletions,
+            DefinitionHashes.Metrics.KingsFallCompletions
+        };
+
+        return raidList.Where(u => metricsData.Metrics[u].ObjectiveProgress.Progress is not null)
+            .Sum(u => metricsData.Metrics[u].ObjectiveProgress.Progress!.Value);
     }
 
     private static string GetReportLink(BungieMembershipType membershipType, long membershipId, string reportType)
