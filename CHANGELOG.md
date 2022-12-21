@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.18.0]
+### Added
+- Collectibles check for `/lookup guardian` so you can see if players have acquired popular / meta weapons.
+**Bear in mind this will only apply for collections and cannot actually check if a user has said item in their inventory.**
+- Also added season rank, raid completions, triumph score and will now link to the related Bungie.Net profile.
+
+### Changed
+- Sites full names in guardian lookup.
+
 ## [6.17.2]
 ### Changed
 - Fixed an issue where UserCannotResolveCentralAccount would crash the command.
