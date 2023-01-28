@@ -112,7 +112,7 @@ public static class ClarityParser
 
         using var httpClient = new HttpClient();
         var json = await httpClient.GetStringAsync(
-            "https://raw.githubusercontent.com/Ice-mourne/database-clarity/main/descriptions/crayon.json");
+            "https://raw.githubusercontent.com/Database-Clarity/Live-Clarity-Database/live/descriptions/crayon.json");
 
         _clarityDb = JsonConvert.DeserializeObject<Dictionary<string, Clarity>>(json, Converter.Settings);
 
