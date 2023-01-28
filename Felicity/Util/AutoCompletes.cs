@@ -224,3 +224,34 @@ public class RollFinderAutocomplete : AutocompleteHandler
             : autocompleteList.OrderBy(x => x.Name).Take(25));
     }
 }
+
+public class CheckpointAutocomplete : AutocompleteHandler
+{
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter, IServiceProvider services)
+    {
+        await Task.Delay(0);
+
+        var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
+
+        var checkpointList = await CheckpointParser.Fetch();
+        if (checkpointList == null)
+            return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful,
+                "Failed to fetch checkpoint list.");
+        // WHY AM I REQUIRED TO INCLUDE A REASON WHEN DISCORD
+        // HAS BEEN IGNORING THIS PARAMETER EVER SINCE THE RELEASE OF AUTO-COMPLETES???
+
+        var autocompleteList = new List<AutocompleteResult>();
+        if (string.IsNullOrEmpty(currentSearch))
+            autocompleteList.AddRange(checkpointList.Official.Select(officialCp =>
+                new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}", officialCp.DisplayOrder)));
+        else
+            autocompleteList.AddRange(from officialCp in checkpointList.Official
+                where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
+                select new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}", officialCp.DisplayOrder));
+
+        return AutocompletionResult.FromSuccess(string.IsNullOrEmpty(currentSearch)
+            ? autocompleteList : autocompleteList.OrderBy(x => x.Name));
+    }
+}
