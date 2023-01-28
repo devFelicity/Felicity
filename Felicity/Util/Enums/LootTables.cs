@@ -32,7 +32,8 @@ public enum Armor
     Chest,
     Boots,
     Class,
-    Everything
+    Everything,
+    None
 }
 
 public enum Encounter
@@ -369,6 +370,50 @@ public static class LootTables
                     {
                         DefinitionHashes.InventoryItems.ChatteringBone,
                         DefinitionHashes.InventoryItems.GlitteringKey
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
+            ActivityType = ActivityType.Dungeon, Name = "Spire of the Watcher",
+            Description = "Machinations run wild in this dust-ridden ruin. Bring them to heel.",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Ascend the Spire",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.LongArm,
+                        DefinitionHashes.InventoryItems.SeventhSeraphCarbine_4070357005,
+                        DefinitionHashes.InventoryItems.TerminusHorizon
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Silence the Spire",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.SeventhSeraphOfficerRevolver_1555959830,
+                        DefinitionHashes.InventoryItems.TerminusHorizon
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Persys, Primordial Ruin",
+                    LootIds = new List<uint>
+                    {
+                        
+                        DefinitionHashes.InventoryItems.LiminalVigil,
+                        DefinitionHashes.InventoryItems.LongArm,
+                        DefinitionHashes.InventoryItems.SeventhSeraphCarbine_4070357005,
+                        DefinitionHashes.InventoryItems.SeventhSeraphOfficerRevolver_1555959830,
+                        DefinitionHashes.InventoryItems.TerminusHorizon,
+                        DefinitionHashes.InventoryItems.Wilderflight,
+                        (uint)Armor.Everything
                     }
                 }
             }
