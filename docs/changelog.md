@@ -8,6 +8,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.19.0]
+### Added
+- d2checkpoint.com commands.
+
+### Changed
+- Update libs.
+- Update Clarity db.
+
+## [6.18.1]
+### Added
+- Spire of the Watcher loot table.
+
+## [6.18.0]
+### Added
+- Collectibles check for `/lookup guardian` so you can see if players have acquired popular / meta weapons.
+**Bear in mind this will only apply for collections and cannot actually check if a user has said item in their inventory.**
+- Also added season rank, raid completions, triumph score and will now link to the related Bungie.Net profile.
+
+### Changed
+- Sites full names in guardian lookup.
+
+## [6.17.2]
+### Changed
+- Fixed an issue where UserCannotResolveCentralAccount would crash the command.
+- Fixed an issue where certain commands through DMs would crash.
+
+## [6.17.1]
+### Changed
+- Fixed accidental deletion of the most important part of the command.
+
+## [6.17.0]
+### Added
+- Bungie API checks to allow more understandable errors.
+
+## [6.16.0]
+### Added
+- Season 19 (Worthy 2.0) weapon rolls.
+
+## [6.15.0]
+### Changed
+- Updates for S19
+
+## [6.14.3]
+### Removed
+- Removed invisible crafted weapon patterns due to them not being in the game yet, promise I'll respect the visibility next time.
+
+## [6.14.2]
+### Changed
+- Fixed an issue where Twitch usernames with underscores would break URLs in message content.
+
+## [6.14.1]
+### Changed
+- Fixed an issue where War Table deepsight being claimed will crash /recipes.
+- Added ticks for better /recipes readability.
+
+## [6.14.0]
+### Added
+- A little money bag to the /recipes command if you can currently buy a deepsight from the vendors.
+
 ## [6.13.3]
 ### Changed
 - Fixed an issue causing Saint-14 command to crash.
