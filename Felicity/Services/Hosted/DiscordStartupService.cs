@@ -126,6 +126,15 @@ public class DiscordStartupService : BackgroundService
 
     private static async Task OnLeftGuild(SocketGuild arg)
     {
+        var buggedServers = new List<ulong>()
+        {
+            260978723455631373,
+            1068135541360578590
+        };
+
+        if (buggedServers.Contains(arg.Id))
+            return;
+
         var embed = Embeds.MakeBuilder();
         embed.Author = new EmbedAuthorBuilder
         {
