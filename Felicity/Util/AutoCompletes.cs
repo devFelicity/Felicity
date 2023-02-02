@@ -244,8 +244,8 @@ public class CheckpointAutocomplete : AutocompleteHandler
 
         var autocompleteList = new List<AutocompleteResult>();
         if (string.IsNullOrEmpty(currentSearch))
-            autocompleteList.AddRange(checkpointList.Official.Select(officialCp =>
-                new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}", officialCp.DisplayOrder)));
+            autocompleteList.AddRange(checkpointList.Official?.Select(officialCp =>
+                new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}", officialCp.DisplayOrder)) ?? Array.Empty<AutocompleteResult>());
         else
             autocompleteList.AddRange(from officialCp in checkpointList.Official
                 where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
