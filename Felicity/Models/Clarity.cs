@@ -37,37 +37,37 @@ public class Clarity
 public class Stats
 {
     [JsonProperty("damage", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Damage { get; set; }
+    public Stat[]? Damage { get; set; }
 
     [JsonProperty("range", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Range { get; set; }
+    public Stat[]? Range { get; set; }
 
     [JsonProperty("handling", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Handling { get; set; }
+    public Stat[]? Handling { get; set; }
 
     [JsonProperty("reload", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Reload { get; set; }
+    public Stat[]? Reload { get; set; }
 
     [JsonProperty("stability", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Stability { get; set; }
+    public Stat[]? Stability { get; set; }
 
     [JsonProperty("aimAssist", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? AimAssist { get; set; }
+    public Stat[]? AimAssist { get; set; }
 
     [JsonProperty("chargeDraw", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? ChargeDraw { get; set; }
+    public Stat[]? ChargeDraw { get; set; }
 
     [JsonProperty("chargeDrawTime", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? ChargeDrawTime { get; set; }
+    public Stat[]? ChargeDrawTime { get; set; }
 
     [JsonProperty("draw", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Draw { get; set; }
+    public Stat[]? Draw { get; set; }
 
     [JsonProperty("zoom", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Zoom { get; set; }
+    public Stat[]? Zoom { get; set; }
 
     [JsonProperty("stow", NullValueHandling = NullValueHandling.Ignore)]
-    public StatType? Stow { get; set; }
+    public Stat[]? Stow { get; set; }
 }
 
 public class StatType
@@ -89,11 +89,28 @@ public class Stat
 
 public enum TypeEnum
 {
-    ArmorExotic,
+    ArmorModActivity,
+    ArmorModGeneral,
+    ArmorPerkExotic,
+    SubclassClass,
+    SubclassFragment,
+    SubclassGrenade,
+    SubclassMelee,
+    SubclassMovement,
+    SubclassSuper,
+    TypeWeaponCatalystExotic,
+    TypeWeaponFrame,
+    TypeWeaponFrameExotic,
+    TypeWeaponMod,
+    TypeWeaponPerkEnhanced,
+    WeaponCatalystExotic,
+    WeaponFrame,
+    WeaponFrameExotic,
     WeaponMod,
     WeaponOriginTrait,
     WeaponPerk,
-    WeaponPerkEnhanced
+    WeaponPerkEnhanced,
+    WeaponPerkExotic
 }
 
 public static class ClarityParser
@@ -173,11 +190,28 @@ internal class TypeEnumConverter : JsonConverter
         var value = serializer.Deserialize<string>(reader);
         return value switch
         {
-            "armorExotic" => TypeEnum.ArmorExotic,
-            "weaponMod" => TypeEnum.WeaponMod,
-            "weaponOriginTrait" => TypeEnum.WeaponOriginTrait,
-            "weaponPerk" => TypeEnum.WeaponPerk,
-            "weaponPerkEnhanced" => TypeEnum.WeaponPerkEnhanced,
+            "Armor Mod Activity" => TypeEnum.ArmorModActivity,
+            "Armor Mod General" => TypeEnum.ArmorModGeneral,
+            "Armor Perk Exotic" => TypeEnum.ArmorPerkExotic,
+            "Subclass Class" => TypeEnum.SubclassClass,
+            "Subclass Fragment" => TypeEnum.SubclassFragment,
+            "Subclass Grenade" => TypeEnum.SubclassGrenade,
+            "Subclass Melee" => TypeEnum.SubclassMelee,
+            "Subclass Movement" => TypeEnum.SubclassMovement,
+            "Subclass Super" => TypeEnum.SubclassSuper,
+            "Weapon Catalyst Exotic" => TypeEnum.WeaponCatalystExotic,
+            "Weapon Frame" => TypeEnum.WeaponFrame,
+            "Weapon Frame Exotic" => TypeEnum.WeaponFrameExotic,
+            "Weapon Mod" => TypeEnum.WeaponMod,
+            "Weapon Origin Trait" => TypeEnum.WeaponOriginTrait,
+            "Weapon Perk" => TypeEnum.WeaponPerk,
+            "Weapon Perk Enhanced" => TypeEnum.WeaponPerkEnhanced,
+            "Weapon Perk Exotic" => TypeEnum.WeaponPerkExotic,
+            "weaponCatalystExotic" => TypeEnum.TypeWeaponCatalystExotic,
+            "weaponFrame" => TypeEnum.TypeWeaponFrame,
+            "weaponFrameExotic" => TypeEnum.TypeWeaponFrameExotic,
+            "weaponMod" => TypeEnum.TypeWeaponMod,
+            "weaponPerkEnhanced" => TypeEnum.TypeWeaponPerkEnhanced,
             _ => throw new Exception("Cannot un-marshal type TypeEnum")
         };
     }
@@ -193,19 +227,70 @@ internal class TypeEnumConverter : JsonConverter
         var value = (TypeEnum)untypedValue;
         switch (value)
         {
-            case TypeEnum.ArmorExotic:
-                serializer.Serialize(writer, "armorExotic");
+            case TypeEnum.ArmorModActivity:
+                serializer.Serialize(writer, "Armor Mod Activity");
+                return;
+            case TypeEnum.ArmorModGeneral:
+                serializer.Serialize(writer, "Armor Mod General");
+                return;
+            case TypeEnum.ArmorPerkExotic:
+                serializer.Serialize(writer, "Armor Perk Exotic");
+                return;
+            case TypeEnum.SubclassClass:
+                serializer.Serialize(writer, "Subclass Class");
+                return;
+            case TypeEnum.SubclassFragment:
+                serializer.Serialize(writer, "Subclass Fragment");
+                return;
+            case TypeEnum.SubclassGrenade:
+                serializer.Serialize(writer, "Subclass Grenade");
+                return;
+            case TypeEnum.SubclassMelee:
+                serializer.Serialize(writer, "Subclass Melee");
+                return;
+            case TypeEnum.SubclassMovement:
+                serializer.Serialize(writer, "Subclass Movement");
+                return;
+            case TypeEnum.SubclassSuper:
+                serializer.Serialize(writer, "Subclass Super");
+                return;
+            case TypeEnum.WeaponCatalystExotic:
+                serializer.Serialize(writer, "Weapon Catalyst Exotic");
+                return;
+            case TypeEnum.WeaponFrame:
+                serializer.Serialize(writer, "Weapon Frame");
+                return;
+            case TypeEnum.WeaponFrameExotic:
+                serializer.Serialize(writer, "Weapon Frame Exotic");
                 return;
             case TypeEnum.WeaponMod:
-                serializer.Serialize(writer, "weaponMod");
+                serializer.Serialize(writer, "Weapon Mod");
                 return;
             case TypeEnum.WeaponOriginTrait:
-                serializer.Serialize(writer, "weaponOriginTrait");
+                serializer.Serialize(writer, "Weapon Origin Trait");
                 return;
             case TypeEnum.WeaponPerk:
-                serializer.Serialize(writer, "weaponPerk");
+                serializer.Serialize(writer, "Weapon Perk");
                 return;
             case TypeEnum.WeaponPerkEnhanced:
+                serializer.Serialize(writer, "Weapon Perk Enhanced");
+                return;
+            case TypeEnum.WeaponPerkExotic:
+                serializer.Serialize(writer, "Weapon Perk Exotic");
+                return;
+            case TypeEnum.TypeWeaponCatalystExotic:
+                serializer.Serialize(writer, "weaponCatalystExotic");
+                return;
+            case TypeEnum.TypeWeaponFrame:
+                serializer.Serialize(writer, "weaponFrame");
+                return;
+            case TypeEnum.TypeWeaponFrameExotic:
+                serializer.Serialize(writer, "weaponFrameExotic");
+                return;
+            case TypeEnum.TypeWeaponMod:
+                serializer.Serialize(writer, "weaponMod");
+                return;
+            case TypeEnum.TypeWeaponPerkEnhanced:
                 serializer.Serialize(writer, "weaponPerkEnhanced");
                 return;
             default:

@@ -17,13 +17,22 @@ public class CheckpointParser
         var json = await httpClient.GetStringAsync(
             "https://d2cp.io/platform/checkpoints?v=2");
 
-        return JsonConvert.DeserializeObject<Checkpoints>(json, Converter.Settings);
+        try
+        {
+            return JsonConvert.DeserializeObject<Checkpoints>(json, Converter.Settings);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return null;
     }
 }
 
 public class Checkpoints
 {
-    [JsonPropertyName("official")] public Official[] Official { get; set; }
+    [JsonPropertyName("official")] public Official[]? Official { get; set; }
 
     [JsonPropertyName("community")] public object Community { get; set; }
 
