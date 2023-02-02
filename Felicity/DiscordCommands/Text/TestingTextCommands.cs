@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using Discord;
 using Discord.Commands;
@@ -39,7 +39,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     {
         var sb = new StringBuilder();
 
-        foreach (var socketGuild in Context.Client.Guilds) 
+        foreach (var socketGuild in Context.Client.Guilds)
             sb.Append($"{socketGuild.Id} - {socketGuild.Name}\n");
 
         await File.WriteAllTextAsync("serverList.txt", sb.ToString());
@@ -69,9 +69,10 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 
         var returnString = new StringBuilder();
 
+        // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         switch (clarityValue?.Type)
         {
-            case TypeEnum.ArmorExotic:
+            case TypeEnum.ArmorPerkExotic:
                 returnString.Append(
                     $"**Name:** {clarityValue.Name} ({clarityValue.Hash})\n**Item:** {clarityValue.ItemName} ({clarityValue.ItemHash})\n{Format.Code(clarityValue.Description?.ClarityClean())}");
                 break;
@@ -118,7 +119,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
     {
         var serverList = Context.Client.Guilds;
 
-        try
+        /*try
         {
             await Context.Client.DownloadUsersAsync(serverList);
         }
@@ -138,7 +139,9 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 
             if (!userList.Contains(clientGuildUser.Id))
                 userList.Add(clientGuildUser.Id);
-        }
+        }*/
+
+        var userCount = serverList.Aggregate(0, (current, server) => current + server.Users.Count);
 
         var manifest = await _bungieClient.DefinitionProvider.GetCurrentManifest();
         var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
@@ -152,7 +155,7 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         embed.AddField("Bot Version", BotVariables.Version, true);
         embed.AddField("Bot Uptime", uptime.Humanize(), true);
         embed.AddField("Discord Servers", $"{serverList.Count:n0}", true);
-        embed.AddField("Discord Users", $"{userList.Count:n0}", true);
+        embed.AddField("Discord Users", $"{userCount:n0}", true);
         embed.AddField("Streams", _twitchStreamDb.TwitchStreams.ToList().Count, true);
         embed.AddField("Registered Users", $"{_userDb.Users.ToList().Count:n0}", true);
         embed.AddField("Manifest Version", manifest.Version, true);
