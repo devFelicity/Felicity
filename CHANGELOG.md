@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.19.2]
+### Changed
+- Fixed checkpoint API returning null causing command to crash.
+- Fix clarity changes causing mods command to crash.
+- Removed unnecessary loop causing mods command to run for longer than it needed.
+
 ## [6.19.1]
 ### Changed
 - Backend logging ugly fix.

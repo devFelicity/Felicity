@@ -34,7 +34,7 @@ public class CheckpointCommands : InteractionModuleBase<ShardedInteractionContex
 
         var sb = new StringBuilder();
 
-        if (checkpointList != null)
+        if (checkpointList?.Official != null)
             foreach (var officialCp in checkpointList.Official)
                 sb.Append(
                     $"{Format.Bold(officialCp.Activity)} - {officialCp.Encounter} [{officialCp.Players}/{officialCp.MaxPlayers}]" +
@@ -54,9 +54,10 @@ public class CheckpointCommands : InteractionModuleBase<ShardedInteractionContex
 
         var checkpointList = await CheckpointParser.Fetch();
 
-        var failed = checkpointList == null;
+        // ReSharper disable once MergeSequentialChecks
+        var failed = checkpointList == null && checkpointList?.Official != null;
 
-        var currentCheckpoint = checkpointList?.Official.FirstOrDefault(x => x.DisplayOrder == displayOrder);
+        var currentCheckpoint = checkpointList?.Official?.FirstOrDefault(x => x.DisplayOrder == displayOrder);
         if (currentCheckpoint == null) failed = true;
 
         if (failed)

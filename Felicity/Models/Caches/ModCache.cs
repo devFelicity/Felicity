@@ -150,8 +150,6 @@ public static class ProcessModData
     {
         modCache.ModInventory?.Add(vendor.ToString(), new List<Mod>());
 
-        var manifestItems = new List<DestinyInventoryItemDefinition>();
-
         foreach (var saleItemsValue in salesData[vendor].SaleItems.Values)
         {
             if (saleItemsValue.Item.Hash == null)
@@ -160,45 +158,21 @@ public static class ProcessModData
             bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
                 (uint)saleItemsValue.Item.Hash, lg, out var manifestItem);
 
-            manifestItems.Add(manifestItem);
-        }
-
-        var manifestPerks = new List<DestinySandboxPerkDefinition>();
-        foreach (var destinyInventoryItemDefinition in manifestItems.Where(destinyInventoryItemDefinition =>
-                     destinyInventoryItemDefinition.ItemType == DestinyItemType.Mod))
-        {
-            bungieClient.Repository.TryGetDestinyDefinition<DestinySandboxPerkDefinition>(
-                (uint)destinyInventoryItemDefinition.Perks.First().Perk.Hash!, lg, out var result);
-
-            manifestPerks.Add(result);
-        }
-
-        var i = 0;
-        var j = 0;
-
-        foreach (var (_, value) in salesData[vendor].SaleItems)
-        {
-            var item = manifestItems[i];
-
-            if (item.ItemType != DestinyItemType.Mod)
-            {
-                i++;
+            if (manifestItem.ItemType != DestinyItemType.Mod)
                 continue;
-            }
 
-            var modInfo = manifestPerks[j];
+            bungieClient.Repository.TryGetDestinyDefinition<DestinySandboxPerkDefinition>(
+                (uint)manifestItem.Perks.First().Perk.Hash!, lg, out var result);
 
             modCache.ModInventory![vendor.ToString()].Add(new Mod
             {
-                Name = modInfo.DisplayProperties.Name,
-                Description = modInfo.DisplayProperties.Description,
-                Id = (uint)value.Item.Hash!
+                Name = result.DisplayProperties.Name,
+                Description = result.DisplayProperties.Description,
+                Id = (uint)saleItemsValue.Item.Hash!
             });
 
-            j++;
-            i++;
         }
-
+        
         return Task.FromResult(modCache);
     }
 }
