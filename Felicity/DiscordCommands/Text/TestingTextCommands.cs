@@ -229,4 +229,21 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
 
         await Context.Channel.SendFileAsync("tmp.txt", "");
     }
+
+    [Command("updateManifest")]
+    public async Task UpdateManifest()
+    {
+        var msg = await ReplyAsync("Checking for manifest updates...");
+
+        if (await _bungieClient.DefinitionProvider.CheckForUpdates())
+        {
+            await msg.ModifyAsync(x => x.Content = "Update found, updating...");
+            await _bungieClient.DefinitionProvider.Update();
+            await msg.ModifyAsync(x => x.Content = "Done.");
+        }
+        else
+        {
+            await msg.ModifyAsync(x => x.Content = "No update found.");
+        }
+    }
 }

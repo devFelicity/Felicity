@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.19.4]
+### Added
+- Backend method for updating manifest without needing to restart the bot.
+
+### Changed
+- Error handler now shows how to fix "Refresh token has expired" error.
+- Epicurean and Fixed Odds no longer show as purchasable from vendors.
+
 ## [6.19.3]
 ### Changed
 - Updated NuGets

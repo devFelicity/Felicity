@@ -217,7 +217,10 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     }
 
                     if ((source is "Plunder" && plunderDeepsight) ||
-                        (source is "Haunted" or "Opulent" && crownDeepsight) ||
+                        (source is "Haunted" or "Opulent" &&
+                         weaponId != DefinitionHashes.Records.FixedOdds &&
+                         weaponId != DefinitionHashes.Records.TheEpicurean &&
+                         crownDeepsight) ||
                         (source is "Risen" && risenDeepsight))
                     {
                         if (field.Value.ToString()!.Contains("⚠️"))
