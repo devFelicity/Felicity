@@ -8,6 +8,27 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonDefiance, new List<uint>
+            {
+                DefinitionHashes.Records.Perpetualis,
+                DefinitionHashes.Records.Raconteur,
+                DefinitionHashes.Records.RoyalExecutioner,
+                DefinitionHashes.Records.ProdigalReturn,
+                DefinitionHashes.Records.Regnant,
+                DefinitionHashes.Records.MarsilionC,
+                DefinitionHashes.Records.Caretaker_3171877617
+            }
+        },
+        {
+            CraftSource.Lightfall, new List<uint>
+            {
+                DefinitionHashes.Records.RoundRobin_2839479882,
+                DefinitionHashes.Records.PhyllotacticSpiral,
+                DefinitionHashes.Records.IterativeLoop,
+                DefinitionHashes.Records.VoltaBracket
+            }
+        },
+        {
             CraftSource.SeasonSeraph, new List<uint>
             {
                 DefinitionHashes.Records.Disparity,
@@ -92,7 +113,7 @@ internal static class Craftables
             CraftSource.Opulent, new List<uint>
             {
                 DefinitionHashes.Records.Austringer,
-                DefinitionHashes.Records.Beloved,
+                DefinitionHashes.Records.Beloved_662547074,
                 DefinitionHashes.Records.CALUSMiniTool,
                 DefinitionHashes.Records.DrangBaroque,
                 DefinitionHashes.Records.FixedOdds,
@@ -153,12 +174,33 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
         {
+            CraftSource.SeasonDefiance, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Perpetualis_392008588,
+                DefinitionHashes.InventoryItems.Raconteur_45643573,
+                DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
+                DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
+                DefinitionHashes.InventoryItems.Regnant_268260372,
+                DefinitionHashes.InventoryItems.MarsilionC_867154247,
+                DefinitionHashes.InventoryItems.Caretaker_2508948099
+            }
+        },
+        {
+            CraftSource.Lightfall, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.RoundRobin_2034215657,
+                DefinitionHashes.InventoryItems.PhyllotacticSpiral_3635821806,
+                DefinitionHashes.InventoryItems.IterativeLoop_1289796511,
+                DefinitionHashes.InventoryItems.VoltaBracket_3920310144
+            }
+        },
+        {
             CraftSource.SeasonSeraph, new List<uint>
             {
                 DefinitionHashes.InventoryItems.Disparity_1751893422,
                 DefinitionHashes.InventoryItems.FireandForget_2272041093,
                 DefinitionHashes.InventoryItems.IKELOS_HC_v103_1731355324,
-                DefinitionHashes.InventoryItems.IKELOS_SG_v103_1168625549,
+                DefinitionHashes.InventoryItems.IKELOS_SG_v103,
                 DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
                 DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
                 DefinitionHashes.InventoryItems.JudgmentofKelgorath_2978226043,
@@ -302,7 +344,7 @@ internal static class Craftables
             DefinitionHashes.Records.TearsofContrition => DefinitionHashes.InventoryItems.TearsofContrition_1366394399,
             DefinitionHashes.Records.WithoutRemorse => DefinitionHashes.InventoryItems.WithoutRemorse_1478986057,
             DefinitionHashes.Records.Austringer => DefinitionHashes.InventoryItems.Austringer_3055790362,
-            DefinitionHashes.Records.Beloved => DefinitionHashes.InventoryItems.Beloved_3107853529,
+            DefinitionHashes.Records.Beloved_662547074 => DefinitionHashes.InventoryItems.Beloved_3107853529,
             DefinitionHashes.Records.CALUSMiniTool => DefinitionHashes.InventoryItems.CALUSMiniTool_2490988246,
             DefinitionHashes.Records.DrangBaroque => DefinitionHashes.InventoryItems.DrangBaroque_502356570,
             DefinitionHashes.Records.FixedOdds => DefinitionHashes.InventoryItems.FixedOdds_2194955522,
@@ -339,10 +381,6 @@ internal static class Craftables
             DefinitionHashes.Records.TheEnigma => DefinitionHashes.InventoryItems.TheEnigma_2595497736,
             DefinitionHashes.Records.AmmitAR2 => DefinitionHashes.InventoryItems.AmmitAR2_2119346509,
             DefinitionHashes.Records.Taipan4fr => DefinitionHashes.InventoryItems.Taipan4fr_1911060537,
-            DefinitionHashes.Records.ImperialDecree => DefinitionHashes.InventoryItems.ImperialDecree,
-            DefinitionHashes.Records.Goldtusk => DefinitionHashes.InventoryItems.Goldtusk,
-            DefinitionHashes.Records.DeathsRazor => DefinitionHashes.InventoryItems.DeathsRazor,
-            DefinitionHashes.Records.ThroneCleaver => DefinitionHashes.InventoryItems.ThroneCleaver,
             DefinitionHashes.Records.BxR55Battler => DefinitionHashes.InventoryItems.BxR55Battler_2708806099,
             DefinitionHashes.Records.PardonOurDust => DefinitionHashes.InventoryItems.PardonOurDust_3849810018,
             DefinitionHashes.Records.WastelanderM5 => DefinitionHashes.InventoryItems.WastelanderM5_1679868061,
@@ -361,6 +399,33 @@ internal static class Craftables
             DefinitionHashes.Records.QullimsTerminus => DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
             DefinitionHashes.Records.SmiteofMerain => DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
             DefinitionHashes.Records.ZaoulisBane => DefinitionHashes.InventoryItems.ZaoulisBane_431721920,
+            DefinitionHashes.Records.Perpetualis => DefinitionHashes.InventoryItems.Perpetualis_392008588,
+            DefinitionHashes.Records.Raconteur => DefinitionHashes.InventoryItems.Raconteur_45643573,
+            DefinitionHashes.Records.RoyalExecutioner => DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
+            DefinitionHashes.Records.ProdigalReturn => DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
+            DefinitionHashes.Records.Regnant => DefinitionHashes.InventoryItems.Regnant_268260372,
+            DefinitionHashes.Records.MarsilionC => DefinitionHashes.InventoryItems.MarsilionC_867154247,
+            DefinitionHashes.Records.Caretaker_3171877617 => DefinitionHashes.InventoryItems.Caretaker_2508948099,
+            DefinitionHashes.Records.RoundRobin_2839479882 => DefinitionHashes.InventoryItems.RoundRobin_2034215657,
+            DefinitionHashes.Records.PhyllotacticSpiral => DefinitionHashes.InventoryItems.PhyllotacticSpiral_3635821806,
+            DefinitionHashes.Records.IterativeLoop => DefinitionHashes.InventoryItems.IterativeLoop_1289796511,
+            DefinitionHashes.Records.VoltaBracket => DefinitionHashes.InventoryItems.VoltaBracket_3920310144,
+            DefinitionHashes.Records.Disparity => DefinitionHashes.InventoryItems.Disparity_1751893422,
+            DefinitionHashes.Records.FireandForget => DefinitionHashes.InventoryItems.FireandForget_2272041093,
+            DefinitionHashes.Records.IKELOS_HC_v103 => DefinitionHashes.InventoryItems.IKELOS_HC_v103_1731355324,
+            DefinitionHashes.Records.IKELOS_SG_v103 => DefinitionHashes.InventoryItems.IKELOS_SG_v103,
+            DefinitionHashes.Records.IKELOS_SMG_v103 => DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
+            DefinitionHashes.Records.IKELOS_SR_v103 => DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
+            DefinitionHashes.Records.JudgmentofKelgorath => DefinitionHashes.InventoryItems.JudgmentofKelgorath_2978226043,
+            DefinitionHashes.Records.PathofLeastResistance => DefinitionHashes.InventoryItems.PathofLeastResistance_2827764482,
+            DefinitionHashes.Records.RetrofitEscapade => DefinitionHashes.InventoryItems.RetrofitEscapade_3103325054,
+            DefinitionHashes.Records.TripwireCanary => DefinitionHashes.InventoryItems.TripwireCanary_3849444474,
+            DefinitionHashes.Records.Bequest => DefinitionHashes.InventoryItems.Bequest_3366545721,
+            DefinitionHashes.Records.Commemoration => DefinitionHashes.InventoryItems.Commemoration_4230965989,
+            DefinitionHashes.Records.Heritage => DefinitionHashes.InventoryItems.Heritage_4248569242,
+            DefinitionHashes.Records.Posterity => DefinitionHashes.InventoryItems.Posterity_3281285075,
+            DefinitionHashes.Records.Succession => DefinitionHashes.InventoryItems.Succession_2990047042,
+            DefinitionHashes.Records.Trustee => DefinitionHashes.InventoryItems.Trustee_1392919471,
             _ => 0
         };
     }
@@ -388,12 +453,14 @@ internal static class Craftables
         public const string Anniversary = "30th Anniversary";
         public const string DeepStoneCrypt = "Deep Stone Crypt";
         public const string KingsFall = "Kings Fall";
+        public const string Lightfall = "Lightfall";
         public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
         public const string SeasonHaunted = "Haunted";
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";
         public const string SeasonSeraph = "Seraph";
+        public const string SeasonDefiance = "Defiance";
         public const string Unknown = "Quest / Unknown";
         public const string Wq = "Witch Queen";
         public const string WqWellspring = "Wellspring";

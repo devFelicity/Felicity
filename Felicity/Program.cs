@@ -6,6 +6,7 @@ using DotNetBungieAPI.DefinitionProvider.Sqlite;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Applications;
+using DotNetBungieAPI.Models.Destiny;
 using Felicity.Extensions;
 using Felicity.Models;
 using Felicity.Options;
@@ -81,7 +82,8 @@ try
         .AddDiscord(
             discordClient =>
             {
-                discordClient.GatewayIntents = GatewayIntents.AllUnprivileged;
+                discordClient.GatewayIntents = GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildInvites &
+                                               ~GatewayIntents.GuildScheduledEvents;
                 discordClient.AlwaysDownloadUsers = false;
             },
             _ => { },
@@ -115,6 +117,13 @@ try
                 });
             bungieClient.DotNetBungieApiHttpClient.ConfigureDefaultHttpClient(options =>
                 options.SetRateLimitSettings(190, TimeSpan.FromSeconds(10)));
+            bungieClient.DefinitionRepository.ConfigureDefaultRepository(x =>
+            {
+                var defToIgnore = Enum.GetValues<DefinitionsEnum>()
+                    .FirstOrDefault(y => y == DefinitionsEnum.DestinyTraitCategoryDefinition);
+
+                x.IgnoreDefinitionType(defToIgnore);
+            });
         })
         .AddHostedService<BungieClientStartupService>()
         .AddSingleton<LogAdapter<BaseSocketClient>>();

@@ -62,6 +62,7 @@ public enum WeaponSource
     Leviathan,
     Event,
     KingsFall,
+    Lightfall,
     SeasonalHunt = 112,
     SeasonalChosen = 113,
     SeasonalSplicer = 114,
@@ -69,7 +70,8 @@ public enum WeaponSource
     SeasonalRisen = 116,
     SeasonalHaunted = 117,
     SeasonalPlunder = 118,
-    SeasonalSeraph = 119
+    SeasonalSeraph = 119,
+    SeasonalDefiance = 120
 }
 
 public static class ProcessRollData

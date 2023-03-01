@@ -36,6 +36,7 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
     public async Task UserRemove()
     {
         await DeferAsync(true);
+
         var embed = Embeds.MakeBuilder();
 
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
@@ -55,6 +56,6 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
             embed.Description = "You are not currently registered with Felicity.";
         }
 
-        await RespondAsync(embed: embed.Build(), ephemeral: true);
+        await FollowupAsync(embed: embed.Build(), ephemeral: true);
     }
 }

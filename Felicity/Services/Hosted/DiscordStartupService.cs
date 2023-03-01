@@ -53,7 +53,6 @@ public class DiscordStartupService : BackgroundService
             _discordShardedClient.ShardDisconnected += OnShardDisconnected;
 
             _discordShardedClient.MessageReceived += OnMessageReceived;
-            _discordShardedClient.MessageUpdated += OnMessageUpdated;
 
             _discordShardedClient.JoinedGuild += OnJoinedGuild;
             _discordShardedClient.LeftGuild += OnLeftGuild;
@@ -145,12 +144,6 @@ public class DiscordStartupService : BackgroundService
             embed.Title = arg.Name;
 
         await BotVariables.DiscordLogChannel!.SendMessageAsync(embed: embed.Build());
-    }
-
-    private static Task OnMessageUpdated(Cacheable<IMessage, ulong> arg1, SocketMessage arg2,
-        ISocketMessageChannel arg3)
-    {
-        return Task.CompletedTask;
     }
 
     private static async Task OnSlashCommandExecuted(SlashCommandInfo arg1, IInteractionContext arg2, IResult result)

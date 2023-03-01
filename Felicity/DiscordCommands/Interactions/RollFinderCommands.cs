@@ -84,8 +84,13 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
 
         embed.ThumbnailUrl = weaponDefinition.DisplayProperties.Icon.AbsolutePath;
 
-        var gunsmithLink =
-            $"https://d2gunsmith.com/w/{requestedRoll.First().WeaponId}?s={string.Join(",", requestedRoll.First().WeaponPerks)}";
+        var perks = string.Empty;
+
+        for (var i = 0; i < requestedRoll.First().WeaponPerks.Count - 1; i++)
+            perks += $"{requestedRoll.First().WeaponPerks[i]},";
+
+        var foundryLink =
+            $"https://d2foundry.gg/w/{requestedRoll.First().WeaponId}?p={perks.TrimEnd(',')}&m=0&mw={requestedRoll.First().WeaponPerks.Last()}";
 
         embed.Description =
             $"This is the recommended {Format.Bold(gameMode == 0 ? "PvE" : "PvP")} roll for {Format.Bold(weaponDefinition.DisplayProperties.Name)}.\n" +
@@ -102,7 +107,7 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
             embed.AddField(requestedRoll.Count != 1 ? $"Recommended roll {i + 1}" : "Why should you pick this roll?",
                 $"> {requestedRoll[i].Reason}", true);
             embed.AddField("Perks", GetPerkList(requestedRoll[i]), true);
-            embed.AddField("D2Gunsmith Link", $"[Click Here]({gunsmithLink})", true);
+            embed.AddField("Foundry Link", $"[Click Here]({foundryLink})", true);
         }
 
         await FollowupAsync(embed: embed.Build());

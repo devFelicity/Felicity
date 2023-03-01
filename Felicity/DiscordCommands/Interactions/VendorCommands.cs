@@ -89,7 +89,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         }
     }
 
-    [SlashCommand("mods", "Get list of mods currently available at vendors.")]
+    /*[SlashCommand("mods", "Get list of mods currently available at vendors.")]
     public async Task Mods()
     {
         if (!await BungieApiUtils.CheckApi(_bungieClient))
@@ -110,7 +110,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         var modCache = await ProcessModData.FetchInventory(_bungieClient, lg, user);
 
         await FollowupAsync(embed: await ProcessModData.BuildEmbed(_bungieClient, modCache, user));
-    }
+    }*/
 
     [SlashCommand("saint14", "Fetch Saint-14 (Trials of Osiris) reputation rewards for the week.")]
     public async Task Saint14()
@@ -155,7 +155,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(0).ItemIndexes;
+        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(1).ItemIndexes;
 
         var embed = Embeds.MakeBuilder();
         embed.Color = Color.Purple;
