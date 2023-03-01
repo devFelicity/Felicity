@@ -16,8 +16,8 @@ internal static class Craftables
                 DefinitionHashes.Records.MarsilionC,
                 DefinitionHashes.Records.Perpetualis,
                 DefinitionHashes.Records.ProdigalReturn,
-                DefinitionHashes.Records.Raconteur,
-                DefinitionHashes.Records.RazorsEdge,
+                DefinitionHashes.Records.Raconteur, 
+                DefinitionHashes.Records.DeathsRazor,
                 DefinitionHashes.Records.Regnant,
                 DefinitionHashes.Records.RoyalExecutioner,
                 DefinitionHashes.Records.ThroneCleaver
