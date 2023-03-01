@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
@@ -155,7 +155,7 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(0).ItemIndexes;
+        var repRewards = vendorData.Response.Categories.Data.Categories.ElementAt(1).ItemIndexes;
 
         var embed = Embeds.MakeBuilder();
         embed.Color = Color.Purple;
