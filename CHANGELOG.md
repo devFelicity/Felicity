@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.0.0]
+### Added
+- Backend start for new weapon sources.
+
+### Changed
+- Lightfall update.
+- Updated recipes and craftable weapons.
+- Updated dependencies.
+- Updated Saint-14 inventory.
+- Moved recommended rolls to d2foundry.gg
+- Fixed an issue where the `/user remove` command wouldn't output anything despite functioning correctly.
+
+### Removed
+- `/byte` command.
+- Unnecessary Discord permission requests (no effect to servers).
+
 ## [6.19.4]
 ### Added
 - Backend method for updating manifest without needing to restart the bot.
