@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI;
 using DotNetBungieAPI.AspNet.Security.OAuth.Providers;
@@ -82,7 +82,8 @@ try
         .AddDiscord(
             discordClient =>
             {
-                discordClient.GatewayIntents = GatewayIntents.AllUnprivileged;
+                discordClient.GatewayIntents = GatewayIntents.AllUnprivileged & ~GatewayIntents.GuildInvites &
+                                               ~GatewayIntents.GuildScheduledEvents;
                 discordClient.AlwaysDownloadUsers = false;
             },
             _ => { },
