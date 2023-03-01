@@ -10,21 +10,25 @@ internal static class Craftables
         {
             CraftSource.SeasonDefiance, new List<uint>
             {
-                DefinitionHashes.Records.Perpetualis,
-                DefinitionHashes.Records.Raconteur,
-                DefinitionHashes.Records.RoyalExecutioner,
-                DefinitionHashes.Records.ProdigalReturn,
-                DefinitionHashes.Records.Regnant,
+                DefinitionHashes.Records.Caretaker_3171877617,
+                DefinitionHashes.Records.Goldtusk,
+                DefinitionHashes.Records.ImperialDecree,
                 DefinitionHashes.Records.MarsilionC,
-                DefinitionHashes.Records.Caretaker_3171877617
+                DefinitionHashes.Records.Perpetualis,
+                DefinitionHashes.Records.ProdigalReturn,
+                DefinitionHashes.Records.Raconteur,
+                DefinitionHashes.Records.RazorsEdge,
+                DefinitionHashes.Records.Regnant,
+                DefinitionHashes.Records.RoyalExecutioner,
+                DefinitionHashes.Records.ThroneCleaver
             }
         },
         {
             CraftSource.Lightfall, new List<uint>
             {
-                DefinitionHashes.Records.RoundRobin_2839479882,
-                DefinitionHashes.Records.PhyllotacticSpiral,
                 DefinitionHashes.Records.IterativeLoop,
+                DefinitionHashes.Records.PhyllotacticSpiral,
+                DefinitionHashes.Records.RoundRobin_2839479882,
                 DefinitionHashes.Records.VoltaBracket
             }
         },
@@ -176,13 +180,17 @@ internal static class Craftables
         {
             CraftSource.SeasonDefiance, new List<uint>
             {
-                DefinitionHashes.InventoryItems.Perpetualis_392008588,
-                DefinitionHashes.InventoryItems.Raconteur_45643573,
-                DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
-                DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
-                DefinitionHashes.InventoryItems.Regnant_268260372,
+                DefinitionHashes.InventoryItems.Caretaker_2508948099,
+                DefinitionHashes.InventoryItems.DeathsRazor_569799274,
+                DefinitionHashes.InventoryItems.Goldtusk_569799275,
+                DefinitionHashes.InventoryItems.ImperialDecree_2919334548,
                 DefinitionHashes.InventoryItems.MarsilionC_867154247,
-                DefinitionHashes.InventoryItems.Caretaker_2508948099
+                DefinitionHashes.InventoryItems.Perpetualis_392008588,
+                DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
+                DefinitionHashes.InventoryItems.Raconteur_45643573,
+                DefinitionHashes.InventoryItems.Regnant_268260372,
+                DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
+                DefinitionHashes.InventoryItems.ThroneCleaver_569799273
             }
         },
         {
@@ -426,6 +434,10 @@ internal static class Craftables
             DefinitionHashes.Records.Posterity => DefinitionHashes.InventoryItems.Posterity_3281285075,
             DefinitionHashes.Records.Succession => DefinitionHashes.InventoryItems.Succession_2990047042,
             DefinitionHashes.Records.Trustee => DefinitionHashes.InventoryItems.Trustee_1392919471,
+            DefinitionHashes.Records.DeathsRazor => DefinitionHashes.InventoryItems.DeathsRazor_569799274,
+            DefinitionHashes.Records.Goldtusk => DefinitionHashes.InventoryItems.Goldtusk_569799275,
+            DefinitionHashes.Records.ImperialDecree => DefinitionHashes.InventoryItems.ImperialDecree_2919334548,
+            DefinitionHashes.Records.ThroneCleaver => DefinitionHashes.InventoryItems.ThroneCleaver_569799273,
             _ => 0
         };
     }
