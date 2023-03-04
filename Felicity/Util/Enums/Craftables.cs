@@ -26,6 +26,7 @@ internal static class Craftables
         {
             CraftSource.Lightfall, new List<uint>
             {
+                DefinitionHashes.Records.DimensionalHypotrochoid,
                 DefinitionHashes.Records.IterativeLoop,
                 DefinitionHashes.Records.PhyllotacticSpiral,
                 DefinitionHashes.Records.RoundRobin_2839479882,
@@ -196,6 +197,7 @@ internal static class Craftables
         {
             CraftSource.Lightfall, new List<uint>
             {
+                DefinitionHashes.InventoryItems.DimensionalHypotrochoid_1311684613,
                 DefinitionHashes.InventoryItems.RoundRobin_2034215657,
                 DefinitionHashes.InventoryItems.PhyllotacticSpiral_3635821806,
                 DefinitionHashes.InventoryItems.IterativeLoop_1289796511,
@@ -407,6 +409,7 @@ internal static class Craftables
             DefinitionHashes.Records.QullimsTerminus => DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
             DefinitionHashes.Records.SmiteofMerain => DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
             DefinitionHashes.Records.ZaoulisBane => DefinitionHashes.InventoryItems.ZaoulisBane_431721920,
+            DefinitionHashes.Records.DimensionalHypotrochoid => DefinitionHashes.InventoryItems.DimensionalHypotrochoid_1311684613,
             DefinitionHashes.Records.Perpetualis => DefinitionHashes.InventoryItems.Perpetualis_392008588,
             DefinitionHashes.Records.Raconteur => DefinitionHashes.InventoryItems.Raconteur_45643573,
             DefinitionHashes.Records.RoyalExecutioner => DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
