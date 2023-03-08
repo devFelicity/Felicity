@@ -35,9 +35,7 @@ public static class ProcessGunsmithData
 
     public static async Task<GunsmithCache?> FetchInventory(BungieLocales lg, User oauth, IBungieClient bungieClient)
     {
-        GunsmithCache? gsCache;
-
-        var path = $"Data/gsCache-{lg}.json";
+        /*var path = $"Data/gsCache-{lg}.json";
 
         if (File.Exists(path))
         {
@@ -47,7 +45,7 @@ public static class ProcessGunsmithData
                 File.Delete(path);
             else
                 return gsCache;
-        }
+        }*/
 
         var characterIdTask = await bungieClient.ApiAccess.Destiny2.GetProfile(oauth.DestinyMembershipType,
             oauth.DestinyMembershipId, new[]
@@ -89,13 +87,13 @@ public static class ProcessGunsmithData
             weaponList.Add(weapon);
         }
 
-        gsCache = new GunsmithCache
+        var gsCache = new GunsmithCache
         {
             InventoryExpires = ResetUtils.GetNextDailyReset(),
             GunsmithInventory = weaponList
         };
 
-        await File.WriteAllTextAsync($"Data/gsCache-{lg}.json", JsonSerializer.Serialize(gsCache));
+        // await File.WriteAllTextAsync($"Data/gsCache-{lg}.json", JsonSerializer.Serialize(gsCache));
 
         return gsCache;
     }
