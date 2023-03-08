@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text;
+using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
@@ -87,6 +88,70 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
 
             await FollowupAsync(embed: ProcessXurData.BuildUnavailableEmbed());
         }
+    }
+
+    [SlashCommand("ada-1", "Get list of shaders currently available at Ada-1.")]
+    public async Task ShAda1()
+    {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+        {
+            await FollowupAsync("Failed to fetch user profile.");
+            return;
+        }
+
+        var characterIdTask = await _bungieClient.ApiAccess.Destiny2.GetProfile(user.DestinyMembershipType,
+            user.DestinyMembershipId, new[]
+            {
+                DestinyComponentType.Characters
+            });
+
+        var vendorData = await _bungieClient.ApiAccess.Destiny2.GetVendor(user.DestinyMembershipType,
+            user.DestinyMembershipId, characterIdTask.Response.Characters.Data.Keys.First(),
+            DefinitionHashes.Vendors.Ada1_350061650, new[]
+            {
+                DestinyComponentType.VendorCategories, DestinyComponentType.VendorSales
+            },
+            user.GetTokenData());
+
+        var shaderIndexes = vendorData.Response.Categories.Data.Categories.ElementAt(1).ItemIndexes;
+
+        var responseString = new StringBuilder();
+
+        foreach (var shaderIndex in shaderIndexes)
+        {
+            var reward = vendorData.Response.Sales.Data[shaderIndex];
+
+            if (reward.Quantity != 1)
+                continue;
+
+            if (reward.Item.Hash is DefinitionHashes.InventoryItems.UpgradeModule)
+                continue;
+
+            if (reward.Item.Select(x => x.ItemSubType != DestinyItemSubType.Shader))
+                continue;
+
+            responseString.Append(reward.SaleStatus == VendorItemStatus.Success ? "❌" : "✅");
+            responseString.Append($" [{reward.Item.Select(x => x.DisplayProperties.Name)}]({MiscUtils.GetLightGgLink(reward.Item.Select(x => x.Hash))})\n");
+        }
+
+        var embed = Embeds.MakeBuilder();
+
+        embed.Author = new EmbedAuthorBuilder
+        {
+            Name = "Ada-1, Armor Synthesis",
+            IconUrl = BotVariables.Images.AdaVendorLogo
+        };
+
+        embed.Description = "Ada-1 is selling shaders that have been unavailable for quite some time,\n\n" +
+                            "These cost 10,000 Glimmer each, but keep in mind that she'll only be offering 3 shaders per week during Season 20.";
+
+        embed.AddField("Shaders", responseString.ToString());
+
+        await FollowupAsync(embed: embed.Build());
     }
 
     /*[SlashCommand("mods", "Get list of mods currently available at vendors.")]

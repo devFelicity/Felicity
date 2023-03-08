@@ -11,7 +11,7 @@ public static class BotVariables
     public const string BungieBaseUrl = "https://www.bungie.net/";
 
     internal const string ErrorMessage = $"You can report this error either in our [Support Server]({DiscordInvite}) " +
-                                         "or by creating a new [Issue](https://github.com/axsLeaf/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
+                                         "or by creating a new [Issue](https://github.com/MoonieGZ/FelicityOne/issues/new?assignees=axsLeaf&labels=bug&template=bug-report.md&title=) on GitHub.";
 
     internal static bool IsDebug;
     internal static string? Version;
@@ -29,7 +29,7 @@ public static class BotVariables
         {
             using var httpClient = new HttpClient();
             var s = await httpClient.GetStringAsync(
-                "https://raw.githubusercontent.com/axsLeaf/FelicityOne/main/CHANGELOG.md");
+                "https://raw.githubusercontent.com/MoonieGZ/FelicityOne/main/CHANGELOG.md");
             Version = s.Split("## [")[1].Split("]")[0];
         }
     }
@@ -41,6 +41,9 @@ public static class BotVariables
 
         public const string XurVendorLogo =
             "https://bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png";
+
+        public const string AdaVendorLogo =
+            "https://www.bungie.net/common/destiny2_content/icons/fc945fd08122485639db8778052ce498.png";
 
         public const string SaintVendorLogo =
             "https://bungie.net/common/destiny2_content/icons/c3cb40c2b36cccd2f6cf462f14c89736.png";

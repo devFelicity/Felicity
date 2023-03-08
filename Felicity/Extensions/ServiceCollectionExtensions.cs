@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Options;
 using Felicity.Services.Hosted;
+using Fergun.Interactive;
 
 namespace Felicity.Extensions;
 
@@ -32,6 +33,8 @@ public static class ServiceCollectionExtensions
             .AddHostedService<DiscordStartupService>()
             .AddSingleton(discordClient)
             .AddSingleton(interactionService)
+            .AddSingleton(new InteractiveConfig { DefaultTimeout = TimeSpan.FromMinutes(2) })
+            .AddSingleton<InteractiveService>()
             .AddSingleton(textCommandService);
     }
 }
