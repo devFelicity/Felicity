@@ -52,6 +52,62 @@ public static class LootTables
     {
         new LootTableDefinition
         {
+            ActivityType = ActivityType.Raid, Name = "Root of Nightmares", Description = "A sinister threat has taken root.",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Survive the Onslaught",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Chest,
+                        DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
+                        DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+                        DefinitionHashes.InventoryItems.NessasOblation_135029084
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Enter the Root",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
+                        DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+                        DefinitionHashes.InventoryItems.MykelsReverence_231031173,
+                        DefinitionHashes.InventoryItems.NessasOblation_135029084
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Third, EncounterName = "Zo'aurc, Explicator of Planets",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
+                        DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+                        DefinitionHashes.InventoryItems.MykelsReverence_231031173,
+                        DefinitionHashes.InventoryItems.RufussFury_484515708
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Nezarec, Final God of Pain",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Boots, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.ConditionalFinality,
+                        DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
+                        DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+                        DefinitionHashes.InventoryItems.MykelsReverence_231031173,
+                        DefinitionHashes.InventoryItems.NessasOblation_135029084,
+                        DefinitionHashes.InventoryItems.RufussFury_484515708
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
             ActivityType = ActivityType.Raid, Name = "King's Fall", Description = "Long live the King...",
             Loot = new List<LootTable>
             {
