@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Authorization;
 using DotNetBungieAPI.Models.Destiny;
@@ -162,15 +163,11 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.ThumbnailUrl =
             "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
 
-        /*var plunderDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.StarChart,
+        var defianceDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable,
             user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
-        var crownDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.CrownofSorrow,
-            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
-        var risenDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable, user.DestinyMembershipType, 
-            user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());*/
 
         var invDescription = false;
-        // var buyDescription = false;
+        var buyDescription = false;
 
         var craftableList = Craftables.CraftableList;
 
@@ -214,12 +211,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     {
                         field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
                     }
-                    /*
-                     if ((source is "Plunder" && plunderDeepsight) ||
-                        (source is "Haunted" or "Opulent" &&
-                        weaponId != DefinitionHashes.Records.FixedOdds &&
-                        weaponId != DefinitionHashes.Records.TheEpicurean &&
-                        crownDeepsight) || (source is "Risen" && risenDeepsight))
+                    if (source is "Defiance" && defianceDeepsight)
                     {
                         if (field.Value.ToString()!.Contains("⚠️"))
                             field.Value += "💰 ";
@@ -228,7 +220,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
                         buyDescription = true;
                     }
-                    */
                 }
 
                 field.Value +=
@@ -243,8 +234,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         if (invDescription)
             embed.Description += "\n\n⚠️ = Includes incomplete deepsight weapons.";
 
-        // if (buyDescription)
-        //     embed.Description += "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
+        if (buyDescription)
+            embed.Description += "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
 
         if (embed.Fields.Count == 0)
             embed.Description = "You have completed all available patterns.";
@@ -255,7 +246,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
     private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,
         long destinyMembershipId, AuthorizationTokenData tokenData, long characterId)
     {
-        /*var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
+        var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(destinyMembershipType, destinyMembershipId,
             characterId, vendorId, new[]
             {
                 DestinyComponentType.VendorCategories,
@@ -264,8 +255,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var categoryIndex = vendorId switch
         {
-            DefinitionHashes.Vendors.StarChart => 5,
-            DefinitionHashes.Vendors.CrownofSorrow => 5,
             DefinitionHashes.Vendors.WarTable => 3,
             _ => 0
         };
@@ -280,9 +269,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         catch
         {
             return false;
-        }*/
-
-        return false;
+        }
     }
 
     private static string FormattedWeaponLevel(int weaponLevel, bool isMultiple)

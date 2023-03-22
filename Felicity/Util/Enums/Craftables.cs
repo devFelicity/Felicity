@@ -8,15 +8,25 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.RaidRoN, new List<uint>
+            {
+                DefinitionHashes.Records.AcasiasDejection,
+                DefinitionHashes.Records.BriarsContempt,
+                DefinitionHashes.Records.KoraxissDistress,
+                DefinitionHashes.Records.MykelsReverence,
+                DefinitionHashes.Records.NessasOblation,
+                DefinitionHashes.Records.RufussFury
+            }
+        },
+        {
             CraftSource.SeasonDefiance, new List<uint>
             {
                 DefinitionHashes.Records.Caretaker_3171877617,
                 DefinitionHashes.Records.Goldtusk,
                 DefinitionHashes.Records.ImperialDecree,
-                DefinitionHashes.Records.MarsilionC,
                 DefinitionHashes.Records.Perpetualis,
                 DefinitionHashes.Records.ProdigalReturn,
-                DefinitionHashes.Records.Raconteur, 
+                DefinitionHashes.Records.Raconteur,
                 DefinitionHashes.Records.DeathsRazor,
                 DefinitionHashes.Records.Regnant,
                 DefinitionHashes.Records.RoyalExecutioner,
@@ -96,11 +106,8 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
+                DefinitionHashes.Records.MarsilionC,
                 DefinitionHashes.Records.Taipan4fr
-                // DefinitionHashes.Records.ImperialDecree,
-                // DefinitionHashes.Records.Goldtusk,
-                // DefinitionHashes.Records.DeathsRazor,
-                // DefinitionHashes.Records.ThroneCleaver
             }
         },
         {
@@ -178,6 +185,16 @@ internal static class Craftables
 
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
+        {
+            CraftSource.RaidRoN, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
+                DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
+                DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+                DefinitionHashes.InventoryItems.MykelsReverence_231031173,
+                DefinitionHashes.InventoryItems.NessasOblation_135029084
+            }
+        },
         {
             CraftSource.SeasonDefiance, new List<uint>
             {
@@ -347,6 +364,12 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
+            DefinitionHashes.Records.AcasiasDejection => DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
+            DefinitionHashes.Records.BriarsContempt => DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
+            DefinitionHashes.Records.KoraxissDistress => DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
+            DefinitionHashes.Records.MykelsReverence => DefinitionHashes.InventoryItems.MykelsReverence_231031173,
+            DefinitionHashes.Records.NessasOblation => DefinitionHashes.InventoryItems.NessasOblation_135029084,
+            DefinitionHashes.Records.RufussFury => DefinitionHashes.InventoryItems.RufussFury_484515708,
             DefinitionHashes.Records.BumpintheNight => DefinitionHashes.InventoryItems.BumpintheNight_1959650777,
             DefinitionHashes.Records.Firefright => DefinitionHashes.InventoryItems.Firefright_2778013407,
             DefinitionHashes.Records.HollowDenial => DefinitionHashes.InventoryItems.HollowDenial_2323544076,
@@ -409,7 +432,8 @@ internal static class Craftables
             DefinitionHashes.Records.QullimsTerminus => DefinitionHashes.InventoryItems.QullimsTerminus_1321506184,
             DefinitionHashes.Records.SmiteofMerain => DefinitionHashes.InventoryItems.SmiteofMerain_2221264583,
             DefinitionHashes.Records.ZaoulisBane => DefinitionHashes.InventoryItems.ZaoulisBane_431721920,
-            DefinitionHashes.Records.DimensionalHypotrochoid => DefinitionHashes.InventoryItems.DimensionalHypotrochoid_1311684613,
+            DefinitionHashes.Records.DimensionalHypotrochoid => DefinitionHashes.InventoryItems
+                .DimensionalHypotrochoid_1311684613,
             DefinitionHashes.Records.Perpetualis => DefinitionHashes.InventoryItems.Perpetualis_392008588,
             DefinitionHashes.Records.Raconteur => DefinitionHashes.InventoryItems.Raconteur_45643573,
             DefinitionHashes.Records.RoyalExecutioner => DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
@@ -418,7 +442,8 @@ internal static class Craftables
             DefinitionHashes.Records.MarsilionC => DefinitionHashes.InventoryItems.MarsilionC_867154247,
             DefinitionHashes.Records.Caretaker_3171877617 => DefinitionHashes.InventoryItems.Caretaker_2508948099,
             DefinitionHashes.Records.RoundRobin_2839479882 => DefinitionHashes.InventoryItems.RoundRobin_2034215657,
-            DefinitionHashes.Records.PhyllotacticSpiral => DefinitionHashes.InventoryItems.PhyllotacticSpiral_3635821806,
+            DefinitionHashes.Records.PhyllotacticSpiral =>
+                DefinitionHashes.InventoryItems.PhyllotacticSpiral_3635821806,
             DefinitionHashes.Records.IterativeLoop => DefinitionHashes.InventoryItems.IterativeLoop_1289796511,
             DefinitionHashes.Records.VoltaBracket => DefinitionHashes.InventoryItems.VoltaBracket_3920310144,
             DefinitionHashes.Records.Disparity => DefinitionHashes.InventoryItems.Disparity_1751893422,
@@ -427,8 +452,10 @@ internal static class Craftables
             DefinitionHashes.Records.IKELOS_SG_v103 => DefinitionHashes.InventoryItems.IKELOS_SG_v103,
             DefinitionHashes.Records.IKELOS_SMG_v103 => DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
             DefinitionHashes.Records.IKELOS_SR_v103 => DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
-            DefinitionHashes.Records.JudgmentofKelgorath => DefinitionHashes.InventoryItems.JudgmentofKelgorath_2978226043,
-            DefinitionHashes.Records.PathofLeastResistance => DefinitionHashes.InventoryItems.PathofLeastResistance_2827764482,
+            DefinitionHashes.Records.JudgmentofKelgorath => DefinitionHashes.InventoryItems
+                .JudgmentofKelgorath_2978226043,
+            DefinitionHashes.Records.PathofLeastResistance => DefinitionHashes.InventoryItems
+                .PathofLeastResistance_2827764482,
             DefinitionHashes.Records.RetrofitEscapade => DefinitionHashes.InventoryItems.RetrofitEscapade_3103325054,
             DefinitionHashes.Records.TripwireCanary => DefinitionHashes.InventoryItems.TripwireCanary_3849444474,
             DefinitionHashes.Records.Bequest => DefinitionHashes.InventoryItems.Bequest_3366545721,
@@ -471,6 +498,7 @@ internal static class Craftables
         public const string Lightfall = "Lightfall";
         public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
+        public const string RaidRoN = "Root of Nightmares";
         public const string SeasonHaunted = "Haunted";
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";
