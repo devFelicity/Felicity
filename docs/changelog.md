@@ -8,6 +8,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.2.0]
+### Added
+- Root of Nightmares loot table.
+- Root of Nightmares craftables.
+
+## [7.1.0]
+### Added
+- New `/vendor ada-1` command, find your missing shaders.
+
+### Changed
+- Removed caching for gunsmith inventory to fix issues created by Lightfall rework. This will be changed again to reflect the new sales in the future.
+
+## [7.0.3]
+### Added
+- Missing Dimensional Hypotrochoid from craftables.
+
+## [7.0.2]
+### Changed
+- Fixed an issue where recipes would crash.
+
+## [7.0.1]
+### Added
+- Missing craftable weapons.
+
+## [7.0.0]
+### Added
+- Backend start for new weapon sources.
+
+### Changed
+- Lightfall update.
+- Updated recipes and craftable weapons.
+- Updated dependencies.
+- Updated Saint-14 inventory.
+- Moved recommended rolls to d2foundry.gg
+- Fixed an issue where the `/user remove` command wouldn't output anything despite functioning correctly.
+
+### Removed
+- `/byte` command.
+- Unnecessary Discord permission requests (no effect to servers).
+
+## [6.19.4]
+### Added
+- Backend method for updating manifest without needing to restart the bot.
+
+### Changed
+- Error handler now shows how to fix "Refresh token has expired" error.
+- Epicurean and Fixed Odds no longer show as purchasable from vendors.
+
+## [6.19.3]
+### Changed
+- Updated NuGets
+
+## [6.19.2]
+### Changed
+- Fixed checkpoint API returning null causing command to crash.
+- Fix clarity changes causing mods command to crash.
+- Removed unnecessary loop causing mods command to run for longer than it needed.
+
+## [6.19.1]
+### Changed
+- Backend logging ugly fix.
+
 ## [6.19.0]
 ### Added
 - d2checkpoint.com commands.
