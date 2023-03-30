@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -318,7 +318,8 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         };
 
         embed.AddField("Current Season Rank",
-            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonoftheSeraphRank].ObjectiveProgress.Progress:n0}", true);
+            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonofDefianceRank].ObjectiveProgress.Progress:n0}",
+            true);
         embed.AddField("Raid Completions", $"> {GetRaidCompletions(playerResponse.Response.Metrics.Data):n0}", true);
         embed.AddField("Triumph Score",
             $"> **Active**: {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.ActiveTriumphScore].ObjectiveProgress.Progress:n0}\n" +
