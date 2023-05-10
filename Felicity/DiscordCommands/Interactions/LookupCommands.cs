@@ -123,6 +123,35 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
         });
 
+        if (bungieName == "Moonie#6881")
+        {
+            var jokeEmbed = new EmbedBuilder
+            {
+                Title = bungieName,
+                Url =
+                    $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
+                    profile.Response.Profile.Data.UserInfo.MembershipId,
+                Color = Color.Purple,
+                ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
+                Footer = Embeds.MakeFooter()
+            };
+
+            jokeEmbed.Description += "> [Wish Ascended](https://destinyemblemcollector.com/emblem?id=2419113769)\n";
+            jokeEmbed.Description += "> [Scourge of Nothing](https://destinyemblemcollector.com/emblem?id=3931192719)\n";
+            jokeEmbed.Description += "> [Heavy Is The Crown](https://destinyemblemcollector.com/emblem?id=1661191198)\n";
+            jokeEmbed.Description += "> [Dive into Darkness](https://destinyemblemcollector.com/emblem?id=298334058)\n";
+            jokeEmbed.Description += "> [Creator's Cachet](https://destinyemblemcollector.com/emblem?id=2526736320)\n";
+            jokeEmbed.Description += "> [Parallel Program](https://destinyemblemcollector.com/emblem?id=3936625542)\n";
+
+            jokeEmbed.Footer.Text = "This is painfully obviously a joke. Check Telesto#6152 for their real account.";
+
+            jokeEmbed.AddField("Parsed", "> 6", true);
+            jokeEmbed.AddField("Shared", "> 713", true);
+
+            await FollowupAsync(embed: jokeEmbed.Build());
+            return;
+        }
+        
         if (profile.Response.ProfileCollectibles.Data == null)
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
