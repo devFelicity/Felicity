@@ -239,6 +239,10 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         {
             await msg.ModifyAsync(x => x.Content = "Update found, updating...");
             await _bungieClient.DefinitionProvider.Update();
+            await msg.ModifyAsync(x => x.Content = "Downloaded files, clearing cache...");
+            _bungieClient.Repository.Clear();
+            await msg.ModifyAsync(x => x.Content = "Reading new files...");
+            await _bungieClient.DefinitionProvider.ReadToRepository(_bungieClient.Repository);
             await msg.ModifyAsync(x => x.Content = "Done.");
         }
         else
