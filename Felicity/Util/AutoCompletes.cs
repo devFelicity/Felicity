@@ -3,7 +3,6 @@ using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny.Definitions.Metrics;
 using DotNetBungieAPI.Service.Abstractions;
-using Felicity.DiscordCommands.Interactions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util.Enums;

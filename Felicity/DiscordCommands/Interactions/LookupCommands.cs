@@ -68,6 +68,11 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
 
+        var joke = bungieTag.ToLower() == "moonie#6881";
+
+        if (bungieTag.ToLower() == "~moonie#6881")
+            bungieTag = "Moonie#6881";
+
         if (!string.IsNullOrEmpty(bungieTag) && !bungieTag.Contains('#'))
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
@@ -105,10 +110,11 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
             var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-            if (goodProfile == null)
+            if (goodProfile == null || goodProfile.MembershipType == BungieMembershipType.None)
             {
                 var errorEmbed = Embeds.MakeErrorEmbed();
-                errorEmbed.Description = $"No profiles found matching `{bungieTag}`.";
+                errorEmbed.Description =
+                    $"No profiles found matching `{bungieTag}`.\nThis can happen if no characters are currently on the Bungie account.";
                 await FollowupAsync(embed: errorEmbed.Build());
                 return;
             }
@@ -123,7 +129,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
         });
 
-        if (bungieName == "Moonie#6881")
+        if (joke)
         {
             var jokeEmbed = new EmbedBuilder
             {
@@ -137,13 +143,15 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             };
 
             jokeEmbed.Description += "> [Wish Ascended](https://destinyemblemcollector.com/emblem?id=2419113769)\n";
-            jokeEmbed.Description += "> [Scourge of Nothing](https://destinyemblemcollector.com/emblem?id=3931192719)\n";
-            jokeEmbed.Description += "> [Heavy Is The Crown](https://destinyemblemcollector.com/emblem?id=1661191198)\n";
+            jokeEmbed.Description +=
+                "> [Scourge of Nothing](https://destinyemblemcollector.com/emblem?id=3931192719)\n";
+            jokeEmbed.Description +=
+                "> [Heavy Is The Crown](https://destinyemblemcollector.com/emblem?id=1661191198)\n";
             jokeEmbed.Description += "> [Dive into Darkness](https://destinyemblemcollector.com/emblem?id=298334058)\n";
             jokeEmbed.Description += "> [Creator's Cachet](https://destinyemblemcollector.com/emblem?id=2526736320)\n";
             jokeEmbed.Description += "> [Parallel Program](https://destinyemblemcollector.com/emblem?id=3936625542)\n";
 
-            jokeEmbed.Footer.Text = "This is painfully obviously a joke. Check Telesto#6152 for their real account.";
+            jokeEmbed.Footer.Text += " | Try ~Moonie#6881.";
 
             jokeEmbed.AddField("Parsed", "> 6", true);
             jokeEmbed.AddField("Shared", "> 713", true);
@@ -151,7 +159,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             await FollowupAsync(embed: jokeEmbed.Build());
             return;
         }
-        
+
         if (profile.Response.ProfileCollectibles.Data == null)
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
@@ -413,22 +421,16 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
         foreach (var collectibleDefinition in importantList)
         {
-            if (profileCollectibles.ContainsKey(collectibleDefinition.Hash))
+            if (profileCollectibles.TryGetValue(collectibleDefinition.Hash, out var collectible))
             {
-                var item = profileCollectibles[collectibleDefinition.Hash];
-
-                if (!item.State.HasFlag(DestinyCollectibleState.NotAcquired))
+                if (!collectible.State.HasFlag(DestinyCollectibleState.NotAcquired))
                     state = true;
             }
             else
             {
-                if (characterCollectibles.ContainsKey(collectibleDefinition.Hash))
-                {
-                    var item = characterCollectibles[collectibleDefinition.Hash];
-
+                if (characterCollectibles.TryGetValue(collectibleDefinition.Hash, out var item))
                     if (!item.State.HasFlag(DestinyCollectibleState.NotAcquired))
                         state = true;
-                }
             }
 
             importantCollectibles.Append(state ? '✅' : '❌');
