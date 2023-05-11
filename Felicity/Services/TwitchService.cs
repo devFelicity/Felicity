@@ -19,6 +19,7 @@ public class TwitchService
 {
     private static LiveStreamMonitorService? _monitorService;
     private readonly DiscordShardedClient _discordClient;
+    
     private readonly TwitchAPI _twitchApi;
     private readonly TwitchStreamDb _twitchStreamDb;
 
