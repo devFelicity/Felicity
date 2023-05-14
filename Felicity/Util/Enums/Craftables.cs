@@ -192,7 +192,8 @@ internal static class Craftables
                 DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
                 DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
                 DefinitionHashes.InventoryItems.MykelsReverence_231031173,
-                DefinitionHashes.InventoryItems.NessasOblation_135029084
+                DefinitionHashes.InventoryItems.NessasOblation_135029084,
+                DefinitionHashes.InventoryItems.RufussFury_484515708
             }
         },
         {
