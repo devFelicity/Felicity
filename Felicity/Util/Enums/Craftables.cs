@@ -285,7 +285,9 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.InventoryItems.AmmitAR2_2119346509,
-                DefinitionHashes.InventoryItems.Taipan4fr_1911060537
+                DefinitionHashes.InventoryItems.Taipan4fr_1911060537,
+                DefinitionHashes.InventoryItems.RevisionZero_1473821207,
+                DefinitionHashes.InventoryItems.Vexcalibur_3118061005
             }
         },
         {
