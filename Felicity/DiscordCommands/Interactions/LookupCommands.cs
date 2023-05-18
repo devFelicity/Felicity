@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -7,12 +7,14 @@ using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
-using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Models.Destiny.Definitions.PresentationNodes;
 using DotNetBungieAPI.Models.Destiny.Responses;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Util;
 using Felicity.Util.Enums;
+using Fergun.Interactive;
+using Fergun.Interactive.Pagination;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 
@@ -25,15 +27,58 @@ namespace Felicity.DiscordCommands.Interactions;
 public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly ServerDb _serverDb;
+    private readonly InteractiveService _interactiveService;
     private readonly UserDb _userDb;
 
-    public LookupCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb)
+    public LookupCommands(UserDb userDb, IBungieClient bungieClient, InteractiveService interactive)
     {
         _userDb = userDb;
         _bungieClient = bungieClient;
-        _serverDb = serverDb;
+        _interactiveService = interactive;
     }
+
+//    [Preconditions.RequireOAuth]
+    /*[SlashCommand("guardian-ranks", "Look up triumphs and their completion status for Guardian Ranks.")]
+    public async Task LookupRanks()
+    {
+        if (!await BungieApiUtils.CheckApi(_bungieClient))
+            throw new Exception("Bungie API is down or unresponsive.");
+
+        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
+        if (user == null)
+        {
+            await FollowupAsync("Failed to fetch user profile.");
+            return;
+        }
+
+        if (_bungieClient.Repository.TryGetDestinyDefinition<DestinyPresentationNodeDefinition>(
+                DefinitionHashes.PresentationNodes.GuardianRanks,
+                BungieLocales.EN, out var node))
+        {
+            var pageBuilder = node.Children.PresentationNodes.Select(presentationNode => new PageBuilder
+            {
+                Title = presentationNode.PresentationNode.Select(x => x.DisplayProperties.Name),
+                Description = presentationNode.PresentationNode.Select(x => x.DisplayProperties.Description)
+            }).Cast<IPageBuilder>().ToList();
+
+            var paginatorBuilder = new StaticPaginatorBuilder()
+                .AddUser(Context.User)
+                .WithPages(pageBuilder)
+                .AddOption(new Emoji("◀"), PaginatorAction.Backward)
+                .AddOption(new Emoji("🔢"), PaginatorAction.Jump)
+                .AddOption(new Emoji("▶"), PaginatorAction.Forward)
+                .WithActionOnCancellation(ActionOnStop.DisableInput)
+                .WithActionOnTimeout(ActionOnStop.DisableInput)
+                .Build();
+
+            await _interactiveService.SendPaginatorAsync(paginatorBuilder, Context.Interaction,
+                TimeSpan.FromMinutes(10));
+        }
+        else
+        {
+            await FollowupAsync("Failed to fetch Guardian Rank definitions.");
+        }
+    }*/
 
     [SlashCommand("wish", "Look up patterns for wishes in the Last Wish raid.")]
     public async Task LookupWish(
@@ -57,206 +102,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    [SlashCommand("account-share", "Look up account shared emblems of a player.")]
-    public async Task LookupAccountShare(
-        [Summary("bungie-name",
-            "Bungie name of the requested user (name#1234).")]
-        string bungieTag = "")
-    {
-        await DeferAsync();
-
-        if (!await BungieApiUtils.CheckApi(_bungieClient))
-            throw new Exception("Bungie API is down or unresponsive.");
-
-        var joke = bungieTag.ToLower() == "moonie#6881";
-
-        if (bungieTag.ToLower() == "~moonie#6881")
-            bungieTag = "Moonie#6881";
-
-        if (!string.IsNullOrEmpty(bungieTag) && !bungieTag.Contains('#'))
-        {
-            var errorEmbed = Embeds.MakeErrorEmbed();
-            errorEmbed.Description =
-                $"`{bungieTag}` is not a correct format for a Bungie name.\nTry again with the `<name>#<number>` format.";
-            await FollowupAsync(embed: errorEmbed.Build());
-            return;
-        }
-
-        long membershipId;
-        BungieMembershipType membershipType;
-        string bungieName;
-
-        if (string.IsNullOrEmpty(bungieTag))
-        {
-            var currentUser = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-
-            if (currentUser == null)
-            {
-                var errorEmbed = Embeds.MakeErrorEmbed();
-                errorEmbed.Description =
-                    "You did not specify a Bungie name to lookup, so this command defaults to your current user, however you are not registered.\n" +
-                    "Please `/user register` and try again, or specify a name to lookup.";
-                await FollowupAsync(embed: errorEmbed.Build());
-                return;
-            }
-
-            membershipId = currentUser.DestinyMembershipId;
-            membershipType = currentUser.DestinyMembershipType;
-            bungieName = currentUser.BungieName;
-        }
-        else
-        {
-            var name = bungieTag.Split("#").First();
-            var code = Convert.ToInt16(bungieTag.Split("#").Last());
-
-            var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
-            if (goodProfile == null || goodProfile.MembershipType == BungieMembershipType.None)
-            {
-                var errorEmbed = Embeds.MakeErrorEmbed();
-                errorEmbed.Description =
-                    $"No profiles found matching `{bungieTag}`.\nThis can happen if no characters are currently on the Bungie account.";
-                await FollowupAsync(embed: errorEmbed.Build());
-                return;
-            }
-
-            membershipId = goodProfile.MembershipId;
-            membershipType = goodProfile.MembershipType;
-            bungieName = $"{goodProfile.BungieGlobalDisplayName}#{goodProfile.BungieGlobalDisplayNameCode}";
-        }
-
-        var profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(membershipType, membershipId, new[]
-        {
-            DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
-        });
-
-        if (joke)
-        {
-            var jokeEmbed = new EmbedBuilder
-            {
-                Title = bungieName,
-                Url =
-                    $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                    profile.Response.Profile.Data.UserInfo.MembershipId,
-                Color = Color.Purple,
-                ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
-                Footer = Embeds.MakeFooter()
-            };
-
-            jokeEmbed.Description += "> [Wish Ascended](https://destinyemblemcollector.com/emblem?id=2419113769)\n";
-            jokeEmbed.Description +=
-                "> [Scourge of Nothing](https://destinyemblemcollector.com/emblem?id=3931192719)\n";
-            jokeEmbed.Description +=
-                "> [Heavy Is The Crown](https://destinyemblemcollector.com/emblem?id=1661191198)\n";
-            jokeEmbed.Description += "> [Dive into Darkness](https://destinyemblemcollector.com/emblem?id=298334058)\n";
-            jokeEmbed.Description += "> [Creator's Cachet](https://destinyemblemcollector.com/emblem?id=2526736320)\n";
-            jokeEmbed.Description += "> [Parallel Program](https://destinyemblemcollector.com/emblem?id=3936625542)\n";
-
-            jokeEmbed.Footer.Text += " | Try ~Moonie#6881.";
-
-            jokeEmbed.AddField("Parsed", "> 6", true);
-            jokeEmbed.AddField("Shared", "> 713", true);
-
-            await FollowupAsync(embed: jokeEmbed.Build());
-            return;
-        }
-
-        if (profile.Response.ProfileCollectibles.Data == null)
-        {
-            var errorEmbed = Embeds.MakeErrorEmbed();
-            errorEmbed.Description = $"`{bungieTag}` has their collections set to private, unable to parse emblems.";
-
-            await FollowupAsync(embed: errorEmbed.Build());
-            return;
-        }
-
-        var emblemCount = 0;
-        var emblemList = new List<DestinyCollectibleDefinition>();
-
-        var manifestInventoryItemIDs = profile.Response.Characters.Data
-            .Select(destinyCharacterComponent => destinyCharacterComponent.Value.Emblem.Hash).ToList();
-        var manifestCollectibleIDs =
-            profile.Response.ProfileCollectibles.Data.Collectibles.Select(collectible => collectible.Key).ToList();
-
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
-        var manifestInventoryItems = new List<DestinyInventoryItemDefinition>();
-        foreach (var destinyInventoryItemDefinition in manifestInventoryItemIDs)
-        {
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
-                (uint)destinyInventoryItemDefinition!, lg, out var result);
-
-            manifestInventoryItems.Add(result);
-        }
-
-        var manifestCollectibles = new List<DestinyCollectibleDefinition>();
-        foreach (var definitionHashPointer in manifestCollectibleIDs)
-        {
-            _bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(
-                (uint)definitionHashPointer.Hash!, lg, out var result);
-
-            manifestCollectibles.Add(result);
-        }
-
-        foreach (var collectible in from collectible in manifestCollectibles
-                 where !collectible.Redacted
-                 where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
-                 from manifestCollectibleParentNodeHash in collectible.ParentNodes
-                 where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
-                 select collectible)
-        {
-            emblemCount++;
-
-            var value = profile.Response.ProfileCollectibles.Data.Collectibles[collectible.Hash];
-
-            foreach (var unused in from emblem in manifestInventoryItems
-                     where emblem.Collectible.Hash == collectible.Hash
-                     where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                     where !emblemList.Contains(collectible)
-                     select emblem) emblemList.Add(collectible);
-
-            if (value.State.HasFlag(DestinyCollectibleState.Invisible) &&
-                !value.State.HasFlag(DestinyCollectibleState.NotAcquired))
-                if (!emblemList.Contains(collectible))
-                    emblemList.Add(collectible);
-
-            // ReSharper disable once InvertIf
-            if (value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) &&
-                value.State.HasFlag(DestinyCollectibleState.NotAcquired))
-                if (!emblemList.Contains(collectible))
-                    emblemList.Add(collectible);
-        }
-
-        var sortedList = emblemList.OrderBy(o => o.DisplayProperties.Name).ToList();
-
-        var embed = new EmbedBuilder
-        {
-            Title = bungieName,
-            Url =
-                $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                profile.Response.Profile.Data.UserInfo.MembershipId,
-            Color = Color.Purple,
-            ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
-            Footer = Embeds.MakeFooter()
-        };
-
-        if (sortedList.Count == 0)
-        {
-            embed.Description = "Account has no shared emblems.";
-        }
-        else
-        {
-            embed.Description = "**Account shared emblems:**\n";
-
-            foreach (var emblemDefinition in sortedList)
-                embed.Description +=
-                    $"> [{emblemDefinition.DisplayProperties.Name}](https://destinyemblemcollector.com/emblem?id={emblemDefinition.Item.Hash})\n";
-        }
-
-        embed.AddField("Parsed", $"> {emblemCount}", true);
-        embed.AddField("Shared", $"> {sortedList.Count}", true);
-
-        await FollowupAsync(embed: embed.Build());
-    }
+    
 
     [SlashCommand("guardian", "Look up a profile of a player.")]
     public async Task LookupGuardian(
