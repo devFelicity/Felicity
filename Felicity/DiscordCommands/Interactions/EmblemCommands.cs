@@ -102,7 +102,8 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (profile.Response.ProfileCollectibles.Privacy != ComponentPrivacySetting.Public)
+        // Note to self, bungie privacy sucks ass and always reports privacy as private.
+        if (profile.Response.ProfileCollectibles.Data == null)
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
             errorEmbed.Description = $"`{bungieTag}` has their collections set to private, unable to parse emblems.";
@@ -237,7 +238,9 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                 DestinyComponentType.Collectibles, DestinyComponentType.Profiles
             });
 
-        if (profile.Response.ProfileCollectibles.Privacy != ComponentPrivacySetting.Public)
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        // Note to self, bungie privacy sucks ass and always reports privacy as private.
+        if (profile.Response.ProfileCollectibles.Data == null)
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
             errorEmbed.Description = $"`{bungieTag}` has their collections set to private, unable to parse emblems.";
