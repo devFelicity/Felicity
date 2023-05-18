@@ -4,6 +4,7 @@ using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
@@ -101,7 +102,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (profile.Response.ProfileCollectibles.Data == null)
+        if (profile.Response.ProfileCollectibles.Privacy != ComponentPrivacySetting.Public)
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
             errorEmbed.Description = $"`{bungieTag}` has their collections set to private, unable to parse emblems.";
@@ -235,6 +236,14 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             {
                 DestinyComponentType.Collectibles, DestinyComponentType.Profiles
             });
+
+        if (profile.Response.ProfileCollectibles.Privacy != ComponentPrivacySetting.Public)
+        {
+            var errorEmbed = Embeds.MakeErrorEmbed();
+            errorEmbed.Description = $"`{bungieTag}` has their collections set to private, unable to parse emblems.";
+            await FollowupAsync(embed: errorEmbed.Build());
+            return;
+        }
 
         var manifestCollectibleIDs =
             (from destinyCollectibleComponent in profile.Response.ProfileCollectibles.Data.Collectibles
