@@ -1,0 +1,28 @@
+name: Build Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Felicity/Felicity.csproj
+
+      - name: Build application
+        run: dotnet build Felicity/Felicity.csproj --configuration Release --no-restore
+
+      - name: Check build status
+        run: dotnet build Felicity/Felicity.csproj --configuration Release --no-restore --no-incremental
