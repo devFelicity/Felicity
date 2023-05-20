@@ -3,18 +3,8 @@ name: Build and Publish
 on:
   push:
     branches: [ main ]
-  pull_request:
 
 jobs:
-  skip-pr:
-    name: Skip if PR
-    if: github.event_name != 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Skip
-        run: echo "Skipping build."
-
   build-and-push-docker-image:
     if: github.event_name == 'push'
     name: Build Docker Image
