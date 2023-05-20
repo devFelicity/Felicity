@@ -1,0 +1,46 @@
+name: Update Pull Request Message
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  update_pull_request_message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Pull Request Details
+        id: pr
+        run: |
+          echo "::set-output name=title::${{ github.event.pull_request.title }}"
+          echo "::set-output name=body::${{ github.event.pull_request.body }}"
+
+      - name: Update Pull Request Message
+        run: |
+          # Get the pull request details
+          TITLE="${{ steps.pr.outputs.title }}"
+          BODY="${{ steps.pr.outputs.body }}"
+
+          # Check if the pull request message is empty
+          if [ -z "${BODY}" ]; then
+            # Get the list of commit messages
+            COMMIT_MESSAGES=$(git log --format=%B origin/main..HEAD)
+
+            # Create a formatted commit message list
+            COMMIT_LIST=$(echo "${COMMIT_MESSAGES}" | awk '{print "- " $0}')
+
+            # Update the pull request message
+            curl \
+              -X PATCH \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
+              -d '{
+                "title": "'"${TITLE}"'",
+                "body": "Commits:\n\n'"${COMMIT_LIST}"'"
+              }'
+          else
+            echo "Pull request message already exists. Skipping update."
+          fi
