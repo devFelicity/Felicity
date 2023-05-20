@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Fetch all commit history
+        run: git fetch --prune --unshallow
 
       - name: Get Pull Request Details
         id: pr
@@ -26,10 +29,13 @@ jobs:
           # Check if the pull request message is empty
           if [ -z "${BODY}" ]; then
             # Get the list of commit messages
-            COMMIT_MESSAGES=$(git log --format=%B "${{ github.base_ref }}..${{ github.head_ref }}")
+            COMMIT_MESSAGES=$(git log --format=%B "origin/main..HEAD")
 
             # Create a formatted commit message list
-            COMMIT_LIST=$(echo "${COMMIT_MESSAGES}" | awk '{print "- " $0}')
+            COMMIT_LIST=""
+            while IFS= read -r line; do
+              COMMIT_LIST="${COMMIT_LIST}\n- ${line}"
+            done <<< "${COMMIT_MESSAGES}"
 
             # Update the pull request message
             curl \
