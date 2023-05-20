@@ -26,7 +26,7 @@ jobs:
           # Check if the pull request message is empty
           if [ -z "${BODY}" ]; then
             # Get the list of commit messages
-            COMMIT_MESSAGES=$(git log --format=%B origin/main..HEAD)
+            COMMIT_MESSAGES=$(git log --format=%B "${{ github.base_ref }}..${{ github.head_ref }}")
 
             # Create a formatted commit message list
             COMMIT_LIST=$(echo "${COMMIT_MESSAGES}" | awk '{print "- " $0}')
