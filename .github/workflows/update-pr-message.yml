@@ -34,7 +34,9 @@ jobs:
             # Create a formatted commit message list
             COMMIT_LIST=""
             while IFS= read -r line; do
-              COMMIT_LIST="${COMMIT_LIST}\n- ${line}"
+              if [ -n "${line}" ]; then
+                COMMIT_LIST="${COMMIT_LIST}\n- ${line}"
+              fi
             done <<< "${COMMIT_MESSAGES}"
 
             # Update the pull request message
