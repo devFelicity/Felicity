@@ -50,9 +50,9 @@ public static class BotVariables
 
         public const string SadFace = "https://cdn.tryfelicity.one/images/peepoSad.png";
 
-        public const string FelicityCircle = "https://cdn.tryfelicity.one/images/felicity_circle.jpg";
+        public const string FelicityCircle = "https://cdn.tryfelicity.one/images/profile/candle-circle.png";
 
-        public const string FelicitySquare = "https://cdn.tryfelicity.one/images/felicity.jpg";
+        public const string FelicitySquare = "https://cdn.tryfelicity.one/images/profile/candle.png";
 
         public const string DungeonIcon =
             "https://bungie.net/common/destiny2_content/icons/4456b756d5b28e38a7c905fd68e557b7.png";
