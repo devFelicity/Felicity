@@ -135,7 +135,8 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 continue;
 
             responseString.Append(reward.SaleStatus == VendorItemStatus.Success ? "❌" : "✅");
-            responseString.Append($" [{reward.Item.Select(x => x.DisplayProperties.Name)}]({MiscUtils.GetLightGgLink(reward.Item.Select(x => x.Hash))})\n");
+            responseString.Append(
+                $" [{reward.Item.Select(x => x.DisplayProperties.Name)}]({MiscUtils.GetLightGgLink(reward.Item.Select(x => x.Hash))})\n");
         }
 
         var embed = Embeds.MakeBuilder();

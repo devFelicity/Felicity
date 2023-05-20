@@ -27,7 +27,7 @@ public class SupportCommands : InteractionModuleBase<ShardedInteractionContext>
                             "\n• <:streamelements:994215192554635285> Donate any amount through [StreamElements](https://streamelements.com/blossomleafy/tip)" +
                             "\n• <:paypal:994215375141097493> Donate any amount through [PayPal](https://paypal.me/leafyleaf)" +
                             "\n• <:github:994212386204549160> Become a sponsor on [GitHub](https://github.com/sponsors/axsLeaf)" +
-                            "\n• <:twitch:994214014055895040> Subscribe on [Twitch](https://twitch.tv/subs/blossomleafy) *(free once per month with Amazon Prime)*";
+                            "\n• <:twitch:994214014055895040> Subscribe on [Twitch](https://twitch.tv/subs/MoonieGZ) *(free once per month with Amazon Prime)*";
 
         await FollowupAsync(embed: embed.Build());
     }

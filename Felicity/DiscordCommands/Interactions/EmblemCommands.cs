@@ -4,7 +4,6 @@ using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny;
-using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
@@ -324,7 +323,8 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                 profile.Response.Profile.Data.UserInfo.MembershipId,
             Color = Color.Purple,
             Footer = Embeds.MakeFooter(),
-            Description = "Here are the 5 rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
+            Description =
+                "Here are the 5 rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
         };
 
         foreach (var emblem in emblemResponse.Data)

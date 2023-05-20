@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+
 // ReSharper disable UnassignedGetOnlyAutoProperty
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -16,21 +17,20 @@ public class EmblemReport
 #pragma warning restore CS8618
     }
 
-    public partial class Datum
+    public class Datum
     {
-        [JsonPropertyName("collectible_hash")]
-        public uint CollectibleHash { get; set; }
+        [JsonPropertyName("collectible_hash")] public uint CollectibleHash { get; set; }
 
-        [JsonPropertyName("acquisition")]
-        public long Acquisition { get; set; }
+        [JsonPropertyName("acquisition")] public long Acquisition { get; set; }
 
-        [JsonPropertyName("percentage")]
-        public double Percentage { get; set; }
+        [JsonPropertyName("percentage")] public double Percentage { get; set; }
     }
 
     public partial class EmblemResponse
     {
-        public static EmblemResponse? FromJson(string json) 
-            => JsonSerializer.Deserialize<EmblemResponse>(json);
+        public static EmblemResponse? FromJson(string json)
+        {
+            return JsonSerializer.Deserialize<EmblemResponse>(json);
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
@@ -14,7 +13,7 @@ namespace Felicity.Models.Caches;
 public class GunsmithCache
 {
     public DateTime InventoryExpires { get; set; } = DateTime.UtcNow;
-    public List<Weapon> GunsmithInventory { get; set; } = new();
+    public List<Weapon> GunsmithInventory { get; init; } = new();
 }
 
 public static class ProcessGunsmithData

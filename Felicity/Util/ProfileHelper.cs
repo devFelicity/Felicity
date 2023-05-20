@@ -6,7 +6,8 @@ namespace Felicity.Util;
 
 public abstract class ProfileHelper
 {
-    public static async Task<ProfileResponse> GetRequestedProfile(string bungieTag, ulong discordId, UserDb userDb, IBungieClient bungieClient)
+    public static async Task<ProfileResponse> GetRequestedProfile(string bungieTag, ulong discordId, UserDb userDb,
+        IBungieClient bungieClient)
     {
         var profile = new ProfileResponse();
 
@@ -37,7 +38,7 @@ public abstract class ProfileHelper
         {
             profile.Error =
                 $"No profiles found matching `{bungieTag}`.\nThis can happen if no characters are currently on the Bungie account.";
-                return profile;
+            return profile;
         }
 
         profile.MembershipId = goodProfile.MembershipId;

@@ -11,11 +11,8 @@ namespace Felicity.Services.Hosted;
 public class CommandsInfoService : ICommandsInfoService
 {
     private readonly Type _baseCommandType = typeof(IInteractionModuleBase);
-    public ReadOnlyCollection<CommandInfo> CommandsInfo { get; private set; }
 
-    public CommandsInfoService()
-    {
-    }
+    public ReadOnlyCollection<CommandInfo> CommandsInfo { get; private set; }
 
     public void Initialize()
     {
