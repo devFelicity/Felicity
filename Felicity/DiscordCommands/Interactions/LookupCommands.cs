@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -38,32 +39,73 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
     }
 
 //    [Preconditions.RequireOAuth]
-    /*[SlashCommand("guardian-ranks", "Look up triumphs and their completion status for Guardian Ranks.")]
+    [SlashCommand("guardian-ranks", "Look up triumphs for Guardian Ranks.")]
     public async Task LookupRanks()
     {
-        if (!await BungieApiUtils.CheckApi(_bungieClient))
-            throw new Exception("Bungie API is down or unresponsive.");
-
-        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        if (user == null)
-        {
-            await FollowupAsync("Failed to fetch user profile.");
-            return;
-        }
-
         if (_bungieClient.Repository.TryGetDestinyDefinition<DestinyPresentationNodeDefinition>(
                 DefinitionHashes.PresentationNodes.GuardianRanks,
                 BungieLocales.EN, out var node))
         {
-            var pageBuilder = node.Children.PresentationNodes.Select(presentationNode => new PageBuilder
+            var sb = new StringBuilder();
+            var i = 1;
+
+            var pageList = new List<PageBuilder>();
+
+            var profileStringVariables = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                BungieMembershipType.TigerSteam, 4611686018471516071, new[]
+                {
+                    DestinyComponentType.StringVariables
+                });
+
+            foreach (var nodeChildEntry in node.Children.PresentationNodes)
             {
-                Title = presentationNode.PresentationNode.Select(x => x.DisplayProperties.Name),
-                Description = presentationNode.PresentationNode.Select(x => x.DisplayProperties.Description)
-            }).Cast<IPageBuilder>().ToList();
+                sb.Clear();
+
+                sb.Append($"> {nodeChildEntry.PresentationNode.Select(x => x.DisplayProperties.Description)}\n\n");
+
+                foreach (var grNode in nodeChildEntry.PresentationNode.Select(x => x.Children.PresentationNodes))
+                {
+                    sb.Append($"__**Node: {grNode.PresentationNode.Select(x => x.DisplayProperties.Name)}**__\n");
+
+                    foreach (var nodeRecordChildEntry in grNode.PresentationNode
+                                 .Select(x => x.Children.Records))
+                    {
+                        sb.Append($"- **{nodeRecordChildEntry.Record.Select(x => x.DisplayProperties.Name)}**\n");
+
+                        var description = nodeRecordChildEntry.Record.Select(x => x.DisplayProperties.Description)
+                            .Split('\n').First();
+
+                        var regex = new Regex(@"\{var:(\d+)\}");
+                        var matches = regex.Matches(description);
+
+                        if (matches.Count != 0)
+                            for (var index = 0; index < matches.Count; index++)
+                            {
+                                var match = matches[index].Value;
+                                var id = matches[index].Groups[1].Value;
+
+                                description = description.Replace(match,
+                                    profileStringVariables.Response.ProfileStringVariables.Data
+                                        .IntegerValuesByHash[Convert.ToUInt32(id)].ToString());
+                            }
+
+                        sb.Append($"> *{description}*\n\n");
+                    }
+                }
+
+                pageList.Add(new PageBuilder
+                {
+                    Title = $"Rank {i}: {nodeChildEntry.PresentationNode.Select(x => x.DisplayProperties.Name)}",
+                    Description = sb.ToString()
+                });
+
+                i++;
+            }
+
 
             var paginatorBuilder = new StaticPaginatorBuilder()
                 .AddUser(Context.User)
-                .WithPages(pageBuilder)
+                .WithPages(pageList)
                 .AddOption(new Emoji("◀"), PaginatorAction.Backward)
                 .AddOption(new Emoji("🔢"), PaginatorAction.Jump)
                 .AddOption(new Emoji("▶"), PaginatorAction.Forward)
@@ -78,7 +120,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         {
             await FollowupAsync("Failed to fetch Guardian Rank definitions.");
         }
-    }*/
+    }
 
     [SlashCommand("wish", "Look up patterns for wishes in the Last Wish raid.")]
     public async Task LookupWish(
@@ -102,7 +144,6 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    
 
     [SlashCommand("guardian", "Look up a profile of a player.")]
     public async Task LookupGuardian(
