@@ -21,6 +21,7 @@ public class DiscordStartupService : BackgroundService
     private readonly IOptions<DiscordBotOptions> _discordBotOptions;
     private readonly DiscordShardedClient _discordShardedClient;
     private readonly InteractionService _interactionService;
+    private readonly MetricDb _metricDb;
     private readonly ServerDb _serverDb;
     private readonly IServiceProvider _serviceProvider;
 
@@ -34,7 +35,8 @@ public class DiscordStartupService : BackgroundService
         CommandService commandService,
         IServiceProvider serviceProvider,
         LogAdapter<BaseSocketClient> adapter,
-        ServerDb serverDb)
+        ServerDb serverDb,
+        MetricDb metricDb)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
@@ -43,6 +45,7 @@ public class DiscordStartupService : BackgroundService
         _serviceProvider = serviceProvider;
         _adapter = adapter;
         _serverDb = serverDb;
+        _metricDb = metricDb;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -231,7 +234,36 @@ public class DiscordStartupService : BackgroundService
         }
 
         var shardedInteractionContext = new ShardedInteractionContext(_discordShardedClient, socketInteraction);
+
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
+
+        try
+        {
+            if (shardedInteractionContext.Interaction.Type != InteractionType.ApplicationCommandAutocomplete)
+                if (shardedInteractionContext.Interaction is SocketSlashCommand command)
+                {
+                    var cmdName = command.CommandName;
+
+                    if (command.Data.Options.Count > 0)
+                        cmdName = command.Data.Options
+                            .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
+                            .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+
+                    _metricDb.Metrics.Add(new Metric
+                    {
+                        Author = shardedInteractionContext.User.Username + "#" +
+                                 shardedInteractionContext.User.Discriminator,
+                        Name = cmdName,
+                        TimeStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds
+                    });
+
+                    await _metricDb.SaveChangesAsync();
+                }
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Failed to push metrics.");
+        }
     }
 
     private async Task HandleJoin(SocketGuildUser arg)
