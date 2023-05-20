@@ -106,7 +106,7 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                DefinitionHashes.Records.MarsilionC,
+                // DefinitionHashes.Records.MarsilionC,
                 DefinitionHashes.Records.Taipan4fr
             }
         },
@@ -203,7 +203,7 @@ internal static class Craftables
                 DefinitionHashes.InventoryItems.DeathsRazor_569799274,
                 DefinitionHashes.InventoryItems.Goldtusk_569799275,
                 DefinitionHashes.InventoryItems.ImperialDecree_2919334548,
-                DefinitionHashes.InventoryItems.MarsilionC_867154247,
+                // DefinitionHashes.InventoryItems.MarsilionC_867154247,
                 DefinitionHashes.InventoryItems.Perpetualis_392008588,
                 DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
                 DefinitionHashes.InventoryItems.Raconteur_45643573,
@@ -442,7 +442,7 @@ internal static class Craftables
             DefinitionHashes.Records.RoyalExecutioner => DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
             DefinitionHashes.Records.ProdigalReturn => DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
             DefinitionHashes.Records.Regnant => DefinitionHashes.InventoryItems.Regnant_268260372,
-            DefinitionHashes.Records.MarsilionC => DefinitionHashes.InventoryItems.MarsilionC_867154247,
+            // DefinitionHashes.Records.MarsilionC => DefinitionHashes.InventoryItems.MarsilionC_867154247,
             DefinitionHashes.Records.Caretaker_3171877617 => DefinitionHashes.InventoryItems.Caretaker_2508948099,
             DefinitionHashes.Records.RoundRobin_2839479882 => DefinitionHashes.InventoryItems.RoundRobin_2034215657,
             DefinitionHashes.Records.PhyllotacticSpiral =>
