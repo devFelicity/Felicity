@@ -74,6 +74,7 @@ try
 
     builder.Host.UseDefaultServiceProvider(o => o.ValidateScopes = false);
 
+    builder.Services.AddDbContext<MetricDb>();
     builder.Services.AddDbContext<UserDb>();
     builder.Services.AddDbContext<ServerDb>();
     builder.Services.AddDbContext<TwitchStreamDb>();

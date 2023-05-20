@@ -48,7 +48,9 @@ public class CheckpointCommands : InteractionModuleBase<ShardedInteractionContex
     }
 
     [SlashCommand("checkpoint", "Find a checkpoint and join it.")]
-    public async Task Checkpoint([Autocomplete(typeof(CheckpointAutocomplete))] [Summary("name", "Activity/Encounter to search for:")] int displayOrder)
+    public async Task Checkpoint(
+        [Autocomplete(typeof(CheckpointAutocomplete))] [Summary("name", "Activity/Encounter to search for:")]
+        int displayOrder)
     {
         await DeferAsync();
 

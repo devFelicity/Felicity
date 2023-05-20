@@ -164,7 +164,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
 
         var defianceDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable,
-            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(), request.Response.Characters.Data.Keys.First());
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
+            request.Response.Characters.Data.Keys.First());
 
         var invDescription = false;
         var buyDescription = false;
@@ -211,6 +212,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     {
                         field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
                     }
+
                     if (source is "Defiance" && defianceDeepsight)
                     {
                         if (field.Value.ToString()!.Contains("⚠️"))
@@ -225,7 +227,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 field.Value +=
                     $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
             }
-            
+
             if (string.IsNullOrEmpty((string?)field.Value)) continue;
 
             embed.AddField(field);
@@ -259,7 +261,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             _ => 0
         };
 
-        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes.ElementAt(1);
+        var vendorItemIndex = request.Response.Categories.Data.Categories.ElementAt(categoryIndex).ItemIndexes
+            .ElementAt(1);
 
         try
         {

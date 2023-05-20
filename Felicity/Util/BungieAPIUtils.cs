@@ -57,6 +57,7 @@ public static class BungieApiUtils
             });
 
         var response = userInfoCard.Response;
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (response == null || response.Count == 0)
             return null;
 

@@ -4,7 +4,6 @@ using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.Models.Destiny;
-using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
@@ -76,16 +75,14 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
         if (joke)
         {
-            var jokeEmbed = new EmbedBuilder
-            {
-                Title = requestedProfile.BungieName,
-                Url =
-                    $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                    profile.Response.Profile.Data.UserInfo.MembershipId,
-                Color = Color.Purple,
-                ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
-                Footer = Embeds.MakeFooter()
-            };
+            var jokeEmbed = Embeds.MakeBuilder();
+
+            jokeEmbed.Title = requestedProfile.BungieName;
+            jokeEmbed.Url =
+                $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
+                profile.Response.Profile.Data.UserInfo.MembershipId;
+            jokeEmbed.ThumbnailUrl =
+                BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath;
 
             jokeEmbed.Description += "> [Wish Ascended](https://emblem.report/2419113769)\n";
             jokeEmbed.Description += "> [Heavy Is The Crown](https://emblem.report/1661191198)\n";
@@ -171,17 +168,14 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var sortedList = emblemList.OrderBy(o => o.DisplayProperties.Name).ToList();
 
-        var embed = new EmbedBuilder
-        {
-            Title = requestedProfile.BungieName,
-            Url =
-                $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                profile.Response.Profile.Data.UserInfo.MembershipId,
-            Color = Color.Purple,
-            ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath,
-            Footer = Embeds.MakeFooter()
-        };
+        var embed = Embeds.MakeBuilder();
 
+        embed.Title = requestedProfile.BungieName;
+        embed.Url =
+            $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
+            profile.Response.Profile.Data.UserInfo.MembershipId;
+        embed.ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath;
+            
         if (sortedList.Count == 0)
         {
             embed.Description = "Account has no shared emblems.";
@@ -324,7 +318,8 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                 profile.Response.Profile.Data.UserInfo.MembershipId,
             Color = Color.Purple,
             Footer = Embeds.MakeFooter(),
-            Description = "Here are the 5 rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
+            Description =
+                "Here are the 5 rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
         };
 
         foreach (var emblem in emblemResponse.Data)

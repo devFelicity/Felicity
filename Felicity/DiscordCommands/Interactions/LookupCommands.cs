@@ -131,15 +131,12 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var wish = Wishes.KnownWishes[wishNumber - 1];
 
-        var embed = new EmbedBuilder
-        {
-            Color = Color.Purple,
-            Description = wish.Description,
-            Footer = Embeds.MakeFooter(),
-            ImageUrl = $"https://cdn.tryfelicity.one/images/wishes/wish-{wishNumber}.png",
-            ThumbnailUrl = "https://bungie.net/common/destiny2_content/icons/fc5791eb2406bf5e6b361f3d16596693.png",
-            Title = $"Wish {wish.Number}: {wish.Name}"
-        };
+        var embed = Embeds.MakeBuilder();
+
+        embed.Description = wish.Description;
+        embed.ImageUrl = $"https://cdn.tryfelicity.one/images/wishes/wish-{wishNumber}.png";
+        embed.ThumbnailUrl = "https://bungie.net/common/destiny2_content/icons/fc5791eb2406bf5e6b361f3d16596693.png";
+        embed.Title = $"Wish {wish.Number}: {wish.Name}";
 
         await FollowupAsync(embed: embed.Build());
     }
@@ -229,17 +226,14 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var memTypeAndId = $"{(int)membershipType}/{membershipId}";
 
-        var embed = new EmbedBuilder
-        {
-            Color = Color.DarkMagenta,
-            Title = bungieName,
-            Footer = Embeds.MakeFooter(),
-            Description =
-                $"{Format.Code($"/invite {bungieName}")} | " +
-                $"{Format.Code($"/join {bungieName}")}",
-            ThumbnailUrl = BotVariables.BungieBaseUrl + goodChar.EmblemPath,
-            Url = $"https://www.bungie.net/7/en/User/Profile/{memTypeAndId}"
-        };
+        var embed = Embeds.MakeBuilder();
+        
+        embed.Title = bungieName;
+        embed.Description =
+            $"{Format.Code($"/invite {bungieName}")} | " +
+            $"{Format.Code($"/join {bungieName}")}";
+        embed.ThumbnailUrl = BotVariables.BungieBaseUrl + goodChar.EmblemPath;
+        embed.Url = $"https://www.bungie.net/7/en/User/Profile/{memTypeAndId}";
 
         embed.AddField("Current Season Rank",
             $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonofDefianceRank].ObjectiveProgress.Progress:n0}",

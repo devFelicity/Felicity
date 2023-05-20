@@ -52,7 +52,8 @@ public static class LootTables
     {
         new LootTableDefinition
         {
-            ActivityType = ActivityType.Raid, Name = "Root of Nightmares", Description = "A sinister threat has taken root.",
+            ActivityType = ActivityType.Raid, Name = "Root of Nightmares",
+            Description = "A sinister threat has taken root.",
             Loot = new List<LootTable>
             {
                 new()
@@ -462,7 +463,6 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Persys, Primordial Ruin",
                     LootIds = new List<uint>
                     {
-                        
                         DefinitionHashes.InventoryItems.LiminalVigil,
                         DefinitionHashes.InventoryItems.LongArm,
                         DefinitionHashes.InventoryItems.SeventhSeraphCarbine_4070357005,

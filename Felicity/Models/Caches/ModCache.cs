@@ -170,9 +170,8 @@ public static class ProcessModData
                 Description = result.DisplayProperties.Description,
                 Id = (uint)saleItemsValue.Item.Hash!
             });
-
         }
-        
+
         return Task.FromResult(modCache);
     }
 }
