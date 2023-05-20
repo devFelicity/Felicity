@@ -11,7 +11,7 @@ public static class Embeds
     {
         var builder = new EmbedBuilder
         {
-            Color = Color.Orange,
+            Color = new Color(239, 35, 60),
             Footer = MakeFooter()
         };
 
