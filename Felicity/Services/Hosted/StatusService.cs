@@ -18,7 +18,6 @@ public class StatusService : BackgroundService
         new Game("Juice WRLD", ActivityType.Listening),
         new Game("Google Chrome"),
         new Game("$10k qp tourney", ActivityType.Competing),
-        new Game("ttv/fake_positivity", ActivityType.Watching),
         new Game("sweet bird sounds", ActivityType.Listening),
         new Game("Felicity ... wait", ActivityType.Watching),
         new Game($"v.{BotVariables.Version}"),
@@ -27,7 +26,8 @@ public class StatusService : BackgroundService
         new Game("/vendor", ActivityType.Watching),
         new Game("/loot-table", ActivityType.Watching),
         new Game("/recipes", ActivityType.Watching),
-        new Game("/memento", ActivityType.Watching)
+        new Game("/memento", ActivityType.Watching),
+        new Game("big /checkpoint hurting mom & pop LFG", ActivityType.Watching)
     };
 
     private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
