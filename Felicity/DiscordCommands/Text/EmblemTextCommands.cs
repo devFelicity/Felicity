@@ -28,7 +28,7 @@ public class EmblemTextCommands : ModuleBase<ShardedCommandContext>
     {
         var knownEmblems = FetchAllEmblems();
 
-        await File.WriteAllTextAsync($"data/emblems/{DateTime.UtcNow:yy-MM-dd}.json",
+        await File.WriteAllTextAsync($"Data/emblems/{DateTime.UtcNow:yy-MM-dd}.json",
             JsonSerializer.Serialize(knownEmblems));
 
         await ReplyAsync($"Saved {knownEmblems.Count} emblems.");
@@ -38,7 +38,7 @@ public class EmblemTextCommands : ModuleBase<ShardedCommandContext>
     public async Task CompareEmblems(string originDate)
     {
         var previousEmblems =
-            JsonSerializer.Deserialize<List<uint>>(await File.ReadAllTextAsync($"data/emblems/{originDate}.json"));
+            JsonSerializer.Deserialize<List<uint>>(await File.ReadAllTextAsync($"Data/emblems/{originDate}.json"));
         var newEmblems = FetchAllEmblems();
 
         if (previousEmblems != null)
