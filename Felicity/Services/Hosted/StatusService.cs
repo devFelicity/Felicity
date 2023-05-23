@@ -12,22 +12,23 @@ public class StatusService : BackgroundService
         new Game("Destiny 3"),
         new Game("Spire of Stars"),
         new Game("you 👀", ActivityType.Watching),
-        new Game("Leaf break stuff 🔨", ActivityType.Watching),
+        new Game("Moons break stuff 🔨", ActivityType.Watching),
         new Game("with fire"),
         new Game("you break the rules", ActivityType.Watching),
         new Game("Juice WRLD", ActivityType.Listening),
         new Game("Google Chrome"),
         new Game("$10k qp tourney", ActivityType.Competing),
-        new Game("ttv/fake_positivity", ActivityType.Watching),
         new Game("sweet bird sounds", ActivityType.Listening),
         new Game("Felicity ... wait", ActivityType.Watching),
         new Game($"v.{BotVariables.Version}"),
         new Game("/lookup", ActivityType.Watching),
+        new Game("hide & seek in the Tower"),
         new Game("/metrics", ActivityType.Watching),
         new Game("/vendor", ActivityType.Watching),
         new Game("/loot-table", ActivityType.Watching),
         new Game("/recipes", ActivityType.Watching),
-        new Game("/memento", ActivityType.Watching)
+        new Game("/memento", ActivityType.Watching),
+        new Game("big /checkpoint hurting mom & pop LFG", ActivityType.Watching)
     };
 
     private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
