@@ -8,6 +8,30 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonDeep, new List<uint>
+            {
+                673861429, // different times
+                3159538778, // distant pull
+                1585307805, // rapacious appetite
+                1195933113, // targeted redaction
+                2119725732, // thin precipice
+                3328286012 // until its return
+            }
+        },
+        {
+            CraftSource.RaidLW, new List<uint>
+            {
+                2906615623, // age-old bond
+                2585307516, // apex predator
+                2610512925, // chattering bone
+                1029956969, // nation of beasts
+                4104745812, // techeun force
+                3363925957, // transfiguration
+                950932825, // tyranny of heavens
+                2360742598 // supremacy
+            }
+        },
+        {
             CraftSource.RaidRoN, new List<uint>
             {
                 DefinitionHashes.Records.AcasiasDejection,
@@ -106,7 +130,6 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                // DefinitionHashes.Records.MarsilionC,
                 DefinitionHashes.Records.Taipan4fr
             }
         },
@@ -186,6 +209,30 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
         {
+            CraftSource.SeasonDeep, new List<uint>
+            {
+                3016891299, // different times
+                1769847435, // distant pull
+                1081724548, // rapacious appetite
+                3890055324, // targeted redaction
+                4066778670, // thin precipice
+                4066778670 // until its return
+            }
+        },
+        {
+            CraftSource.RaidLW, new List<uint>
+            {
+                601592879, // age-old bond
+                2545083870, // apex predator
+                568515759, // chattering bone
+                654370424, // nation of beasts
+                4094657108, // techeun force
+                3799980700, // transfiguration
+                2721249463, // tyranny of heavens
+                686951703 // supremacy
+            }
+        },
+        {
             CraftSource.RaidRoN, new List<uint>
             {
                 DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
@@ -203,7 +250,6 @@ internal static class Craftables
                 DefinitionHashes.InventoryItems.DeathsRazor_569799274,
                 DefinitionHashes.InventoryItems.Goldtusk_569799275,
                 DefinitionHashes.InventoryItems.ImperialDecree_2919334548,
-                // DefinitionHashes.InventoryItems.MarsilionC_867154247,
                 DefinitionHashes.InventoryItems.Perpetualis_392008588,
                 DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
                 DefinitionHashes.InventoryItems.Raconteur_45643573,
@@ -367,6 +413,22 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
+            673861429 => 3016891299, // different times
+            3159538778 => 1769847435, // distant pull
+            1585307805 => 1081724548, // rapacious appetite
+            1195933113 => 3890055324, // targeted redaction
+            2119725732 => 4066778670, // thin precipice
+            3328286012 => 4066778670, // until its return
+
+            2906615623 => 601592879, // age-old bond
+            2585307516 => 2545083870, // apex predator
+            2610512925 => 568515759, // chattering bone
+            1029956969 => 654370424, // nation of beasts
+            4104745812 => 4094657108, // techeun force
+            3363925957 => 3799980700, // transfiguration
+            950932825 => 2721249463, // tyranny of heavens
+            2360742598 => 686951703, // supremacy
+
             DefinitionHashes.Records.AcasiasDejection => DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
             DefinitionHashes.Records.BriarsContempt => DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
             DefinitionHashes.Records.KoraxissDistress => DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
@@ -442,7 +504,6 @@ internal static class Craftables
             DefinitionHashes.Records.RoyalExecutioner => DefinitionHashes.InventoryItems.RoyalExecutioner_1720503118,
             DefinitionHashes.Records.ProdigalReturn => DefinitionHashes.InventoryItems.ProdigalReturn_268260373,
             DefinitionHashes.Records.Regnant => DefinitionHashes.InventoryItems.Regnant_268260372,
-            // DefinitionHashes.Records.MarsilionC => DefinitionHashes.InventoryItems.MarsilionC_867154247,
             DefinitionHashes.Records.Caretaker_3171877617 => DefinitionHashes.InventoryItems.Caretaker_2508948099,
             DefinitionHashes.Records.RoundRobin_2839479882 => DefinitionHashes.InventoryItems.RoundRobin_2034215657,
             DefinitionHashes.Records.PhyllotacticSpiral =>
@@ -502,11 +563,13 @@ internal static class Craftables
         public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
         public const string RaidRoN = "Root of Nightmares";
+        public const string RaidLW = "Last Wish";
         public const string SeasonHaunted = "Haunted";
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";
         public const string SeasonSeraph = "Seraph";
         public const string SeasonDefiance = "Defiance";
+        public const string SeasonDeep = "Deep";
         public const string Unknown = "Quest / Unknown";
         public const string Wq = "Witch Queen";
         public const string WqWellspring = "Wellspring";
