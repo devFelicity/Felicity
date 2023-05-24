@@ -137,9 +137,11 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
-        [Summary("show-complete", "Show completed recipes? (default: false)")]
-        bool showComplete = false)
+        /*[Summary("show-complete", "Show completed recipes? (default: false)")]
+        bool showComplete = false*/)
     {
+        var showComplete = false;
+
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
 
@@ -163,7 +165,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.ThumbnailUrl =
             "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
 
-        var defianceDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.WarTable,
+        var deepDeepsight = await IsDeepsightAvailable(8721509,
             user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
             request.Response.Characters.Data.Keys.First());
 
@@ -213,7 +215,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                         field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
                     }
 
-                    if (source is "Defiance" && defianceDeepsight)
+                    if (source is "Deep" && deepDeepsight)
                     {
                         if (field.Value.ToString()!.Contains("⚠️"))
                             field.Value += "💰 ";
@@ -257,7 +259,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var categoryIndex = vendorId switch
         {
-            DefinitionHashes.Vendors.WarTable => 3,
+            8721509 => 1,
             _ => 0
         };
 
