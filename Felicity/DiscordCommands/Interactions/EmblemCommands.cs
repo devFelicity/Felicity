@@ -175,7 +175,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
             profile.Response.Profile.Data.UserInfo.MembershipId;
         embed.ThumbnailUrl = BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath;
-            
+
         if (sortedList.Count == 0)
         {
             embed.Description = "Account has no shared emblems.";

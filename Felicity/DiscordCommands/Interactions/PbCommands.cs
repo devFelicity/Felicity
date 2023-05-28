@@ -63,8 +63,9 @@ public class PbCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var embed = Embeds.MakeBuilder();
         embed.Title = $"Personal best clear times for {currentUser.BungieName}";
-        embed.Description = "⚠️ These values are only what in-game stat trackers show, real times as well as checkpoint vs full clears and lowmans will be available in a future update.\n\n"
-        + value;
+        embed.Description =
+            "⚠️ These values are only what in-game stat trackers show, real times as well as checkpoint vs full clears and lowmans will be available in a future update.\n\n"
+            + value;
 
         await FollowupAsync(embed: embed.Build());
     }

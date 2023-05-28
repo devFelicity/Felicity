@@ -101,7 +101,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
                 i++;
             }
-            
+
             var paginatorBuilder = new StaticPaginatorBuilder()
                 .AddUser(Context.User)
                 .WithPages(pageList)
@@ -226,7 +226,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         var memTypeAndId = $"{(int)membershipType}/{membershipId}";
 
         var embed = Embeds.MakeBuilder();
-        
+
         embed.Title = bungieName;
         embed.Description =
             $"{Format.Code($"/invite {bungieName}")} | " +

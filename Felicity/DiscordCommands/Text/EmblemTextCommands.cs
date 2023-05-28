@@ -47,13 +47,11 @@ public class EmblemTextCommands : ModuleBase<ShardedCommandContext>
 
             var uniqueEmblems = newEmblems.Except(previousEmblems).ToList();
             foreach (var uniqueEmblem in uniqueEmblems)
-            {
-                if (_client.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(uniqueEmblem, BungieLocales.EN,
+                if (_client.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(uniqueEmblem,
+                        BungieLocales.EN,
                         out var emblemDefinition))
-                {
-                    sb.Append($"{emblemDefinition.DisplayProperties.Name}: {emblemDefinition.SecondaryIcon.AbsolutePath}\n");
-                }
-            }
+                    sb.Append(
+                        $"{emblemDefinition.DisplayProperties.Name}: {emblemDefinition.SecondaryIcon.AbsolutePath}\n");
 
             var bytes = new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString()));
             await Context.Channel.SendFileAsync(new FileAttachment(bytes, "emblemComparison.txt"));
@@ -71,7 +69,7 @@ public class EmblemTextCommands : ModuleBase<ShardedCommandContext>
             if (itemDefinition.Redacted)
                 continue;
 
-            if(!knownEmblems.Contains(itemDefinition.Hash))
+            if (!knownEmblems.Contains(itemDefinition.Hash))
                 knownEmblems.Add(itemDefinition.Hash);
         }
 
