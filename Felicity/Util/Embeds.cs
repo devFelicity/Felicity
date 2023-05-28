@@ -7,11 +7,13 @@ namespace Felicity.Util;
 
 public static class Embeds
 {
+    public static readonly Color DefaultColor = new(239, 35, 60);
+
     public static EmbedBuilder MakeBuilder()
     {
         var builder = new EmbedBuilder
         {
-            Color = new Color(239, 35, 60),
+            Color = DefaultColor,
             Footer = MakeFooter()
         };
 
