@@ -237,32 +237,49 @@ public class DiscordStartupService : BackgroundService
 
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
 
-        try
+        var success = false;
+        var timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+        while (!success)
         {
-            if (shardedInteractionContext.Interaction.Type != InteractionType.ApplicationCommandAutocomplete)
-                if (shardedInteractionContext.Interaction is SocketSlashCommand command)
+            timestamp += 1;
+
+            try
+            {
+                if (shardedInteractionContext.Interaction.Type ==
+                    InteractionType.ApplicationCommandAutocomplete)
+                    continue;
+
+                if (shardedInteractionContext.Interaction is not SocketSlashCommand command)
+                    continue;
+
+                var cmdName = command.CommandName;
+
+                if (command.Data.Options.Count > 0)
+                    cmdName = command.Data.Options
+                        .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
+                        .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+
+                _metricDb.Metrics.Add(new Metric
                 {
-                    var cmdName = command.CommandName;
+                    Author = shardedInteractionContext.User.Username + "#" +
+                             shardedInteractionContext.User.Discriminator,
+                    Name = cmdName,
+                    TimeStamp = timestamp
+                });
 
-                    if (command.Data.Options.Count > 0)
-                        cmdName = command.Data.Options
-                            .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
-                            .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+                await _metricDb.SaveChangesAsync();
 
-                    _metricDb.Metrics.Add(new Metric
-                    {
-                        Author = shardedInteractionContext.User.Username + "#" +
-                                 shardedInteractionContext.User.Discriminator,
-                        Name = cmdName,
-                        TimeStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds
-                    });
-
-                    await _metricDb.SaveChangesAsync();
+                success = true;
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
+                {
+                    Log.Error(e, "Failed to push metrics.");
+                    success = true; // pretend it's true because incrementing id won't help at this point.
                 }
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "Failed to push metrics.");
+            }
         }
     }
 
