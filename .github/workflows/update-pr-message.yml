@@ -2,6 +2,7 @@ name: Update Pull Request Message
 on:
   pull_request:
     types:
+      - opened
       - synchronize
 
 jobs:
@@ -9,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.5.2
-        
+        uses: actions/checkout@v2
+
       - name: Fetch all commit history
         run: git fetch --prune --unshallow
 
@@ -29,7 +30,7 @@ jobs:
           # Check if the pull request message is empty
           if [ -z "${BODY}" ]; then
             # Get the list of commit messages
-            COMMIT_MESSAGES=$(git log --format=%B "origin/main..HEAD")
+            COMMIT_MESSAGES=$(git log --format=%B origin/main..HEAD)
 
             # Create a formatted commit message list
             COMMIT_LIST=""
@@ -47,7 +48,7 @@ jobs:
               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
               -d '{
                 "title": "'"${TITLE}"'",
-                "body": "Commits:\n\n'"${COMMIT_LIST}"'"
+                "body": "Commits:'"${COMMIT_LIST}"'"
               }'
           else
             echo "Pull request message already exists. Skipping update."
