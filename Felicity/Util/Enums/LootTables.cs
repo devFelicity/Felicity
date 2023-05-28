@@ -431,7 +431,7 @@ public static class LootTables
                 }
             }
         },
-        new LootTableDefinition
+        /*new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Ghosts of the Deep",
             Description = "fish go brrr or something idk",
@@ -471,7 +471,7 @@ public static class LootTables
                     }
                 }
             }
-        },
+        },*/
         new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Spire of the Watcher",
