@@ -2,6 +2,7 @@ name: Update Pull Request Message
 on:
   pull_request:
     types:
+      - opened
       - synchronize
 
 jobs:
