@@ -1,5 +1,6 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -32,6 +33,30 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         _userDb = userDb;
         _bungieClient = bungieClient;
         _interactionService = interactionService;
+    }
+
+    [Command("vendorJson")]
+    public async Task VendorJson(ulong userId, uint vendorId)
+    {
+        var user = _userDb.Users.First(x => x.DiscordId == userId);
+
+        var characterIdTask = await _bungieClient.ApiAccess.Destiny2.GetProfile(user.DestinyMembershipType,
+            user.DestinyMembershipId, new[]
+            {
+                DestinyComponentType.Characters
+            }, user.GetTokenData());
+
+        var request = await _bungieClient.ApiAccess.Destiny2.GetVendor(user.DestinyMembershipType,
+            user.DestinyMembershipId,
+            characterIdTask.Response.Characters.Data.Keys.First(), vendorId, new[]
+            {
+                DestinyComponentType.Vendors, DestinyComponentType.VendorCategories, DestinyComponentType.VendorSales,
+                DestinyComponentType.ItemSockets
+            }, user.GetTokenData());
+
+        await File.WriteAllTextAsync("tmpVendor.json", JsonSerializer.Serialize(request));
+
+        await Context.Channel.SendFileAsync("tmpVendor.json");
     }
 
     [Command("serverList")]

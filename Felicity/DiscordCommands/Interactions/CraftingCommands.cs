@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
-using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Authorization;
 using DotNetBungieAPI.Models.Destiny;
@@ -13,6 +12,8 @@ using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Util;
 using Felicity.Util.Enums;
+using Fergun.Interactive;
+using Fergun.Interactive.Pagination;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -24,14 +25,17 @@ namespace Felicity.DiscordCommands.Interactions;
 public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
+    private readonly InteractiveService _interactiveService;
     private readonly ServerDb _serverDb;
     private readonly UserDb _userDb;
 
-    public CraftingCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb)
+    public CraftingCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb,
+        InteractiveService interactiveService)
     {
         _userDb = userDb;
         _bungieClient = bungieClient;
         _serverDb = serverDb;
+        _interactiveService = interactiveService;
     }
 
     [SlashCommand("crafted", "View all crafted weapon levels.")]
@@ -117,7 +121,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
                 if (itemList.Count > 1 && !embed.Description.Contains("* = "))
                     embed.Description +=
-                        "\n\n* = Multiple crafted weapons are in your inventory, only the highest level is returned.";
+                        "\n\n`*` = Multiple crafted weapons are in your inventory, only the highest level is returned.";
             }
 
             if (string.IsNullOrEmpty(sb.ToString()))
@@ -136,12 +140,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
     }
 
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
-    public async Task Recipes(
-        /*[Summary("show-complete", "Show completed recipes? (default: false)")]
-        bool showComplete = false*/)
+    public async Task Recipes()
     {
-        var showComplete = false;
-
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
 
@@ -159,12 +159,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 DestinyComponentType.ProfileInventories
             }, user.GetTokenData());
 
-        var embed = Embeds.MakeBuilder();
-        embed.Title = "Craftable List";
-        embed.Description = "List of craftable weapons and your progress on them.";
-        embed.ThumbnailUrl =
-            "https://www.bungie.net/common/destiny2_content/icons/e7e6d522d375dfa6dec055135ce6a77e.png";
-
         var deepDeepsight = await IsDeepsightAvailable(8721509,
             user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
             request.Response.Characters.Data.Keys.First());
@@ -173,78 +167,105 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         var buyDescription = false;
 
         var craftableList = Craftables.CraftableList;
+        var pageList = new List<PageBuilder>();
 
-        foreach (var (source, weaponList) in craftableList)
+        var groups = craftableList.Select((item, index) => new { Item = item, Index = index })
+            .GroupBy(x => x.Index / 4)
+            .Select(group => group.Select(x => x.Item).ToList())
+            .ToList();
+
+        foreach (var sources in groups)
         {
-            var field = new EmbedFieldBuilder
+            var page = new PageBuilder
             {
-                Name = source,
-                IsInline = true
+                Title = "Craftable List",
+                Description = "List of craftable weapons and your progress on them.",
+                ThumbnailUrl =
+                    "https://www.bungie.net/common/destiny2_content/icons/cf05991b4a82c4faec17755105bda88f.png",
+                Color = Embeds.DefaultColor
             };
 
-            foreach (var weaponId in weaponList)
+            foreach (var keyValuePair in sources)
             {
-                if (embed.Fields.Count % 3 == 2)
-                    embed.AddField("\u200b", '\u200b');
-
-                _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
-                    out var manifestRecord);
-
-                var record = request.Response.ProfileRecords.Data.Records[weaponId];
-                var obj = record.Objectives.First();
-
-                if (obj.IsComplete && !showComplete)
-                    continue;
-
-                field.Value += "\n > ";
-
-                if (obj.IsComplete)
+                var field = new EmbedFieldBuilder
                 {
-                    field.Value += "✅";
-                }
-                else
+                    Name = keyValuePair.Key,
+                    IsInline = true
+                };
+
+                foreach (var weaponId in keyValuePair.Value)
                 {
-                    var inventoryItemCount = GetItemCount(request, manifestRecord.Hash);
-                    if (inventoryItemCount > 0)
+                    if (page.Fields.Count % 3 == 2)
+                        page.AddField("\u200b", '\u200b');
+
+                    _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
+                        out var manifestRecord);
+
+                    var record = request.Response.ProfileRecords.Data.Records[weaponId];
+                    var obj = record.Objectives.First();
+
+                    field.Value += "\n > ";
+
+                    if (obj.IsComplete)
                     {
-                        field.Value += $"`{obj.Progress + inventoryItemCount}/{obj.CompletionValue}` ⚠️ ";
-                        invDescription = true;
+                        field.Value += "`✅`";
                     }
                     else
                     {
-                        field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
-                    }
-
-                    if (source is "Deep" && deepDeepsight)
-                    {
-                        if (field.Value.ToString()!.Contains("⚠️"))
-                            field.Value += "💰 ";
+                        var inventoryItemCount = GetItemCount(request, manifestRecord.Hash);
+                        if (inventoryItemCount > 0)
+                        {
+                            field.Value += $"`{obj.Progress + inventoryItemCount}/{obj.CompletionValue}` ⚠️ ";
+                            invDescription = true;
+                        }
                         else
-                            field.Value += " 💰 ";
+                        {
+                            field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
+                        }
 
-                        buyDescription = true;
+                        if (keyValuePair.Key is "Deep" && deepDeepsight)
+                        {
+                            if (field.Value.ToString()!.Contains("⚠️"))
+                                field.Value += "💰 ";
+                            else
+                                field.Value += " 💰 ";
+
+                            buyDescription = true;
+                        }
                     }
+
+                    field.Value +=
+                        $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
                 }
 
-                field.Value +=
-                    $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
+                if (string.IsNullOrEmpty((string?)field.Value))
+                    continue;
+
+                if (invDescription)
+                    page.Description += "\n\n⚠ = Includes incomplete deepsight weapons.";
+
+                if (buyDescription)
+                    page.Description +=
+                        "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
+
+                page.Fields.Add(field);
             }
 
-            if (string.IsNullOrEmpty((string?)field.Value)) continue;
-
-            embed.AddField(field);
+            pageList.Add(page);
         }
 
-        if (invDescription)
-            embed.Description += "\n\n⚠️ = Includes incomplete deepsight weapons.";
+        var paginatorBuilder = new StaticPaginatorBuilder()
+            .AddUser(Context.User)
+            .WithPages(pageList)
+            .AddOption(new Emoji("◀"), PaginatorAction.Backward)
+            .AddOption(new Emoji("🔢"), PaginatorAction.Jump)
+            .AddOption(new Emoji("▶"), PaginatorAction.Forward)
+            .WithActionOnCancellation(ActionOnStop.DisableInput)
+            .WithActionOnTimeout(ActionOnStop.DisableInput)
+            .Build();
 
-        if (buyDescription)
-            embed.Description += "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
-
-        if (embed.Fields.Count == 0)
-            embed.Description = "You have completed all available patterns.";
-
-        await FollowupAsync(embed: embed.Build());
+        await _interactiveService.SendPaginatorAsync(paginatorBuilder, Context.Interaction,
+            TimeSpan.FromMinutes(10), InteractionResponseType.DeferredChannelMessageWithSource);
     }
 
     private async Task<bool> IsDeepsightAvailable(uint vendorId, BungieMembershipType destinyMembershipType,

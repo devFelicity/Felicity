@@ -399,38 +399,79 @@ public static class LootTables
                 new()
                 {
                     EncounterType = Encounter.First, EncounterName = "Kalli, The Corrupted",
-                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.AgeOldBond }
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.AgeOldBond_601592879 }
                 },
                 new()
                 {
                     EncounterType = Encounter.Second, EncounterName = "Shuro Chi, The Corrupted",
-                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.Transfiguration }
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.Transfiguration_3799980700 }
                 },
                 new()
                 {
                     EncounterType = Encounter.Third, EncounterName = "Morgeth, The Spirekeeper",
                     LootIds = new List<uint>
                     {
-                        DefinitionHashes.InventoryItems.NationofBeasts,
+                        DefinitionHashes.InventoryItems.NationofBeasts_654370424,
                         DefinitionHashes.InventoryItems.CleansingKnife
                     }
                 },
                 new()
                 {
                     EncounterType = Encounter.Fourth, EncounterName = "The Vault",
-                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.TyrannyofHeaven }
+                    LootIds = new List<uint> { DefinitionHashes.InventoryItems.TyrannyofHeaven_2721249463 }
                 },
                 new()
                 {
                     EncounterType = Encounter.Boss, EncounterName = "Riven of a Thousand Voices",
                     LootIds = new List<uint>
                     {
-                        DefinitionHashes.InventoryItems.ChatteringBone,
+                        DefinitionHashes.InventoryItems.ChatteringBone_568515759,
                         DefinitionHashes.InventoryItems.GlitteringKey
                     }
                 }
             }
         },
+        /*new LootTableDefinition
+        {
+            ActivityType = ActivityType.Dungeon, Name = "Ghosts of the Deep",
+            Description = "fish go brrr or something idk",
+            Loot = new List<LootTable>()
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "Hive Ritual",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.NoSurvivors,
+                        DefinitionHashes.InventoryItems.NewPacificEpitaph,
+                        DefinitionHashes.InventoryItems.ColdComfort
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "Ecthar, Shield of Savathûn",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.GreasyLuck,
+                        DefinitionHashes.InventoryItems.ColdComfort
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Simmumah ur-Nokru",
+                    LootIds = new List<uint>
+                    {
+                        DefinitionHashes.InventoryItems.NoSurvivors,
+                        DefinitionHashes.InventoryItems.NewPacificEpitaph,
+                        DefinitionHashes.InventoryItems.ColdComfort,
+                        DefinitionHashes.InventoryItems.GreasyLuck,
+                        (uint)Armor.Everything
+                    }
+                }
+            }
+        },*/
         new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Spire of the Watcher",

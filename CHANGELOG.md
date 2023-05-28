@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.8.0]
+### Added
+- New Last Wish definitions for loot tables.
+- Ghosts of the Deep loot table (will become active once un-classified from manifest).
+
+### Changed
+- Fixed an issue where metrics wouldn't save correctly.
+- Fixed season rank displaying the wrong season in `/lookup guardian`.
+- Fixed `/recipes` crashing / looking bad by using pages, these expire after 10 minutes and are only interactable by the person invoking them. Added bonus: `show-complete` is a permanent addition now.
+- Fixed a couple backend errors being traced for no reason.
+
 ## [7.7.0]
 ### Added
 - Season of the Deep weapons to /recipes and /crafted.

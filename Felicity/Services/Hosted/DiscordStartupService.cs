@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Felicity.Models;
 using Felicity.Options;
 using Felicity.Util;
+using Fergun.Interactive;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Context;
@@ -21,6 +22,7 @@ public class DiscordStartupService : BackgroundService
     private readonly IOptions<DiscordBotOptions> _discordBotOptions;
     private readonly DiscordShardedClient _discordShardedClient;
     private readonly InteractionService _interactionService;
+    private readonly InteractiveService _interactiveService;
     private readonly MetricDb _metricDb;
     private readonly ServerDb _serverDb;
     private readonly IServiceProvider _serviceProvider;
@@ -36,7 +38,7 @@ public class DiscordStartupService : BackgroundService
         IServiceProvider serviceProvider,
         LogAdapter<BaseSocketClient> adapter,
         ServerDb serverDb,
-        MetricDb metricDb)
+        MetricDb metricDb, InteractiveService interactiveService)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
@@ -46,6 +48,7 @@ public class DiscordStartupService : BackgroundService
         _adapter = adapter;
         _serverDb = serverDb;
         _metricDb = metricDb;
+        _interactiveService = interactiveService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -225,6 +228,10 @@ public class DiscordStartupService : BackgroundService
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
     {
+        if (socketInteraction is SocketMessageComponent messageComponent &&
+            _interactiveService.Callbacks.ContainsKey(messageComponent.Message.Id))
+            return;
+
         if (_discordBotOptions.Value.BannedUsers != null &&
             _discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
         {
@@ -237,32 +244,55 @@ public class DiscordStartupService : BackgroundService
 
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
 
-        try
+        var success = false;
+        var timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        var attempts = 0;
+
+        while (!success)
         {
-            if (shardedInteractionContext.Interaction.Type != InteractionType.ApplicationCommandAutocomplete)
-                if (shardedInteractionContext.Interaction is SocketSlashCommand command)
+            if (attempts > 4)
+                return;
+
+            timestamp += 1;
+
+            try
+            {
+                if (shardedInteractionContext.Interaction.Type ==
+                    InteractionType.ApplicationCommandAutocomplete)
+                    continue;
+
+                if (shardedInteractionContext.Interaction is not SocketSlashCommand command)
+                    continue;
+
+                var cmdName = command.CommandName;
+
+                if (command.Data.Options.Count > 0)
+                    cmdName = command.Data.Options
+                        .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
+                        .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+
+                _metricDb.Metrics.Add(new Metric
                 {
-                    var cmdName = command.CommandName;
+                    Author = shardedInteractionContext.User.Username + "#" +
+                             shardedInteractionContext.User.Discriminator,
+                    Name = cmdName,
+                    TimeStamp = timestamp
+                });
 
-                    if (command.Data.Options.Count > 0)
-                        cmdName = command.Data.Options
-                            .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
-                            .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+                await _metricDb.SaveChangesAsync();
 
-                    _metricDb.Metrics.Add(new Metric
-                    {
-                        Author = shardedInteractionContext.User.Username + "#" +
-                                 shardedInteractionContext.User.Discriminator,
-                        Name = cmdName,
-                        TimeStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds
-                    });
-
-                    await _metricDb.SaveChangesAsync();
+                success = true;
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
+                {
+                    Log.Error(e, "Failed to push metrics.");
+                    success = true; // pretend it's true because incrementing id won't help at this point.
                 }
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "Failed to push metrics.");
+            }
+
+            attempts++;
         }
     }
 
