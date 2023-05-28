@@ -101,8 +101,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
 
                 i++;
             }
-
-
+            
             var paginatorBuilder = new StaticPaginatorBuilder()
                 .AddUser(Context.User)
                 .WithPages(pageList)
@@ -236,7 +235,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.Url = $"https://www.bungie.net/7/en/User/Profile/{memTypeAndId}";
 
         embed.AddField("Current Season Rank",
-            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonofDefianceRank].ObjectiveProgress.Progress:n0}",
+            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonoftheDeepRank].ObjectiveProgress.Progress:n0}",
             true);
         embed.AddField("Raid Completions", $"> {GetRaidCompletions(playerResponse.Response.Metrics.Data):n0}", true);
         embed.AddField("Triumph Score",
