@@ -24,7 +24,6 @@ public class DiscordStartupService : BackgroundService
     private readonly InteractionService _interactionService;
     private readonly InteractiveService _interactiveService;
     private readonly MetricDb _metricDb;
-    private readonly ServerDb _serverDb;
     private readonly IServiceProvider _serviceProvider;
 
     private int _shardsReady;
@@ -37,8 +36,8 @@ public class DiscordStartupService : BackgroundService
         CommandService commandService,
         IServiceProvider serviceProvider,
         LogAdapter<BaseSocketClient> adapter,
-        ServerDb serverDb,
-        MetricDb metricDb, InteractiveService interactiveService)
+        MetricDb metricDb,
+        InteractiveService interactiveService)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
@@ -46,7 +45,6 @@ public class DiscordStartupService : BackgroundService
         _commandService = commandService;
         _serviceProvider = serviceProvider;
         _adapter = adapter;
-        _serverDb = serverDb;
         _metricDb = metricDb;
         _interactiveService = interactiveService;
     }
@@ -65,9 +63,6 @@ public class DiscordStartupService : BackgroundService
 
             _discordShardedClient.InteractionCreated += OnInteractionCreated;
             _interactionService.SlashCommandExecuted += OnSlashCommandExecuted;
-
-            _discordShardedClient.UserJoined += HandleJoin;
-            _discordShardedClient.UserLeft += HandleLeft;
 
             PrepareClientAwaiter();
             await _discordShardedClient.LoginAsync(TokenType.Bot, _discordBotOptions.Value.Token);
@@ -244,86 +239,39 @@ public class DiscordStartupService : BackgroundService
 
         await _interactionService.ExecuteCommandAsync(shardedInteractionContext, _serviceProvider);
 
-        var success = false;
-        var timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-        var attempts = 0;
-
-        while (!success)
+        try
         {
-            if (attempts > 4)
+            if (shardedInteractionContext.Interaction.Type ==
+                InteractionType.ApplicationCommandAutocomplete)
                 return;
 
-            timestamp += 1;
+            if (shardedInteractionContext.Interaction is not SocketSlashCommand command)
+                return;
 
-            try
+            var cmdName = command.CommandName;
+
+            if (command.Data.Options.Count > 0)
+                cmdName = command.Data.Options
+                    .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
+                    .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
+
+            _metricDb.Metrics.Add(new Metric
             {
-                if (shardedInteractionContext.Interaction.Type ==
-                    InteractionType.ApplicationCommandAutocomplete)
-                    continue;
+                Author = shardedInteractionContext.User.Username + "#" +
+                         shardedInteractionContext.User.Discriminator,
+                Name = cmdName,
+                TimeStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds
+            });
 
-                if (shardedInteractionContext.Interaction is not SocketSlashCommand command)
-                    continue;
-
-                var cmdName = command.CommandName;
-
-                if (command.Data.Options.Count > 0)
-                    cmdName = command.Data.Options
-                        .Where(cmdOption => cmdOption.Type == ApplicationCommandOptionType.SubCommand)
-                        .Aggregate(cmdName, (current, cmdOption) => current + $" {cmdOption.Name}");
-
-                _metricDb.Metrics.Add(new Metric
-                {
-                    Author = shardedInteractionContext.User.Username + "#" +
-                             shardedInteractionContext.User.Discriminator,
-                    Name = cmdName,
-                    TimeStamp = timestamp
-                });
-
-                await _metricDb.SaveChangesAsync();
-
-                success = true;
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
-                {
-                    Log.Error(e, "Failed to push metrics.");
-                    success = true; // pretend it's true because incrementing id won't help at this point.
-                }
-            }
-
-            attempts++;
+            await _metricDb.SaveChangesAsync();
         }
-    }
-
-    private async Task HandleJoin(SocketGuildUser arg)
-    {
-        var serverSettings = _serverDb.Servers.FirstOrDefault(x => x.ServerId == arg.Guild.Id);
-
-        if (serverSettings?.MemberLogChannel != null)
-            if (serverSettings.MemberJoined != null && (bool)serverSettings.MemberJoined)
+        catch (Exception e)
+        {
+            if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
             {
-                var embed = Embeds.GenerateGuildUser(arg);
-                embed.Description = $"{arg.Mention} joined the server!";
-
-                await _discordShardedClient.GetGuild(arg.Guild.Id)
-                    .GetTextChannel((ulong)serverSettings.MemberLogChannel).SendMessageAsync(embed: embed.Build());
+                Log.Error(e, "Failed to push metrics.");
             }
-    }
-
-    private async Task HandleLeft(SocketGuild arg1, SocketUser arg2)
-    {
-        var serverSettings = _serverDb.Servers.FirstOrDefault(x => x.ServerId == arg1.Id);
-
-        if (serverSettings?.MemberLogChannel != null)
-            if (serverSettings.MemberLeft != null && (bool)serverSettings.MemberLeft)
-            {
-                var embed = Embeds.GenerateGuildUser(arg2);
-                embed.Description = $"{arg2.Mention} left the server!";
-
-                await _discordShardedClient.GetGuild(arg1.Id)
-                    .GetTextChannel((ulong)serverSettings.MemberLogChannel).SendMessageAsync(embed: embed.Build());
-            }
+        }
     }
 
     private void PrepareClientAwaiter()

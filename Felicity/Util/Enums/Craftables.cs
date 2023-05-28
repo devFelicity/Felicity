@@ -19,7 +19,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.RaidLW, new List<uint>
+            CraftSource.RaidLw, new List<uint>
             {
                 2906615623, // age-old bond
                 2585307516, // apex predator
@@ -220,7 +220,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.RaidLW, new List<uint>
+            CraftSource.RaidLw, new List<uint>
             {
                 601592879, // age-old bond
                 2545083870, // apex predator
@@ -563,7 +563,7 @@ internal static class Craftables
         public const string Opulent = "Opulent";
         public const string RaidVotD = "Vow of the Disciple";
         public const string RaidRoN = "Root of Nightmares";
-        public const string RaidLW = "Last Wish";
+        public const string RaidLw = "Last Wish";
         public const string SeasonHaunted = "Haunted";
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";

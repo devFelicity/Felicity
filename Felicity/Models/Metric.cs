@@ -5,7 +5,8 @@ namespace Felicity.Models;
 
 public class Metric
 {
-    [Key] public int TimeStamp { get; set; }
+    [Key] public int Id { get; set; }
+    public int TimeStamp { get; set; }
     public string Author { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 }
