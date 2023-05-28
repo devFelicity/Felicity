@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Felicity.Models;
 using Felicity.Options;
 using Felicity.Util;
+using Fergun.Interactive;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Context;
@@ -21,6 +22,7 @@ public class DiscordStartupService : BackgroundService
     private readonly IOptions<DiscordBotOptions> _discordBotOptions;
     private readonly DiscordShardedClient _discordShardedClient;
     private readonly InteractionService _interactionService;
+    private readonly InteractiveService _interactiveService;
     private readonly MetricDb _metricDb;
     private readonly ServerDb _serverDb;
     private readonly IServiceProvider _serviceProvider;
@@ -36,7 +38,7 @@ public class DiscordStartupService : BackgroundService
         IServiceProvider serviceProvider,
         LogAdapter<BaseSocketClient> adapter,
         ServerDb serverDb,
-        MetricDb metricDb)
+        MetricDb metricDb, InteractiveService interactiveService)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
@@ -46,6 +48,7 @@ public class DiscordStartupService : BackgroundService
         _adapter = adapter;
         _serverDb = serverDb;
         _metricDb = metricDb;
+        _interactiveService = interactiveService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -225,6 +228,10 @@ public class DiscordStartupService : BackgroundService
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
     {
+        if (socketInteraction is SocketMessageComponent messageComponent &&
+            _interactiveService.Callbacks.ContainsKey(messageComponent.Message.Id))
+            return;
+
         if (_discordBotOptions.Value.BannedUsers != null &&
             _discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
         {
@@ -239,9 +246,13 @@ public class DiscordStartupService : BackgroundService
 
         var success = false;
         var timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        var attempts = 0;
 
         while (!success)
         {
+            if (attempts > 4)
+                return;
+
             timestamp += 1;
 
             try
@@ -280,6 +291,8 @@ public class DiscordStartupService : BackgroundService
                     success = true; // pretend it's true because incrementing id won't help at this point.
                 }
             }
+
+            attempts++;
         }
     }
 
