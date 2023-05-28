@@ -63,10 +63,21 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "quiffboy",
+      "name": "Barry Briggs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11392094?v=4",
+      "profile": "https://github.com/quiffboy",
+      "contributions": [
+        "financial"
+      ]
     }
   ],
   "projectName": "FelicityOne",
-  "projectOwner": "axsLeaf",
+  "projectOwner": "MoonieGZ",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "commitType": "docs",
+  "commitConvention": "angular"
 }
