@@ -27,7 +27,7 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.Description = "The link below will allow you to register your Bungie profile to Felicity.\n\n" +
                             "We store authentication keys to fetch information about your profile, collections, records and more." +
                             "If you do not consent to us storing your data, please do not continue.\n\n" +
-                            $"[Click here to register.](https://api.tryfelicity.one:8082/auth/bungie_net/{Context.User.Id})";
+                            $"[Click here to register.](https://auth.tryfelicity.one:8082/auth/bungie_net/{Context.User.Id})";
 
         await FollowupAsync(embed: embed.Build(), ephemeral: true);
     }
