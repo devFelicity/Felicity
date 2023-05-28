@@ -47,8 +47,8 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
               -d '{
-                "title": "'"${TITLE}"'",
-                "body": "Commits:\n\n'"${COMMIT_LIST}"'"
+                "title": "${TITLE}",
+                "body": "Commits:\n\n${COMMIT_LIST}"
               }'
           else
             echo "Pull request message already exists. Skipping update."
