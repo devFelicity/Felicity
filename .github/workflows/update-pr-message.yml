@@ -41,15 +41,13 @@ jobs:
             done <<< "${COMMIT_MESSAGES}"
 
             # Update the pull request message
+            PAYLOAD=$(echo '{}' | jq --arg title "${TITLE}" --arg body "Commits:${COMMIT_LIST}" '.title = $title | .body = $body')
             curl \
               -X PATCH \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
-              -d '{
-                "title": "'"${TITLE}"'",
-                "body": "Commits:\n\n'"${COMMIT_LIST}"'"
-              }'
+              -d "${PAYLOAD}"
           else
             echo "Pull request message already exists. Skipping update."
           fi
