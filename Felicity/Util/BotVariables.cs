@@ -36,33 +36,16 @@ public static class BotVariables
 
     public static class Images
     {
-        public const string ModVendorIcon =
-            "https://bungie.net/common/destiny2_content/icons/23599621d4c63076c647384028d96ca4.png";
-
-        public const string XurVendorLogo =
-            "https://bungie.net/img/destiny_content/vendor/icons/xur_large_icon.png";
-
-        public const string AdaVendorLogo =
-            "https://www.bungie.net/common/destiny2_content/icons/fc945fd08122485639db8778052ce498.png";
-
-        public const string SaintVendorLogo =
-            "https://bungie.net/common/destiny2_content/icons/c3cb40c2b36cccd2f6cf462f14c89736.png";
-
-        public const string SadFace = "https://cdn.tryfelicity.one/images/peepoSad.png";
-
+        public const string AdaVendorLogo = "https://cdn.tryfelicity.one/bungie_assets/VendorAda.png";
+        public const string DungeonIcon = "https://cdn.tryfelicity.one/bungie_assets/Dungeon.png";
         public const string FelicityCircle = "https://cdn.tryfelicity.one/images/profile/candle-circle.png";
-
         public const string FelicitySquare = "https://cdn.tryfelicity.one/images/profile/candle.png";
-
-        public const string DungeonIcon =
-            "https://bungie.net/common/destiny2_content/icons/4456b756d5b28e38a7c905fd68e557b7.png";
-
-        public const string RaidIcon =
-            "https://bungie.net/common/destiny2_content/icons/8b1bfd1c1ce1cab51d23c78235a6e067.png";
-
+        public const string GunsmithVendorLogo = "https://cdn.tryfelicity.one/bungie_assets/VendorGunsmith.png";
         public const string JoaquinAvatar = "https://cdn.tryfelicity.one/images/joaquin-avatar.png";
-
-        public const string GunsmithVendorLogo =
-            "https://www.bungie.net/common/destiny2_content/icons/5fb7fa47a8f1dd04538017d289f4f910.png";
+        public const string ModVendorIcon = "https://cdn.tryfelicity.one/bungie_assets/ModVendor.png";
+        public const string RaidIcon = "https://cdn.tryfelicity.one/bungie_assets/Raid.png";
+        public const string SadFace = "https://cdn.tryfelicity.one/images/peepoSad.png";
+        public const string SaintVendorLogo = "https://cdn.tryfelicity.one/bungie_assets/VendorSaint.png";
+        public const string XurVendorLogo = "https://cdn.tryfelicity.one/bungie_assets/VendorXur.png";
     }
 }
