@@ -12,7 +12,6 @@ using Felicity.Util;
 using Felicity.Util.Enums;
 
 // ReSharper disable UnusedMember.Global
-
 // ReSharper disable UnusedType.Global
 
 namespace Felicity.DiscordCommands.Interactions;
@@ -83,14 +82,12 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                 BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath;
 
             jokeEmbed.Description += "> [Wish Ascended](https://emblem.report/2419113769)\n";
-            jokeEmbed.Description += "> [Heavy Is The Crown](https://emblem.report/1661191198)\n";
-            jokeEmbed.Description += "> [Creator's Cachet](https://emblem.report/2526736320)\n";
             jokeEmbed.Description += "> [Parallel Program](https://emblem.report/3936625542)\n";
 
             jokeEmbed.Footer.Text += " | Try ~Moonie#6881.";
 
-            jokeEmbed.AddField("Parsed", "> 4", true);
-            jokeEmbed.AddField("Shared", "> 713", true);
+            jokeEmbed.AddField("Parsed", "> 2", true);
+            jokeEmbed.AddField("Shared", "> 719", true);
 
             await FollowupAsync(embed: jokeEmbed.Build());
             return;
@@ -191,13 +188,24 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    [SlashCommand("rarest", "Gets the top 5 rarest emblems in collections.")]
+    [SlashCommand("rarest", "Gets the top rarest emblems in collections.")]
     public async Task EmblemRarest(
+        [Summary("count", "Number of rarest emblems to fetch. (default = 5, between 1 and 50)")]
+        int count = 5,
         [Summary("bungie-name",
-            "Bungie name of the requested user (name#1234).")]
+            "Bungie name of the requested user. (name#1234)")]
         string bungieTag = "")
     {
         await DeferAsync();
+
+        if (count is <= 0 or > 50)
+        {
+            var errorEmbed = Embeds.MakeErrorEmbed();
+            errorEmbed.Description =
+                $"`{count}` is not a valid choice.\nTry again with a value between 1 and 50.";
+            await FollowupAsync(embed: errorEmbed.Build());
+            return;
+        }
 
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
@@ -281,7 +289,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             var json = JsonSerializer.Serialize(collectiblesData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("https://emblem.report/api/getRarestEmblems", content);
+            var response = await client.PostAsync($"https://emblem.report/api/getRarestEmblems?limit={count}", content);
             response.EnsureSuccessStatusCode();
 
             var responseData = await response.Content.ReadAsStringAsync();
@@ -313,42 +321,39 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             Color = Color.Purple,
             Footer = Embeds.MakeFooter(),
             Description =
-                "Here are the 5 rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
+                $"Here are the {count} rarest emblems in collections for this user.\nData provided by [emblem.report](https://emblem.report).\n\n"
         };
+
+        var i = 1;
 
         foreach (var emblem in emblemResponse.Data)
             if (_bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(emblem.CollectibleHash,
                     out var emblemDef))
             {
                 var sb = new StringBuilder();
-
-                var acquired = emblem.Acquisition.ToString("N0");
-
-                switch (acquired.Length)
+                embed.Description += count.ToString().Length switch
                 {
-                    case 1:
-                        sb.Append("     ");
-                        break;
-                    case 2:
-                        sb.Append("    ");
-                        break;
-                    case 3:
-                        sb.Append("   ");
-                        break;
-                    case 4:
-                        sb.Append("  ");
-                        break;
-                    case 5:
-                        sb.Append(' ');
-                        break;
-                }
+                    < 10 => $"> {i}. ",
+                    _ => $"> {i,2}. "
+                };
 
-                sb.Append(acquired);
+                sb.Append(emblem.Acquisition.ToString("N0").PadLeft(7));
 
                 embed.Description +=
-                    $"> `{sb}` - " +
+                    $"`{sb}` - " +
                     $"[{emblemDef.DisplayProperties.Name}](https://emblem.report/{emblemDef.Item.Select(x => x.Hash)}) " +
                     $"({emblem.Percentage}%)\n";
+                
+                if (embed.Description.Length <= 3850)
+                {
+                    i++;
+                    continue;
+                }
+
+                embed.Description += $"\n\n**Requested size is too long, response has been truncated to {i} emblems**.";
+                embed.Description =
+                    embed.Description.Replace($"Here are the {count} rarest", $"Here are the {i} rarest"); // Don't mind me.
+                break;
             }
 
         await FollowupAsync(embed: embed.Build());
