@@ -21,13 +21,11 @@ namespace Felicity.DiscordCommands.Interactions;
 public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly ServerDb _serverDb;
     private readonly UserDb _userDb;
 
-    public EmblemCommands(IBungieClient bungieClient, ServerDb serverDb, UserDb userDb)
+    public EmblemCommands(IBungieClient bungieClient, UserDb userDb)
     {
         _bungieClient = bungieClient;
-        _serverDb = serverDb;
         _userDb = userDb;
     }
 
@@ -117,13 +115,11 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         var manifestCollectibleIDs =
             profile.Response.ProfileCollectibles.Data.Collectibles.Select(collectible => collectible.Key).ToList();
 
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
         var manifestInventoryItems = new List<DestinyInventoryItemDefinition>();
         foreach (var destinyInventoryItemDefinition in manifestInventoryItemIDs)
         {
             _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
-                (uint)destinyInventoryItemDefinition!, lg, out var result);
+                (uint)destinyInventoryItemDefinition!, out var result);
 
             manifestInventoryItems.Add(result);
         }
@@ -132,7 +128,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         foreach (var definitionHashPointer in manifestCollectibleIDs)
         {
             _bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(
-                (uint)definitionHashPointer.Hash!, lg, out var result);
+                (uint)definitionHashPointer.Hash!, out var result);
 
             manifestCollectibles.Add(result);
         }
@@ -260,13 +256,11 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                 where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
                 select collectibleComponent.Key);
 
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
         var manifestCollectibles = new List<DestinyCollectibleDefinition>();
         foreach (var definitionHashPointer in manifestCollectibleIDs)
         {
             _bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(
-                (uint)definitionHashPointer.Hash!, lg, out var result);
+                (uint)definitionHashPointer.Hash!, out var result);
 
             if (!result.Redacted && !string.IsNullOrEmpty(result.DisplayProperties.Name))
                 manifestCollectibles.AddRange(from definitionParentNode in result.ParentNodes
@@ -324,7 +318,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
         foreach (var emblem in emblemResponse.Data)
             if (_bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(emblem.CollectibleHash,
-                    lg, out var emblemDef))
+                    out var emblemDef))
             {
                 var sb = new StringBuilder();
 

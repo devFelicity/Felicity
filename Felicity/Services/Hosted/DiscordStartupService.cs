@@ -268,9 +268,7 @@ public class DiscordStartupService : BackgroundService
         catch (Exception e)
         {
             if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
-            {
                 Log.Error(e, "Failed to push metrics.");
-            }
         }
     }
 

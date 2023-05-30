@@ -44,7 +44,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         if (_bungieClient.Repository.TryGetDestinyDefinition<DestinyPresentationNodeDefinition>(
                 DefinitionHashes.PresentationNodes.GuardianRanks,
-                BungieLocales.EN, out var node))
+                out var node))
         {
             var sb = new StringBuilder();
             var i = 1;

@@ -57,7 +57,7 @@ public class PbCommands : InteractionModuleBase<ShardedInteractionContext>
         {
             var time = profileMetrics.Response.Metrics.Data.Metrics[metric.Value].ObjectiveProgress.Progress
                 ?.FormatUIDisplayValue(profileMetrics.Response.Metrics.Data.Metrics[metric.Value].ObjectiveProgress
-                    .Objective.GetValueOrNull());
+                    .Objective.GetValueOrNull()!);
             value.Append($"> `{time}` - **{metric.Key}**\n");
         }
 

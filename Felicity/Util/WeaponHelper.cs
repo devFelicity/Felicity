@@ -1,6 +1,5 @@
 ﻿using System.Web;
 using Discord.WebSocket;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
@@ -43,7 +42,7 @@ internal static class WeaponHelper
         return result;
     }
 
-    public static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient, BungieLocales lg,
+    public static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient,
         ItemTierType inventoryTierType,
         DestinyItemSocketsComponent weaponPerk)
     {
@@ -86,7 +85,7 @@ internal static class WeaponHelper
 
         foreach (var fetchPerk in fetchList)
         {
-            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(fetchPerk, lg,
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(fetchPerk,
                 out var manifestFetch);
 
             foreach (var perk in response.Where(perk => perk.Value.PerkId == manifestFetch.Hash))

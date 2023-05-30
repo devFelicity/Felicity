@@ -26,18 +26,16 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
     private readonly InteractiveService _interactiveService;
-    private readonly ServerDb _serverDb;
     private readonly UserDb _userDb;
 
-    public CraftingCommands(UserDb userDb, IBungieClient bungieClient, ServerDb serverDb,
-        InteractiveService interactiveService)
+    public CraftingCommands(UserDb userDb, IBungieClient bungieClient, InteractiveService interactiveService)
     {
         _userDb = userDb;
         _bungieClient = bungieClient;
-        _serverDb = serverDb;
         _interactiveService = interactiveService;
     }
 
+    // TODO: paginate this
     [SlashCommand("crafted", "View all crafted weapon levels.")]
     public async Task Crafted()
     {
@@ -45,7 +43,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             throw new Exception("Bungie API is down or unresponsive.");
 
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        var serverLanguage = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         var request = await _bungieClient.ApiAccess.Destiny2.GetProfile(user!.DestinyMembershipType,
             user.DestinyMembershipId,
@@ -113,7 +110,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 }
 
                 _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(weaponId,
-                    serverLanguage,
                     out var manifestRecord);
 
                 sb.Append(
@@ -139,6 +135,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
+    // TODO: re-add hideComplete
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes()
     {
@@ -146,7 +143,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             throw new Exception("Bungie API is down or unresponsive.");
 
         var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        var serverLanguage = MiscUtils.GetLanguage(Context.Guild, _serverDb);
 
         var request = await _bungieClient.ApiAccess.Destiny2.GetProfile(user!.DestinyMembershipType,
             user.DestinyMembershipId,
@@ -198,7 +194,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     if (page.Fields.Count % 3 == 2)
                         page.AddField("\u200b", '\u200b');
 
-                    _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId, serverLanguage,
+                    _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId,
                         out var manifestRecord);
 
                     var record = request.Response.ProfileRecords.Data.Records[weaponId];

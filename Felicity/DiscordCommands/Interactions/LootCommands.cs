@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
@@ -95,7 +94,7 @@ public class LootCommands : InteractionModuleBase<ShardedInteractionContext>
             }
 
             if (bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(tableLootId,
-                    BungieLocales.EN, out var manifestItem))
+                    out var manifestItem))
                 result +=
                     $"\n{EmoteHelper.GetItemType(manifestItem)} " +
                     $"[{manifestItem.DisplayProperties.Name.Replace("(Timelost)", "(TL)")}]" +
