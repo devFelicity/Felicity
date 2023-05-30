@@ -2,7 +2,6 @@
 using Discord.WebSocket;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Util;
@@ -32,7 +31,7 @@ public static class ProcessGunsmithData
         return embed.Build();
     }
 
-    public static async Task<GunsmithCache?> FetchInventory(BungieLocales lg, User oauth, IBungieClient bungieClient)
+    public static async Task<GunsmithCache?> FetchInventory(User oauth, IBungieClient bungieClient)
     {
         /*var path = $"Data/gsCache-{lg}.json";
 
@@ -71,15 +70,15 @@ public static class ProcessGunsmithData
 
         foreach (var itemIndex in vendorData.Response.Categories.Data.Categories.ElementAt(2).ItemIndexes)
         {
-            if (!vendorData.Response.Sales.Data[itemIndex].Item.TryGetDefinition(out var itemDefinition, lg))
+            if (!vendorData.Response.Sales.Data[itemIndex].Item.TryGetDefinition(out var itemDefinition))
                 continue;
 
             var weapon = new Weapon
             {
-                Name = itemDefinition.DisplayProperties.Name,
+                Name = itemDefinition!.DisplayProperties.Name,
                 DestinyItemType = itemDefinition.ItemSubType,
                 WeaponId = itemDefinition.Hash,
-                Perks = await WeaponHelper.BuildPerks(bungieClient, lg, ItemTierType.Superior,
+                Perks = await WeaponHelper.BuildPerks(bungieClient, ItemTierType.Superior,
                     vendorData.Response.ItemComponents.Sockets.Data[itemIndex])
             };
 

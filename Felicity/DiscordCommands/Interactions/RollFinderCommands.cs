@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Discord;
 using Discord.Interactions;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
@@ -75,7 +74,6 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
 
         if (!_bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
                 requestedRoll.First().WeaponId,
-                BungieLocales.EN,
                 out var weaponDefinition))
         {
             await FollowupAsync("Failed to fetch weapon from manifest.");
@@ -147,7 +145,6 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
             }
 
             _bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(weaponPerk,
-                BungieLocales.EN,
                 out var weaponPerkDefinition);
 
             if (weaponPerkDefinition.Plug.PlugStyle == PlugUiStyles.Masterwork)

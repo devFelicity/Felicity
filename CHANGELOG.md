@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update dependencies.
 
+### Removed
+- All localization settings, will be re-added at a later date.
+
 ## [7.8.2]
 ### Changed
 - Fixed an issue causing a cpu overuse.

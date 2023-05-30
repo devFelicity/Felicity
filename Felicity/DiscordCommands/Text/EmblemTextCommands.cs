@@ -2,7 +2,6 @@
 using System.Text.Json;
 using Discord;
 using Discord.Commands;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
@@ -48,7 +47,6 @@ public class EmblemTextCommands : ModuleBase<ShardedCommandContext>
             var uniqueEmblems = newEmblems.Except(previousEmblems).ToList();
             foreach (var uniqueEmblem in uniqueEmblems)
                 if (_client.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(uniqueEmblem,
-                        BungieLocales.EN,
                         out var emblemDefinition))
                     sb.Append(
                         $"{emblemDefinition.DisplayProperties.Name}: {emblemDefinition.SecondaryIcon.AbsolutePath}\n");

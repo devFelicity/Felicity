@@ -35,6 +35,39 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         _interactionService = interactionService;
     }
 
+    [Command("lastActive")]
+    public async Task LastActive()
+    {
+        var server = Context.Client.GetGuild(960484926950637608);
+        var channel = server?.GetTextChannel(989885760884842526);
+        if (channel != null)
+        {
+            var messageList = channel.GetMessagesAsync(1);
+            await foreach (var message in messageList)
+                if (message != null)
+                {
+                    await ReplyAsync(message.First().Timestamp.ToString());
+
+                    var timeDiff = DateTime.UtcNow - message.First().Timestamp;
+                    if (timeDiff <= TimeSpan.FromMinutes(15))
+                    {
+                        // post message
+                    }
+
+                    // don't post message
+                    await ReplyAsync(timeDiff.Humanize());
+                }
+                else
+                {
+                    await ReplyAsync("Cannot parse message.");
+                }
+        }
+        else
+        {
+            await ReplyAsync("Cannot parse channel.");
+        }
+    }
+
     [Command("vendorJson")]
     public async Task VendorJson(ulong userId, uint vendorId)
     {
@@ -267,6 +300,8 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
             await msg.ModifyAsync(x => x.Content = "Downloaded files, clearing cache...");
             _bungieClient.Repository.Clear();
             await msg.ModifyAsync(x => x.Content = "Reading new files...");
+            var manifest = await _bungieClient.ApiAccess.Destiny2.GetDestinyManifest();
+            await _bungieClient.DefinitionProvider.ChangeManifestVersion(manifest.Response.Version);
             await _bungieClient.DefinitionProvider.ReadToRepository(_bungieClient.Repository);
             await msg.ModifyAsync(x => x.Content = "Done.");
         }

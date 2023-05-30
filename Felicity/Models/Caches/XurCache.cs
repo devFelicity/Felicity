@@ -3,7 +3,6 @@ using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
@@ -150,11 +149,11 @@ public static class ProcessXurData
         };
     }
 
-    public static async Task<XurCache?> FetchInventory(BungieLocales lg, User oauth, IBungieClient bungieClient)
+    public static async Task<XurCache?> FetchInventory(User oauth, IBungieClient bungieClient)
     {
         XurCache? xurCache;
 
-        var path = $"Data/xurCache-{lg}.json";
+        const string path = "Data/xurCache.json";
 
         if (File.Exists(path))
         {
@@ -219,7 +218,7 @@ public static class ProcessXurData
 
         foreach (var item in manifestFetch.Where(item => item != null))
         {
-            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!, lg,
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!,
                 out var manifestItem);
 
             var vendorItem = xurExotics.FirstOrDefault(destinyVendorSaleItemComponent =>
@@ -266,7 +265,7 @@ public static class ProcessXurData
 
         foreach (var item in manifestFetch.Where(item => item != null))
         {
-            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!, lg,
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>((uint)item!,
                 out var manifestItem);
 
             var vendorItem = xurWeps.FirstOrDefault(destinyVendorSaleItemComponent =>
@@ -277,7 +276,7 @@ public static class ProcessXurData
                 Name = manifestItem.DisplayProperties.Name,
                 WeaponId = vendorItem.Item.Select(x => x.Hash),
                 DestinyItemType = vendorItem.Item.Select(x => x.ItemSubType),
-                Perks = await WeaponHelper.BuildPerks(bungieClient, lg, manifestItem.Inventory.TierTypeEnumValue,
+                Perks = await WeaponHelper.BuildPerks(bungieClient, manifestItem.Inventory.TierTypeEnumValue,
                     xurSockets[vendorItem.VendorItemIndex])
             };
 
@@ -296,23 +295,23 @@ public static class ProcessXurData
         }
 
         bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
-            (uint)xurArmor.First().Item.Hash!, lg, out var armorSetCollectible);
+            (uint)xurArmor.First().Item.Hash!, out var armorSetCollectible);
 
         var collectibleHash = armorSetCollectible.Collectible.Hash;
         if (collectibleHash != null)
         {
             var hash = (uint)collectibleHash;
 
-            bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(hash, lg,
+            bungieClient.Repository.TryGetDestinyDefinition<DestinyCollectibleDefinition>(hash,
                 out var armorSetCollectibleDefinition);
 
             bungieClient.Repository.TryGetDestinyDefinition<DestinyPresentationNodeDefinition>(
-                (uint)armorSetCollectibleDefinition.ParentNodes.First().Hash!, lg, out var parentNode);
+                (uint)armorSetCollectibleDefinition.ParentNodes.First().Hash!, out var parentNode);
 
             xurCache.XurInventory.Armor.LegendarySet = parentNode.DisplayProperties.Name;
         }
 
-        await File.WriteAllTextAsync($"Data/xurCache-{lg}.json", JsonSerializer.Serialize(xurCache));
+        await File.WriteAllTextAsync("Data/xurCache.json", JsonSerializer.Serialize(xurCache));
 
         return xurCache;
     }

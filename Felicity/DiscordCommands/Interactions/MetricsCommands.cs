@@ -1,6 +1,5 @@
 ﻿using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Metrics;
 using DotNetBungieAPI.Service.Abstractions;
@@ -39,7 +38,7 @@ public class MetricsCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        if (!_bungieClient.Repository.TryGetDestinyDefinition<DestinyMetricDefinition>(metricId, BungieLocales.EN,
+        if (!_bungieClient.Repository.TryGetDestinyDefinition<DestinyMetricDefinition>(metricId,
                 out var metricDefinition))
         {
             await FollowupAsync("Failed to fetch metrics.");
@@ -54,7 +53,7 @@ public class MetricsCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var value = profileMetrics.Response.Metrics.Data.Metrics[metricId].ObjectiveProgress.Progress
             ?.FormatUIDisplayValue(profileMetrics.Response.Metrics.Data.Metrics[metricId].ObjectiveProgress.Objective
-                .GetValueOrNull());
+                .GetValueOrNull()!);
 
         var embed = Embeds.MakeBuilder();
         embed.AddField(metricDefinition.DisplayProperties.Name, value);

@@ -2,7 +2,6 @@
 using System.Text.Json;
 using Discord;
 using DotNetBungieAPI.HashReferences;
-using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
@@ -100,11 +99,11 @@ public static class ProcessModData
         return result.ToString();
     }
 
-    public static async Task<ModCache> FetchInventory(IBungieClient bungieClient, BungieLocales lg, User oauth)
+    public static async Task<ModCache> FetchInventory(IBungieClient bungieClient, User oauth)
     {
         ModCache modCache;
 
-        var path = $"Data/modCache-{lg}.json";
+        const string path = "Data/modCache.json";
 
         if (File.Exists(path))
         {
@@ -134,9 +133,9 @@ public static class ProcessModData
             ModInventory = new Dictionary<string, List<Mod>>()
         };
 
-        modCache = await PopulateMods(bungieClient, lg, modCache, DefinitionHashes.Vendors.Ada1_350061650,
+        modCache = await PopulateMods(bungieClient, modCache, DefinitionHashes.Vendors.Ada1_350061650,
             vendorData.Response.Sales.Data);
-        modCache = await PopulateMods(bungieClient, lg, modCache, DefinitionHashes.Vendors.Banshee44_672118013,
+        modCache = await PopulateMods(bungieClient, modCache, DefinitionHashes.Vendors.Banshee44_672118013,
             vendorData.Response.Sales.Data);
 
         await File.WriteAllTextAsync(path, JsonSerializer.Serialize(modCache));
@@ -144,7 +143,7 @@ public static class ProcessModData
         return modCache;
     }
 
-    private static Task<ModCache> PopulateMods(IBungieClient bungieClient, BungieLocales lg, ModCache modCache,
+    private static Task<ModCache> PopulateMods(IBungieClient bungieClient, ModCache modCache,
         uint vendor,
         IReadOnlyDictionary<uint, PersonalDestinyVendorSaleItemSetComponent> salesData)
     {
@@ -156,13 +155,13 @@ public static class ProcessModData
                 continue;
 
             bungieClient.Repository.TryGetDestinyDefinition<DestinyInventoryItemDefinition>(
-                (uint)saleItemsValue.Item.Hash, lg, out var manifestItem);
+                (uint)saleItemsValue.Item.Hash, out var manifestItem);
 
             if (manifestItem.ItemType != DestinyItemType.Mod)
                 continue;
 
             bungieClient.Repository.TryGetDestinyDefinition<DestinySandboxPerkDefinition>(
-                (uint)manifestItem.Perks.First().Perk.Hash!, lg, out var result);
+                (uint)manifestItem.Perks.First().Perk.Hash!, out var result);
 
             modCache.ModInventory![vendor.ToString()].Add(new Mod
             {

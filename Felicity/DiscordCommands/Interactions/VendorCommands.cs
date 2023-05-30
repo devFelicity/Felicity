@@ -19,12 +19,10 @@ namespace Felicity.DiscordCommands.Interactions;
 public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly ServerDb _serverDb;
     private readonly UserDb _userDb;
 
-    public VendorCommands(ServerDb serverDb, UserDb userDb, IBungieClient bungieClient)
+    public VendorCommands(UserDb userDb, IBungieClient bungieClient)
     {
-        _serverDb = serverDb;
         _userDb = userDb;
         _bungieClient = bungieClient;
     }
@@ -42,12 +40,10 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
         // if (!File.Exists($"Data/gsCache-{lg}.json"))
         //     await FollowupAsync("Populating vendor data, this might take some time...");
 
-        var gsCache = await ProcessGunsmithData.FetchInventory(lg, user, _bungieClient);
+        var gsCache = await ProcessGunsmithData.FetchInventory(user, _bungieClient);
 
         if (gsCache != null)
             await FollowupAsync(embed: ProcessGunsmithData.BuildEmbed(gsCache, Context.Client));
@@ -70,12 +66,10 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
                 return;
             }
 
-            var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
             // if (!File.Exists($"Data/xurCache-{lg}.json"))
             //     await FollowupAsync("Populating vendor data, this might take some time...");
 
-            var xurCache = await ProcessXurData.FetchInventory(lg, user, _bungieClient);
+            var xurCache = await ProcessXurData.FetchInventory(user, _bungieClient);
 
             if (xurCache != null)
                 await FollowupAsync(embed: ProcessXurData.BuildEmbed(xurCache, Context.Client));
