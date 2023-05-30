@@ -142,35 +142,12 @@ public class VendorCommands : InteractionModuleBase<ShardedInteractionContext>
         };
 
         embed.Description = "Ada-1 is selling shaders that have been unavailable for quite some time,\n\n" +
-                            "These cost 10,000 Glimmer each, but keep in mind that she'll only be offering 3 shaders per week during Season 20.";
+                            "These cost 10,000 Glimmer each, but keep in mind that she'll only be offering 3 shaders per week during Season 21.";
 
         embed.AddField("Shaders", responseString.ToString());
 
         await FollowupAsync(embed: embed.Build());
     }
-
-    /*[SlashCommand("mods", "Get list of mods currently available at vendors.")]
-    public async Task Mods()
-    {
-        if (!await BungieApiUtils.CheckApi(_bungieClient))
-            throw new Exception("Bungie API is down or unresponsive.");
-
-        var user = _userDb.Users.FirstOrDefault(x => x.DiscordId == Context.User.Id);
-        if (user == null)
-        {
-            await FollowupAsync("Failed to fetch user profile.");
-            return;
-        }
-
-        var lg = MiscUtils.GetLanguage(Context.Guild, _serverDb);
-
-        // if (!File.Exists($"Data/modCache-{lg}.json"))
-        //     await FollowupAsync("Populating vendor data, this might take some time...");
-
-        var modCache = await ProcessModData.FetchInventory(_bungieClient, lg, user);
-
-        await FollowupAsync(embed: await ProcessModData.BuildEmbed(_bungieClient, modCache, user));
-    }*/
 
     [SlashCommand("saint14", "Fetch Saint-14 (Trials of Osiris) reputation rewards for the week.")]
     public async Task Saint14()
