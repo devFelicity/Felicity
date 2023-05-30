@@ -219,6 +219,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.CollectiveObligation,
                         DefinitionHashes.InventoryItems.Forbearance_613334176,
                         DefinitionHashes.InventoryItems.Insidious_3428521585,
                         DefinitionHashes.InventoryItems.LubraesRuin_2534546147
@@ -287,6 +288,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Chest,
+                        DefinitionHashes.InventoryItems.VexMythoclast,
                         DefinitionHashes.InventoryItems.PraedythsRevenge_3653573172,
                         DefinitionHashes.InventoryItems.CorrectiveMeasure_471518543,
                         DefinitionHashes.InventoryItems.HezenVengeance_4050645223,
@@ -336,6 +338,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Chest, (uint)Armor.Boots,
+                        DefinitionHashes.InventoryItems.EyesofTomorrow,
                         DefinitionHashes.InventoryItems.Bequest_3366545721,
                         DefinitionHashes.InventoryItems.Commemoration_4230965989
                     }
@@ -431,7 +434,7 @@ public static class LootTables
                 }
             }
         },
-        /*new LootTableDefinition
+        new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Ghosts of the Deep",
             Description = "fish go brrr or something idk",
@@ -443,9 +446,9 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Boots,
-                        DefinitionHashes.InventoryItems.NoSurvivors,
+                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
                         DefinitionHashes.InventoryItems.NewPacificEpitaph,
-                        DefinitionHashes.InventoryItems.ColdComfort
+                        DefinitionHashes.InventoryItems.ColdComfort_839786290
                     }
                 },
                 new()
@@ -455,7 +458,7 @@ public static class LootTables
                     {
                         (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
                         DefinitionHashes.InventoryItems.GreasyLuck,
-                        DefinitionHashes.InventoryItems.ColdComfort
+                        DefinitionHashes.InventoryItems.ColdComfort_839786290
                     }
                 },
                 new()
@@ -463,15 +466,16 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Simmumah ur-Nokru",
                     LootIds = new List<uint>
                     {
-                        DefinitionHashes.InventoryItems.NoSurvivors,
+                        DefinitionHashes.InventoryItems.TheNavigator,
+                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
                         DefinitionHashes.InventoryItems.NewPacificEpitaph,
-                        DefinitionHashes.InventoryItems.ColdComfort,
+                        DefinitionHashes.InventoryItems.ColdComfort_839786290,
                         DefinitionHashes.InventoryItems.GreasyLuck,
                         (uint)Armor.Everything
                     }
                 }
             }
-        },*/
+        },
         new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Spire of the Watcher",
@@ -504,6 +508,7 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Persys, Primordial Ruin",
                     LootIds = new List<uint>
                     {
+                        DefinitionHashes.InventoryItems.HierarchyofNeeds,
                         DefinitionHashes.InventoryItems.LiminalVigil,
                         DefinitionHashes.InventoryItems.LongArm,
                         DefinitionHashes.InventoryItems.SeventhSeraphCarbine_4070357005,
@@ -546,6 +551,7 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Calus' Greatest Shame",
                     LootIds = new List<uint>
                     {
+                        DefinitionHashes.InventoryItems.Heartshadow,
                         DefinitionHashes.InventoryItems.NewPurpose,
                         DefinitionHashes.InventoryItems.FixedOdds_1642384931,
                         (uint)Armor.Everything
