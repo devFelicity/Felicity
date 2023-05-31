@@ -137,7 +137,9 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
     // TODO: re-add hideComplete
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
-    public async Task Recipes()
+    public async Task Recipes(
+        [Summary("showAll", "Show complete patterns (default: false)")]
+        bool showAll = false)
     {
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
@@ -170,19 +172,24 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             .Select(group => group.Select(x => x.Item).ToList())
             .ToList();
 
-        foreach (var sources in groups)
+        var done = false;
+        var i = 0;
+
+        while (!done)
         {
             var page = new PageBuilder
             {
                 Title = "Craftable List",
                 Description = "List of craftable weapons and your progress on them.",
-                ThumbnailUrl =
-                    "https://www.bungie.net/common/destiny2_content/icons/cf05991b4a82c4faec17755105bda88f.png",
+                //ThumbnailUrl =
+                //    "https://www.bungie.net/common/destiny2_content/icons/cf05991b4a82c4faec17755105bda88f.png",
                 Color = Embeds.DefaultColor
             };
 
-            foreach (var keyValuePair in sources)
+            while (page.Fields.Count < 5)
             {
+                var keyValuePair = craftableList.ElementAt(i);
+
                 var field = new EmbedFieldBuilder
                 {
                     Name = keyValuePair.Key,
@@ -200,23 +207,24 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     var record = request.Response.ProfileRecords.Data.Records[weaponId];
                     var obj = record.Objectives.First();
 
-                    field.Value += "\n > ";
-
                     if (obj.IsComplete)
                     {
-                        field.Value += "`✅`";
+                        if(showAll)
+                            field.Value += "\n > `✅`";
+                        else
+                            continue;
                     }
                     else
                     {
                         var inventoryItemCount = GetItemCount(request, manifestRecord.Hash);
                         if (inventoryItemCount > 0)
                         {
-                            field.Value += $"`{obj.Progress + inventoryItemCount}/{obj.CompletionValue}` ⚠️ ";
+                            field.Value += $"\n > `{obj.Progress + inventoryItemCount}/{obj.CompletionValue}` ⚠️ ";
                             invDescription = true;
                         }
                         else
                         {
-                            field.Value += $"`{obj.Progress}/{obj.CompletionValue}`";
+                            field.Value += $"\n > `{obj.Progress}/{obj.CompletionValue}`";
                         }
 
                         if (keyValuePair.Key is "Deep" && deepDeepsight)
@@ -230,12 +238,14 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                         }
                     }
 
-                    field.Value +=
-                        $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
+                    if (!obj.IsComplete || showAll)
+                    {
+                        field.Value +=
+                            $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
+                    }
                 }
 
-                if (string.IsNullOrEmpty((string?)field.Value))
-                    continue;
+                i++;
 
                 if (invDescription)
                     page.Description += "\n\n⚠ = Includes incomplete deepsight weapons.";
@@ -244,8 +254,19 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     page.Description +=
                         "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
 
-                page.Fields.Add(field);
+                if (!string.IsNullOrEmpty((string?)field.Value))
+                    page.Fields.Add(field);
+
+                // ReSharper disable once InvertIf
+                if (craftableList.Keys.Count == i)
+                {
+                    done = true;
+                    break;
+                }
             }
+
+            if (page.Fields.Count == 0) 
+                page.Description += "\n\nYou have completed all available patterns.";
 
             pageList.Add(page);
         }
