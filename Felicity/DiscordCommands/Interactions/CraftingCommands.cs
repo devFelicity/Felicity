@@ -167,11 +167,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         var craftableList = Craftables.CraftableList;
         var pageList = new List<PageBuilder>();
 
-        var groups = craftableList.Select((item, index) => new { Item = item, Index = index })
-            .GroupBy(x => x.Index / 4)
-            .Select(group => group.Select(x => x.Item).ToList())
-            .ToList();
-
         var done = false;
         var i = 0;
 
