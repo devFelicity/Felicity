@@ -8,6 +8,116 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.9.0]
+### Added
+- `/recipes showAll` and `/emblem rarest count` are new parameters you can use to customise your command experience.
+- Ghosts of the Deep loot table.
+- Self-hosted assets to prevent weird Bungie updates from breaking thumbnails.
+
+### Changed
+- Fixed an issue where Ada-1's inventory would crash following S21 update.
+- Update dependencies.
+
+## [7.8.3]
+### Changed
+- Update dependencies.
+
+### Removed
+- All localization settings, will be re-added at a later date.
+
+## [7.8.2]
+### Changed
+- Fixed an issue causing a cpu overuse.
+
+## [7.8.1]
+### Changed
+- New URL for authentication.
+
+## [7.8.0]
+### Added
+- New Last Wish definitions for loot tables.
+- Ghosts of the Deep loot table (will become active once un-classified from manifest).
+
+### Changed
+- Fixed an issue where metrics wouldn't save correctly.
+- Fixed season rank displaying the wrong season in `/lookup guardian`.
+- Fixed `/recipes` crashing / looking bad by using pages, these expire after 10 minutes and are only interactable by the person invoking them. Added bonus: `show-complete` is a permanent addition now.
+- Fixed a couple backend errors being traced for no reason.
+
+## [7.7.0]
+### Added
+- Season of the Deep weapons to /recipes and /crafted.
+- Note: the original design of the recipes command is now too long to fit all weapon recipes in one embed, as such the showComplete parameter has been disabled until the rework is done.
+
+## [7.6.2]
+### Added
+- new statuses
+- manifest comparison
+- fixed case sensitive issue
+
+## [7.6.1]
+### Added
+- Added `/pb raids`, for now only uses stat trackers until the PGCR collection is in place.
+
+## [7.6.0]
+### Added
+- Metrics for usage reports! (finally)
+
+### Changed
+- Embed colors to match rebrand.
+
+## [7.5.1]
+### Added
+- Backend automations.
+
+## [7.5.0]
+### Added
+- New command `/lookup guardian-ranks`.
+
+### Changed
+- New logo.
+
+### Removed
+- Marsilion from recipes (not obtainable currently).
+
+## [7.4.2]
+### Changed
+- Fixed an issue where profiles were falsely being returned as private.
+
+## [7.4.1]
+### Changed
+- Fixed an issue where private profiles would cause an error in emblem commands.
+
+## [7.4.0]
+### Added
+- `/emblem rarest` command, check your rarest emblems in collections.
+
+### Changed
+- `/lookup account-share` is now renamed to `/emblem shares` to fit with changes.
+
+## [7.3.3]
+### Added
+- Missing Vexcalibur and Revision Zero from /crafted.
+
+## [7.3.2]
+### Added
+- Missing Rufus's Fury from /crafted.
+
+## [7.3.1]
+### Changed
+- Fixed an issue where Bungie profiles with no Destiny account would crash commands.
+
+## [7.3.0]
+### Added
+- A minor joke.
+
+### Changed
+- Updated deps.
+
+## [7.2.1]
+### Changed
+- Fixed `/lookup guardian` showing the wrong Season rank.
+
 ## [7.2.0]
 ### Added
 - Root of Nightmares loot table.
