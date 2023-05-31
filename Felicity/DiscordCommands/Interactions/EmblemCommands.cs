@@ -343,7 +343,7 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                     $"`{sb}` - " +
                     $"[{emblemDef.DisplayProperties.Name}](https://emblem.report/{emblemDef.Item.Select(x => x.Hash)}) " +
                     $"({emblem.Percentage}%)\n";
-                
+
                 if (embed.Description.Length <= 3850)
                 {
                     i++;
@@ -352,7 +352,8 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
                 embed.Description += $"\n\n**Requested size is too long, response has been truncated to {i} emblems**.";
                 embed.Description =
-                    embed.Description.Replace($"Here are the {count} rarest", $"Here are the {i} rarest"); // Don't mind me.
+                    embed.Description.Replace($"Here are the {count} rarest",
+                        $"Here are the {i} rarest"); // Don't mind me.
                 break;
             }
 

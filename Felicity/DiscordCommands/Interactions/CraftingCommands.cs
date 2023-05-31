@@ -204,7 +204,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
                     if (obj.IsComplete)
                     {
-                        if(showAll)
+                        if (showAll)
                             field.Value += "\n > `✅`";
                         else
                             continue;
@@ -234,10 +234,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     }
 
                     if (!obj.IsComplete || showAll)
-                    {
                         field.Value +=
                             $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
-                    }
                 }
 
                 i++;
@@ -260,7 +258,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 }
             }
 
-            if (page.Fields.Count == 0) 
+            if (page.Fields.Count == 0)
                 page.Description += "\n\nYou have completed all available patterns.";
 
             pageList.Add(page);
