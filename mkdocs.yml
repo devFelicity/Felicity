@@ -4,7 +4,7 @@ site_url: https://tryfelicity.one
 repo_url: https://github.com/MoonieGZ/FelicityOne
 repo_name: MoonieGZ/FelicityOne
 
-site_description: "Multi purpose Twitch & Discord bot integrating many APIs such as YouTube, Twitter and Destiny 2"
+site_description: "Enhance your Destiny 2 gaming experience with Felicity, a powerful Discord bot. Track your craftable weapon patterns, view emblem information, access checkpoint bot data, manage guardians and collections, explore loot tables, and more."
 
 edit_uri: edit/docs/docs/
 
@@ -27,7 +27,7 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  favicon: https://cdn.tryfelicity.one/images/felicity_circle.jpg
+  favicon: https://cdn.tryfelicity.one/favicon.ico
   icon:
     logo: material/account-heart-outline
   features:
