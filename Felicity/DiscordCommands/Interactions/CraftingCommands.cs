@@ -113,7 +113,8 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     out var manifestRecord);
 
                 sb.Append(
-                    $"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
+                    //$"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
+                    $"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} - {manifestRecord.DisplayProperties.Name}");
 
                 if (itemList.Count > 1 && !embed.Description.Contains("* = "))
                     embed.Description +=

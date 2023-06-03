@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.9.2]
+### Changed
+- Fixed Last Wish weapons not appearing in `/crafted`.
+- As a result, people with most available patterns would hit an error saying the message is too long...
+- To prevent this, Light.GG links have been disabled for `/crafted` until a fix is implemented in a future update, apologies for inconvencience.
+
 ## [7.9.1]
 ### Changed
 - Fixed duplicate and missing weapons from `/crafted`. (thanks DissObey)
