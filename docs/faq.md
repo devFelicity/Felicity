@@ -19,7 +19,7 @@ Eyes up, guardian. There's a link in the navbar called ["Commands"](../commands/
 Very kind of you to ask! We use your generous donations for various development tool licenses, API keys and hosting costs.
 Donations are non-refundable and never obligatory. A Ko-Fi is in place for donations but if you aren't interested in the perks nor public thanks, you can always donate directly via PayPal.
 
-[Ko-Fi :material-coffee:](https://ko-fi.com/axsLeaf){ .md-button .md-button--primary } [PayPal :fontawesome-brands-paypal:](https://paypal.me/leafyleaf/10){ .md-button .md-button--primary } [GitHub Sponsor :fontawesome-brands-github:](https://github.com/sponsors/axsLeaf){ .md-button .md-button--primary }
+[Ko-Fi :material-coffee:](https://ko-fi.com/axsLeaf){ .md-button .md-button--primary } [PayPal :fontawesome-brands-paypal:](https://paypal.me/leafyleaf/10){ .md-button .md-button--primary } [GitHub Sponsor :fontawesome-brands-github:](https://github.com/sponsors/MoonieGZ){ .md-button .md-button--primary }
 
 ## How do I report a bug or request a feature?
 
