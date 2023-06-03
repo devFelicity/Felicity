@@ -10,25 +10,25 @@ internal static class Craftables
         {
             CraftSource.SeasonDeep, new List<uint>
             {
-                673861429, // different times
-                3159538778, // distant pull
-                1585307805, // rapacious appetite
-                1195933113, // targeted redaction
-                2119725732, // thin precipice
-                3328286012 // until its return
+                DefinitionHashes.Records.DifferentTimes,
+                DefinitionHashes.Records.ADistantPull,
+                DefinitionHashes.Records.RapaciousAppetite,
+                DefinitionHashes.Records.TargetedRedaction,
+                DefinitionHashes.Records.ThinPrecipice,
+                DefinitionHashes.Records.UntilItsReturn
             }
         },
         {
             CraftSource.RaidLw, new List<uint>
             {
-                2906615623, // age-old bond
-                2585307516, // apex predator
-                2610512925, // chattering bone
-                1029956969, // nation of beasts
-                4104745812, // techeun force
-                3363925957, // transfiguration
-                950932825, // tyranny of heavens
-                2360742598 // supremacy
+                DefinitionHashes.Records.AgeOldBond,
+                DefinitionHashes.Records.ApexPredator,
+                DefinitionHashes.Records.ChatteringBone,
+                DefinitionHashes.Records.NationofBeasts,
+                DefinitionHashes.Records.TecheunForce,
+                DefinitionHashes.Records.Transfiguration,
+                DefinitionHashes.Records.TyrannyofHeaven,
+                DefinitionHashes.Records.TheSupremacy
             }
         },
         {
@@ -211,25 +211,25 @@ internal static class Craftables
         {
             CraftSource.SeasonDeep, new List<uint>
             {
-                3016891299, // different times
-                1769847435, // distant pull
-                1081724548, // rapacious appetite
-                3890055324, // targeted redaction
-                4066778670, // thin precipice
-                4066778670 // until its return
+                DefinitionHashes.InventoryItems.DifferentTimes_3016891299,
+                DefinitionHashes.InventoryItems.ADistantPull_1769847435,
+                DefinitionHashes.InventoryItems.RapaciousAppetite_1081724548,
+                DefinitionHashes.InventoryItems.TargetedRedaction_3890055324,
+                DefinitionHashes.InventoryItems.ThinPrecipice_4066778670,
+                DefinitionHashes.InventoryItems.UntilItsReturn_2883484461
             }
         },
         {
             CraftSource.RaidLw, new List<uint>
             {
-                601592879, // age-old bond
-                2545083870, // apex predator
-                568515759, // chattering bone
-                654370424, // nation of beasts
-                4094657108, // techeun force
-                3799980700, // transfiguration
-                2721249463, // tyranny of heavens
-                686951703 // supremacy
+                DefinitionHashes.InventoryItems.AgeOldBond_601592879,
+                DefinitionHashes.InventoryItems.ApexPredator_2545083870,
+                DefinitionHashes.InventoryItems.ChatteringBone_568515759,
+                DefinitionHashes.InventoryItems.NationofBeasts_654370424,
+                DefinitionHashes.InventoryItems.TecheunForce_4094657108,
+                DefinitionHashes.InventoryItems.Transfiguration_3799980700,
+                DefinitionHashes.InventoryItems.TyrannyofHeaven_2721249463,
+                DefinitionHashes.InventoryItems.TheSupremacy_686951703
             }
         },
         {
@@ -413,22 +413,20 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
-            673861429 => 3016891299, // different times
-            3159538778 => 1769847435, // distant pull
-            1585307805 => 1081724548, // rapacious appetite
-            1195933113 => 3890055324, // targeted redaction
-            2119725732 => 4066778670, // thin precipice
-            3328286012 => 4066778670, // until its return
-
-            2906615623 => 601592879, // age-old bond
-            2585307516 => 2545083870, // apex predator
-            2610512925 => 568515759, // chattering bone
-            1029956969 => 654370424, // nation of beasts
-            4104745812 => 4094657108, // techeun force
-            3363925957 => 3799980700, // transfiguration
-            950932825 => 2721249463, // tyranny of heavens
-            2360742598 => 686951703, // supremacy
-
+            DefinitionHashes.Records.DifferentTimes => DefinitionHashes.InventoryItems.DifferentTimes_3016891299,
+            DefinitionHashes.Records.ADistantPull => DefinitionHashes.InventoryItems.ADistantPull_1769847435,
+            DefinitionHashes.Records.RapaciousAppetite => DefinitionHashes.InventoryItems.RapaciousAppetite_1081724548,
+            DefinitionHashes.Records.TargetedRedaction => DefinitionHashes.InventoryItems.TargetedRedaction_3890055324,
+            DefinitionHashes.Records.ThinPrecipice => DefinitionHashes.InventoryItems.ThinPrecipice_4066778670,
+            DefinitionHashes.Records.UntilItsReturn => DefinitionHashes.InventoryItems.UntilItsReturn_2883484461,
+            DefinitionHashes.Records.AgeOldBond => DefinitionHashes.InventoryItems.AgeOldBond_601592879,
+            DefinitionHashes.Records.ApexPredator => DefinitionHashes.InventoryItems.ApexPredator_2545083870,
+            DefinitionHashes.Records.ChatteringBone => DefinitionHashes.InventoryItems.ChatteringBone_568515759,
+            DefinitionHashes.Records.NationofBeasts => DefinitionHashes.InventoryItems.NationofBeasts_654370424,
+            DefinitionHashes.Records.TecheunForce => DefinitionHashes.InventoryItems.TecheunForce_4094657108,
+            DefinitionHashes.Records.Transfiguration => DefinitionHashes.InventoryItems.Transfiguration_3799980700,
+            DefinitionHashes.Records.TyrannyofHeaven => DefinitionHashes.InventoryItems.TyrannyofHeaven_2721249463,
+            DefinitionHashes.Records.TheSupremacy => DefinitionHashes.InventoryItems.TheSupremacy_686951703,
             DefinitionHashes.Records.AcasiasDejection => DefinitionHashes.InventoryItems.AcasiasDejection_1471212226,
             DefinitionHashes.Records.BriarsContempt => DefinitionHashes.InventoryItems.BriarsContempt_1491665733,
             DefinitionHashes.Records.KoraxissDistress => DefinitionHashes.InventoryItems.KoraxissDistress_2972949637,
