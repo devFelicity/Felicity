@@ -7,7 +7,7 @@ template: overrides/main.html
 
 ## How did Felicity start?
 
-Originally, the passion for Discord bots started way back before bot accounts were even a thing in Discord, we used to have fun with what was called "self-bots", essentially running commands as your own user and being able to very easily create gif searches, silly interactions like ":clap: you :clap: did :clap: not :clap: just :clap: call :clap: me :clap: that" without the need for any tedious extra clicks.
+Originally, the passion for Discord bots started way back before bot accounts were even a thing in Discord, we used to have fun with what was called "self-bots" (allegedly 👀), essentially running commands as your own user and being able to very easily create gif searches, silly interactions like ":clap: you :clap: did :clap: not :clap: just :clap: call :clap: me :clap: that" without the need for any tedious extra clicks.
 
 This then got fed by my addiction to Overwatch on it's release, with some basic API features that were provided with the game, I'd have fun pulling your game stats, comparing them to other people's in the same server, etc.
 
