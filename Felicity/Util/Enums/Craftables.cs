@@ -222,14 +222,14 @@ internal static class Craftables
         {
             CraftSource.RaidLw, new List<uint>
             {
-                DefinitionHashes.InventoryItems.AgeOldBond_601592879,
-                DefinitionHashes.InventoryItems.ApexPredator_2545083870,
-                DefinitionHashes.InventoryItems.ChatteringBone_568515759,
-                DefinitionHashes.InventoryItems.NationofBeasts_654370424,
-                DefinitionHashes.InventoryItems.TecheunForce_4094657108,
-                DefinitionHashes.InventoryItems.Transfiguration_3799980700,
-                DefinitionHashes.InventoryItems.TyrannyofHeaven_2721249463,
-                DefinitionHashes.InventoryItems.TheSupremacy_686951703
+                DefinitionHashes.InventoryItems.AgeOldBond_424291879,
+                DefinitionHashes.InventoryItems.ApexPredator_1851777734,
+                DefinitionHashes.InventoryItems.ChatteringBone_501329015,
+                DefinitionHashes.InventoryItems.NationofBeasts_70083888,
+                DefinitionHashes.InventoryItems.TecheunForce_3591141932,
+                DefinitionHashes.InventoryItems.Transfiguration_3885259140,
+                DefinitionHashes.InventoryItems.TyrannyofHeaven_3388655311,
+                DefinitionHashes.InventoryItems.TheSupremacy_2884596447
             }
         },
         {
