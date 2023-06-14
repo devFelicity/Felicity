@@ -3,7 +3,7 @@ README
 
 [![](https://img.shields.io/discord/960484926950637608?color=success&logo=Discord&logoColor=white)](https://discord.gg/JBBqF6Pw2z)
 [![License](https://img.shields.io/badge/license-AGPLv3-teal.svg)](https://choosealicense.com/licenses/agpl-3.0/)
-[![Build](https://github.com/axsLeaf/FelicityOne/actions/workflows/build.yml/badge.svg)](https://github.com/axsLeaf/FelicityOne/actions/workflows/build.yml)
+[![Build](https://github.com/axsLeaf/FelicityOne/actions/workflows/build.yml/badge.svg)](https://github.com/devFelicity/Bot-Frontend/actions/workflows/build.yml)
 
 Welcome to the GitHub repository for **Felicity**, a powerful Discord bot designed for **Destiny 2** players. This bot provides various features and utilities to enhance your Destiny 2 gaming experience. Read on to learn more about its capabilities and how to install it.
 
@@ -92,7 +92,7 @@ For a complete list of available commands and their usage, [check here](https://
 Contributing
 ------------
 
-If you'd like to contribute to the development of **Felicity**, please follow the guidelines outlined in the [CONTRIBUTING.md](link-to-contributing.md) file. We welcome any contributions, including bug fixes, feature enhancements, and documentation improvements.
+If you'd like to contribute to the development of **Felicity**, please follow the guidelines outlined in the [CONTRIBUTING.md](contributing.md) file. We welcome any contributions, including bug fixes, feature enhancements, and documentation improvements.
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -121,12 +121,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 Support
 -------
 
-If you encounter any issues or have questions about **Felicity**, please reach out to our support team by creating an issue in the [GitHub repository](https://github.com/MoonieGZ/FelicityOne/issues/new/choose) or by contacting us via the [support server](https://discord.gg/JBBqF6Pw2z).
+If you encounter any issues or have questions about **Felicity**, please reach out to our support team by creating an issue in the [GitHub repository](https://github.com/devFelicity/Bot-Frontend/issues/new/choose) or by contacting us via the [support server](https://discord.gg/JBBqF6Pw2z).
 
 License
 -------
 
-This project is licensed under [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.en.html). Please see the [LICENSE.md](https://github.com/MoonieGZ/FelicityOne/blob/main/LICENSE.md) file for more details.
+This project is licensed under [AGPLv3](https://www.gnu.org/licenses/agpl-3.0.en.html). Please see the [LICENSE.md](https://github.com/devFelicity/Bot-Frontend/blob/main/LICENSE.md) file for more details.
 
 ---
 
