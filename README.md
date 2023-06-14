@@ -1,98 +1,95 @@
 README
 ==================
 
-[![](https://img.shields.io/discord/960484926950637608?color=success&logo=Discord&logoColor=white)](https://discord.gg/JBBqF6Pw2z)
+[![Discord](https://img.shields.io/discord/960484926950637608?color=success&logo=Discord&logoColor=white)](https://discord.gg/JBBqF6Pw2z)
 [![License](https://img.shields.io/badge/license-AGPLv3-teal.svg)](https://choosealicense.com/licenses/agpl-3.0/)
-[![Build](https://github.com/axsLeaf/FelicityOne/actions/workflows/build.yml/badge.svg)](https://github.com/devFelicity/Bot-Frontend/actions/workflows/build.yml)
+[![Build](https://github.com/devFelicity/Bot-Frontend/actions/workflows/build.yml/badge.svg)](https://github.com/devFelicity/Bot-Frontend/actions/workflows/build.yml)
 
 Welcome to the GitHub repository for **Felicity**, a powerful Discord bot designed for **Destiny 2** players. This bot provides various features and utilities to enhance your Destiny 2 gaming experience. Read on to learn more about its capabilities and how to install it.
 
 Features
 --------
 
-1.  **Weapon Pattern Progress**: Keep track of your progress towards crafting different weapon patterns.
-    
-2.  **Emblem Information**: Get detailed information about emblems, including rarity and detect account shares.
-    
-3.  **Checkpoint Bot Information**: Access information from [d2checkpoint.com](https://d2checkpoint.com) to view available checkpoint bots.
-    
-4.  **Guardians, Loadouts, and Collections**: Easily view information about your guardians, loadouts, and collections.
-    
-5.  **Loot Tables**: Check the loot tables for various activities to plan your farming sessions effectively.
-    
-6.  **Vendor Information**: Stay updated with the latest vendor information and sales.
-    
-7.  **Recommended Rolls**: Get recommendations for optimal rolls on different weapons.
-    
-8.  **Twitch Live Alerts**: Receive alerts when your favorite streamer goes live on Twitch. The alerts are edited to include a VOD link once the stream ends.
-    
+1. **Weapon Pattern Progress**: Keep track of your progress towards crafting different weapon patterns.
+
+2. **Emblem Information**: Get detailed information about emblems, including rarity and detect account shares.
+
+3. **Checkpoint Bot Information**: Access information from [d2checkpoint.com](https://d2checkpoint.com) to view available checkpoint bots.
+
+4. **Guardians, Loadouts, and Collections**: Easily view information about your guardians, loadouts, and collections.
+
+5. **Loot Tables**: Check the loot tables for various activities to plan your farming sessions effectively.
+
+6. **Vendor Information**: Stay updated with the latest vendor information and sales.
+
+7. **Recommended Rolls**: Get recommendations for optimal rolls on different weapons.
+
+8. **Twitch Live Alerts**: Receive alerts when your favorite streamer goes live on Twitch. The alerts are edited to include a VOD link once the stream ends.
 
 Installation
 ------------
 
 To add **Felicity** to your Discord server, follow these steps:
 
-1.  If you see the bot in a server, simply click on it and then click on "Add to Server".
-    
+1. If you see the bot in a server, simply click on it and then click on "Add to Server".
+
     _OR_
-    
+
     Use the following link: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=709475072158728283&permissions=17979270414400&scope=bot%20applications.commands)
-    
-2.  You'll be redirected to Discord's authorization page. Select the server you want to add the bot to and click "Authorize".
-    
-3.  Confirm any necessary permissions for the bot on the server.
-    
-4.  Congratulations! **Felicity** is now added to your Discord server.
-    
+
+2. You'll be redirected to Discord's authorization page. Select the server you want to add the bot to and click "Authorize".
+
+3. Confirm any necessary permissions for the bot on the server.
+
+4. Congratulations! **Felicity** is now added to your Discord server.
 
 Usage
 -----
 
 Once **Felicity** is added to your Discord server, you can start using its features. Here are a few example commands to get you started:
 
-*   To check your craftable weapon pattern progress:
-    
+* To check your craftable weapon pattern progress:
+
     ```diff
     /recipes
     ```
-    
-*   To view your top 5 rarest emblems:
-    
+
+* To view your top 5 rarest emblems:
+
     ```diff
     /emblem rarest
     ```
-    
-*   To get checkpoint bot information:
-    
+
+* To get checkpoint bot information:
+
     ```diff
     /checkpoint-list
     ```
-    
-*   To view loot tables for activities, uses Discord auto-complete to show available activities:
-    
+
+* To view loot tables for activities, uses Discord auto-complete to show available activities:
+
     ```diff
     /loot-table <activity_name>
     ```
-    
-*   To look up recommended rolls for a specific weapon, uses Discord auto-complete to show available weapons:
-    
+
+* To look up recommended rolls for a specific weapon, uses Discord auto-complete to show available weapons:
+
     ```diff
     /roll-finder <gamemode> <weapon_name>
     ```
-    
-*   To receive Twitch live alerts:
-    
+
+* To receive Twitch live alerts:
+
     ```diff
     /server twitch add <streamer_name> [options]
     ```
-    
 
 For a complete list of available commands and their usage, [check here](https://tryfelicity.one/commands/).
 
 Contributing
 ------------
 
-If you'd like to contribute to the development of **Felicity**, please follow the guidelines outlined in the [CONTRIBUTING.md](contributing.md) file. We welcome any contributions, including bug fixes, feature enhancements, and documentation improvements.
+If you'd like to contribute to the development of **Felicity**, please follow the guidelines outlined in the [CONTRIBUTING.md](CONTRIBUTING.md) file. We welcome any contributions, including bug fixes, feature enhancements, and documentation improvements.
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
