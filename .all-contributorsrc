@@ -72,6 +72,16 @@
       "contributions": [
         "financial"
       ]
+    },
+    {
+      "login": "gothfemme",
+      "name": "Kat Michaela",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42180996?v=4",
+      "profile": "http://gothfem.me",
+      "contributions": [
+        "tool",
+        "mentoring"
+      ]
     }
   ],
   "projectName": "Bot-Frontend",
