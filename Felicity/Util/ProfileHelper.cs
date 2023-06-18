@@ -18,8 +18,8 @@ public abstract class ProfileHelper
             if (currentUser == null)
             {
                 profile.Error =
-                    "You did not specify a Bungie name to lookup, so this command defaults to your current user, however you are not registered.\n" +
-                    "Please `/user register` and try again, or specify a name to lookup.";
+                    "You haven't specified a Bungie name to look up. If you want to use your own account, please register with '/user register' first."
+                    + "Alternatively, you can provide a specific name to search for.";
                 return profile;
             }
 

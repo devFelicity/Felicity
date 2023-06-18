@@ -24,10 +24,10 @@ public class UserCommands : InteractionModuleBase<ShardedInteractionContext>
         await DeferAsync(true);
 
         var embed = Embeds.MakeBuilder();
-        embed.Description = "The link below will allow you to register your Bungie profile to Felicity.\n\n" +
-                            "We store authentication keys to fetch information about your profile, collections, records and more." +
-                            "If you do not consent to us storing your data, please do not continue.\n\n" +
-                            $"[Click here to register.](https://auth.tryfelicity.one:8082/auth/bungie_net/{Context.User.Id})";
+        embed.Description = "Use the link below to register your Bungie profile with Felicity.\n"
+        + "We securely store authentication keys to access your profile information, collections, records, and more.\n"
+        + "**If you don't want us to store your data, please refrain from proceeding.**\n\n"
+        + $"[Click here to register.](https://auth.tryfelicity.one:8082/auth/bungie_net/{Context.User.Id})";
 
         await FollowupAsync(embed: embed.Build(), ephemeral: true);
     }
