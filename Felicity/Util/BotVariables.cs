@@ -30,7 +30,7 @@ public static class BotVariables
             using var httpClient = new HttpClient();
             var s = await httpClient.GetStringAsync(
                 "https://raw.githubusercontent.com/devFelicity/Bot-Frontend/main/CHANGELOG.md");
-            Version = s.Split("# Version: ")[1].Split(" (")[0];
+            Version = s.Split("# Version: v")[1].Split(" (")[0];
         }
     }
 
