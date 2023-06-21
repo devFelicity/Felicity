@@ -33,8 +33,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    Console.Title = $"Felicity v.{BotVariables.Version}";
-
+    var title = $"Felicity v.{BotVariables.Version} on {Environment.OSVersion}";
+    Console.WriteLine($"Starting {title}...");
+    Console.Title = title;
+    
     if (!BotVariables.IsDebug)
         builder.WebHost.UseSentry(options =>
         {

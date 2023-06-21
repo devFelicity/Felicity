@@ -136,7 +136,6 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         await FollowupAsync(embed: embed.Build());
     }
 
-    // TODO: re-add hideComplete
     [SlashCommand("recipes", "View current progression towards weapon recipes.")]
     public async Task Recipes(
         [Summary("showAll", "Show complete patterns (default: false)")]
