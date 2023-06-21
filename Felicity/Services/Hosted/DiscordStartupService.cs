@@ -97,6 +97,7 @@ public class DiscordStartupService : BackgroundService
         {
             Name = "Felicity was added to a server."
         };
+        embed.Color = Color.Green;
         embed.Title = arg.Name;
         embed.Fields = new List<EmbedFieldBuilder>
         {
@@ -140,6 +141,7 @@ public class DiscordStartupService : BackgroundService
         {
             Name = $"Felicity was removed from a server ({arg.Id})."
         };
+        embed.Color = Color.Red;
 
         if (arg.Name != null)
             embed.Title = arg.Name;
