@@ -9,6 +9,7 @@ version_regex: 'v?([0-9]{1,2})+[.]+([0-9]{1,2})+[.]+([0-9]{1,2})\s\(\d{1,2}-\d{1
 exclude_labels:
   - bot
   - dependabot
+  - dependencies
   - ci
 group_config:
   - title: Bug Fixes

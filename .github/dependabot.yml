@@ -5,8 +5,9 @@
 
 version: 2
 updates:
-  - package-ecosystem: "nuget" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "nuget"
+    directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "daily"
       time: "23:00"
