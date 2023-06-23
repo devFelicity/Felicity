@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -116,7 +116,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     //$"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
                     $"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} - {manifestRecord.DisplayProperties.Name}");
 
-                if (itemList.Count > 1 && !embed.Description.Contains("* = "))
+                if (itemList.Count > 1 && !embed.Description.Contains("`*` = "))
                     embed.Description +=
                         "\n\n`*` = Multiple crafted weapons are in your inventory, only the highest level is returned.";
             }
