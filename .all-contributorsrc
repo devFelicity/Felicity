@@ -82,6 +82,16 @@
         "tool",
         "mentoring"
       ]
+    },
+    {
+      "login": "camohiddendj",
+      "name": "camo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11087140?v=4",
+      "profile": "https://d2checkpoint.com/",
+      "contributions": [
+        "financial",
+        "infra"
+      ]
     }
   ],
   "projectName": "Bot-Frontend",
