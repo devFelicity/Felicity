@@ -1,3 +1,219 @@
+# Version: v8.0.2 (23-06-2023)
+
+* [c4b1ce9](https://github.com/devFelicity/Bot-Frontend/commit/c4b1ce9ec515bcebf3f997c8dafaa04a6dcb69ba): docs: update .all-contributorsrc [skip ci]
+* [d262e4b](https://github.com/devFelicity/Bot-Frontend/commit/d262e4b4327db1236a75f04a7481dc2b6093f27b): docs: update README.md [skip ci]
+* [221618d](https://github.com/devFelicity/Bot-Frontend/commit/221618d4846b0cc976246fa5d927f9f940af2633): fix version number
+* [528ef6a](https://github.com/devFelicity/Bot-Frontend/commit/528ef6a82476799d740145e40c907cf6353df2b7): fix(version): fix initial version check
+* [9d686bf](https://github.com/devFelicity/Bot-Frontend/commit/9d686bf645b5a44ab5f8f498a5d72ce71a5a95f0): docs(changelog): trim unwanted space
+* [367cd82](https://github.com/devFelicity/Bot-Frontend/commit/367cd829ed5acca4c7cc8cbbfaaf5fe60f2129ea): [Changelog CI] Add Changelog for Version v8.0.1 (21-06-2023)
+* [f0581c5](https://github.com/devFelicity/Bot-Frontend/commit/f0581c56cb66a502f8647665f78fea863ed16ff4): fix(version): update version checker to new format
+* [dcb4e55](https://github.com/devFelicity/Bot-Frontend/commit/dcb4e557e2dfd1127e4c3492d2220f4547308661): Bump DotNetBungieAPI from 2.10.0 to 2.11.0
+
+Bumps [DotNetBungieAPI](https://github.com/EndGameGl/DotNetBungieAPI) from 2.10.0 to 2.11.0.
+- [Release notes](https://github.com/EndGameGl/DotNetBungieAPI/releases)
+- [Commits](https://github.com/EndGameGl/DotNetBungieAPI/commits)
+
+---
+updated-dependencies:
+- dependency-name: DotNetBungieAPI
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [cd5e0a7](https://github.com/devFelicity/Bot-Frontend/commit/cd5e0a74765b72575e83786a4e7c3f8d8b74d187): Bump Serilog from 2.12.0 to 3.0.0
+
+Bumps [Serilog](https://github.com/serilog/serilog) from 2.12.0 to 3.0.0.
+- [Release notes](https://github.com/serilog/serilog/releases)
+- [Changelog](https://github.com/serilog/serilog/blob/dev/CHANGES.md)
+- [Commits](https://github.com/serilog/serilog/compare/v2.12.0...v3.0.0)
+
+---
+updated-dependencies:
+- dependency-name: Serilog
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [63f146a](https://github.com/devFelicity/Bot-Frontend/commit/63f146ae6120444e0c79fd8dbe4478b5c580383e): Bump Fergun.Interactive from 1.7.1 to 1.7.2
+
+Bumps [Fergun.Interactive](https://github.com/d4n3436/Fergun.Interactive) from 1.7.1 to 1.7.2.
+- [Release notes](https://github.com/d4n3436/Fergun.Interactive/releases)
+- [Commits](https://github.com/d4n3436/Fergun.Interactive/compare/v1.7.1...v1.7.2)
+
+---
+updated-dependencies:
+- dependency-name: Fergun.Interactive
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [eaae19a](https://github.com/devFelicity/Bot-Frontend/commit/eaae19aee0eebeed80cd5bdb625fbe9f2d8db505): docs(changelog): trim unwanted lines [skip ci]
+* [b0fa1ad](https://github.com/devFelicity/Bot-Frontend/commit/b0fa1ad2cd85e33942a6f7cb8d04a04ae200ec5a): [Changelog CI] Add Changelog for Version v8.0.0 (21-06-2023)
+* [c29bd1d](https://github.com/devFelicity/Bot-Frontend/commit/c29bd1d838fef56c6fcc18a2678467e6ffce5210): ci(changelog): update dependabot settings to be ignored
+* [df18cdf](https://github.com/devFelicity/Bot-Frontend/commit/df18cdf2303a023c101defdab70ee34ba90e57e4): ci(changelog): force re-generation with new settings
+* [2a3aa14](https://github.com/devFelicity/Bot-Frontend/commit/2a3aa147a41ab95044a16eab529a4a8b26bfdbf1): ci(changelog): trim unwanted lines
+* [91426ae](https://github.com/devFelicity/Bot-Frontend/commit/91426ae235c83a447432bfd59400f3e1db6e46b9): [Changelog CI] Add Changelog for Version v8.0.0 (21-06-2023)
+* [c127caa](https://github.com/devFelicity/Bot-Frontend/commit/c127caad2974686a2bf8fa1a7fd24eae9fb2f3c1): ci(changelog): remove auto-publisher (will re-add later if I don't forget)
+* [e84dd70](https://github.com/devFelicity/Bot-Frontend/commit/e84dd7036ba1ae46788687688d9c21feb0aa2233): ci(changelog): typo in config file name
+* [a31b2cd](https://github.com/devFelicity/Bot-Frontend/commit/a31b2cdc65e3288e255c0c69512de92ad85638f2): ci(changelog): delete changelog.md
+* [c9d0e10](https://github.com/devFelicity/Bot-Frontend/commit/c9d0e104a7268ba841edbc92fb261d080155fc90): ci(changelog): remove old busted changelog CI
+* [fa42235](https://github.com/devFelicity/Bot-Frontend/commit/fa422350f3421f99365d54022330c33aa44324be): feat(rollfinder): add support for new layout
+* [4a94b22](https://github.com/devFelicity/Bot-Frontend/commit/4a94b228fcdf4e6899dee68afb680a0f4808c1fe): style(main): auto-cleanup
+* [85c11cb](https://github.com/devFelicity/Bot-Frontend/commit/85c11cb6a004b33372399f38744939e1099d2bc2): Merge remote-tracking branch 'origin/develop' into develop
+* [6014cc0](https://github.com/devFelicity/Bot-Frontend/commit/6014cc025d003694311c403d1f002d33ac142844): feat(debug): add WSL support and commitizen
+* [f8ecc00](https://github.com/devFelicity/Bot-Frontend/commit/f8ecc004a6ac6e6b52c308536b8c4a165c139103): Bump Serilog from 2.12.0 to 3.0.0
+
+Bumps [Serilog](https://github.com/serilog/serilog) from 2.12.0 to 3.0.0.
+- [Release notes](https://github.com/serilog/serilog/releases)
+- [Changelog](https://github.com/serilog/serilog/blob/dev/CHANGES.md)
+- [Commits](https://github.com/serilog/serilog/compare/v2.12.0...v3.0.0)
+
+---
+updated-dependencies:
+- dependency-name: Serilog
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [5da8076](https://github.com/devFelicity/Bot-Frontend/commit/5da807641c65b37c85be7f7f7b4c33e074a723f5): update changelog
+* [afd40ae](https://github.com/devFelicity/Bot-Frontend/commit/afd40aed2d32eadc322da548c573097f6554ca18): add color to logging
+* [9e32977](https://github.com/devFelicity/Bot-Frontend/commit/9e329776cf26b91055dd5a00d121d50dc100cc3c): String optimisations
+* [a634ed7](https://github.com/devFelicity/Bot-Frontend/commit/a634ed7cda149e0291cd26169a377ee8c8f361a8): Bump DotNetBungieAPI from 2.10.0 to 2.11.0
+
+Bumps [DotNetBungieAPI](https://github.com/EndGameGl/DotNetBungieAPI) from 2.10.0 to 2.11.0.
+- [Release notes](https://github.com/EndGameGl/DotNetBungieAPI/releases)
+- [Commits](https://github.com/EndGameGl/DotNetBungieAPI/commits)
+
+---
+updated-dependencies:
+- dependency-name: DotNetBungieAPI
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [fd75996](https://github.com/devFelicity/Bot-Frontend/commit/fd75996c76208fcb0caebbb18089b6e0542bbca8): Bump Fergun.Interactive from 1.7.1 to 1.7.2
+
+Bumps [Fergun.Interactive](https://github.com/d4n3436/Fergun.Interactive) from 1.7.1 to 1.7.2.
+- [Release notes](https://github.com/d4n3436/Fergun.Interactive/releases)
+- [Commits](https://github.com/d4n3436/Fergun.Interactive/compare/v1.7.1...v1.7.2)
+
+---
+updated-dependencies:
+- dependency-name: Fergun.Interactive
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [01b340e](https://github.com/devFelicity/Bot-Frontend/commit/01b340e9c254d720fc01e7fdb399f421819f30d2): docs: update .all-contributorsrc [skip ci]
+* [38f0e91](https://github.com/devFelicity/Bot-Frontend/commit/38f0e916bee4937ab246505a64528983d8186f70): docs: update README.md [skip ci]
+* [ee135b9](https://github.com/devFelicity/Bot-Frontend/commit/ee135b944a5243139a62f98073b64c5465282d28): Fix up readme
+* [66a74b0](https://github.com/devFelicity/Bot-Frontend/commit/66a74b09c861367bd2521e55717ef19b5cc56c3f): Bump Sentry.AspNetCore from 3.33.0 to 3.33.1
+
+Bumps [Sentry.AspNetCore](https://github.com/getsentry/sentry-dotnet) from 3.33.0 to 3.33.1.
+- [Release notes](https://github.com/getsentry/sentry-dotnet/releases)
+- [Changelog](https://github.com/getsentry/sentry-dotnet/blob/main/CHANGELOG.md)
+- [Commits](https://github.com/getsentry/sentry-dotnet/compare/3.33.0...3.33.1)
+
+---
+updated-dependencies:
+- dependency-name: Sentry.AspNetCore
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [78c73e1](https://github.com/devFelicity/Bot-Frontend/commit/78c73e16d1527b658da0e82387b81434045aa7de): Update .all-contributorsrc [skip ci]
+* [6b7aab8](https://github.com/devFelicity/Bot-Frontend/commit/6b7aab8b39e73603ba32337e7dd2e335c424f0b3): Update README.md [skip ci]
+* [a20f1fa](https://github.com/devFelicity/Bot-Frontend/commit/a20f1fa9f0a0ceb90c7a1c22c76d08ab1296c240): Bump Microsoft.EntityFrameworkCore from 7.0.5 to 7.0.7
+
+Bumps [Microsoft.EntityFrameworkCore](https://github.com/dotnet/efcore) from 7.0.5 to 7.0.7.
+- [Release notes](https://github.com/dotnet/efcore/releases)
+- [Commits](https://github.com/dotnet/efcore/compare/v7.0.5...v7.0.7)
+
+---
+updated-dependencies:
+- dependency-name: Microsoft.EntityFrameworkCore
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [b384f0d](https://github.com/devFelicity/Bot-Frontend/commit/b384f0d6b14aef362501e22b1889c282ade8bcb8): Bump Sentry.Serilog from 3.33.0 to 3.33.1
+
+Bumps [Sentry.Serilog](https://github.com/getsentry/sentry-dotnet) from 3.33.0 to 3.33.1.
+- [Release notes](https://github.com/getsentry/sentry-dotnet/releases)
+- [Changelog](https://github.com/getsentry/sentry-dotnet/blob/main/CHANGELOG.md)
+- [Commits](https://github.com/getsentry/sentry-dotnet/compare/3.33.0...3.33.1)
+
+---
+updated-dependencies:
+- dependency-name: Sentry.Serilog
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [773ac97](https://github.com/devFelicity/Bot-Frontend/commit/773ac97b8c41b9d53c1b0bbd72fece4a4e828b62): Fix LW weapons not appearing in crafted
+* [eeb1d2b](https://github.com/devFelicity/Bot-Frontend/commit/eeb1d2b0c2c197be0bdcaafe153451931fcc5cc2): update changelog
+* [c71e3cb](https://github.com/devFelicity/Bot-Frontend/commit/c71e3cb7776ea0ddd80f54a9fc68b819cc800f3e): fix incorrect urls in /support
+* [6aad3c5](https://github.com/devFelicity/Bot-Frontend/commit/6aad3c50d782efe84d588589ca5a04b9a7539ef1): fix dupe in crafted weapons
+* [5c5726c](https://github.com/devFelicity/Bot-Frontend/commit/5c5726c8dbf08365e0210fe615cd06096b273a14): Update README.md [skip ci]
+* [b11d536](https://github.com/devFelicity/Bot-Frontend/commit/b11d536fee872bb3ef3f0584df698c920b7ff7ab): Update FUNDING.yml [skip ci]
+* [f9c57fb](https://github.com/devFelicity/Bot-Frontend/commit/f9c57fb44edbaecc8caf0edd9a3a289ca62ae8cc): push changelog
+* [7c141bb](https://github.com/devFelicity/Bot-Frontend/commit/7c141bb90c62a43cdab4b5b3f74d2cafe0a3b57e): cleanup
+* [f10c602](https://github.com/devFelicity/Bot-Frontend/commit/f10c602c389e93ef8a8b7abade07413a564edac2): Remove redundant code
+* [abb0d34](https://github.com/devFelicity/Bot-Frontend/commit/abb0d34ced01dcfe8f25982e0a1f3224702fea33): Re-add showAll on /recipes
+* [cb6c690](https://github.com/devFelicity/Bot-Frontend/commit/cb6c6905d11c0227435a9e42625d3ec08b366725): correct Ada-1 description
+* [5a07114](https://github.com/devFelicity/Bot-Frontend/commit/5a07114340c9628518a33fef886f1cc7924cc30b): Added count to rarest emblems
+* [04e06b3](https://github.com/devFelicity/Bot-Frontend/commit/04e06b3de6bb6f1e303d75501d4c84b5fabaf4be): missed link change
+* [ad4f3bb](https://github.com/devFelicity/Bot-Frontend/commit/ad4f3bb29326cdcaa80c6a4b929762abd798d9d1): bump dependencies
+* [099c2f2](https://github.com/devFelicity/Bot-Frontend/commit/099c2f29487dc8b06bbbd697c140dffd99f0ce1c): add self-hosted assets
+* [cb0275e](https://github.com/devFelicity/Bot-Frontend/commit/cb0275e5cbe446e2c2f9357cba4b774d054c61e4): add support message
+* [7d886f8](https://github.com/devFelicity/Bot-Frontend/commit/7d886f8163de306f98f1584f7f6b1fcb7ef9d797): added GotD loot table
+* [ebe4ab3](https://github.com/devFelicity/Bot-Frontend/commit/ebe4ab34f9a5ec17ed9b811dd107a655b5cc0e7b): Fix new version issues
+* [a633f18](https://github.com/devFelicity/Bot-Frontend/commit/a633f18aa5f2489439e322d5bb9d2abffe9bf51b): update changelog [skip ci]
+* [724494d](https://github.com/devFelicity/Bot-Frontend/commit/724494db4572160030ee939a798f9a4be20cc7f8): fix downgrade issue
+* [07c9ec2](https://github.com/devFelicity/Bot-Frontend/commit/07c9ec2067ec325230f0e088bad5cd943aa62633): Bump DotNetBungieAPI from 2.9.0 to 2.10.0
+
+Bumps [DotNetBungieAPI](https://github.com/EndGameGl/DotNetBungieAPI) from 2.9.0 to 2.10.0.
+- [Release notes](https://github.com/EndGameGl/DotNetBungieAPI/releases)
+- [Commits](https://github.com/EndGameGl/DotNetBungieAPI/commits)
+
+---
+updated-dependencies:
+- dependency-name: DotNetBungieAPI
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+* [7b41abb](https://github.com/devFelicity/Bot-Frontend/commit/7b41abb0c6c284214c834574b4d83030f07cea35): Update dependabot.yml [skip-ci]
+* [ddafacd](https://github.com/devFelicity/Bot-Frontend/commit/ddafacd171b26c0e6e08e359b25d2523b15d17de): docs: update .all-contributorsrc [skip ci]
+* [18caba9](https://github.com/devFelicity/Bot-Frontend/commit/18caba9f802b1e5239e134120c2e8d835f00d205): docs: update README.md [skip ci]
+* [1405d98](https://github.com/devFelicity/Bot-Frontend/commit/1405d98adaf4704139ebce63ef66819542fd69f3): Update .all-contributorsrc
+* [cce0775](https://github.com/devFelicity/Bot-Frontend/commit/cce0775218a1acda390a63132b958a8da1dd7cd4): hopefully fixes cpu loop
+* [9a3c95c](https://github.com/devFelicity/Bot-Frontend/commit/9a3c95c2796e84abad2aa6dd9c73660f650bcdc4): forgor changelog
+* [0c71112](https://github.com/devFelicity/Bot-Frontend/commit/0c71112609df879e795f0064118fd6384e101602): Update to new auth url (also using as test)
+* [079fc25](https://github.com/devFelicity/Bot-Frontend/commit/079fc251e39d528676b7cf974e627c38ff8df4b6): use jq to make a payload
+* [f598f0d](https://github.com/devFelicity/Bot-Frontend/commit/f598f0d47c7b9e1fc7e224d99ee2c3c6b9fdd47c): attempt 412323234 at getting commit list to work
+* [f2eb7fa](https://github.com/devFelicity/Bot-Frontend/commit/f2eb7fa4f4aa9b3025f45e4edabd299700d239fd): quote marks are weird
+* [18676b9](https://github.com/devFelicity/Bot-Frontend/commit/18676b9394d75a9132a667367e3e07020ca77820): fix pr update json
+* [8a01efa](https://github.com/devFelicity/Bot-Frontend/commit/8a01efa9e407a02e523013b605bbed913de55cde): Update github action
+* [33ed80f](https://github.com/devFelicity/Bot-Frontend/commit/33ed80f313e8159c4c5dda3b22bad0004eb1c0e0): Revert "Update github action"
+
+This reverts commit 6768cdb3f6980301038ee3e4cbf7eefa9d63a7e1.
+* [6768cdb](https://github.com/devFelicity/Bot-Frontend/commit/6768cdb3f6980301038ee3e4cbf7eefa9d63a7e1): Update github action
+* [900d729](https://github.com/devFelicity/Bot-Frontend/commit/900d729c5b9df70a8caa56da2840f52a37159186): Update changelog
+* [12d0910](https://github.com/devFelicity/Bot-Frontend/commit/12d091081a7327e6bda488b401f45a70c5e2813a): add paginator to /recipes
+* [6db0329](https://github.com/devFelicity/Bot-Frontend/commit/6db0329e418839fa7b0102ec248d338159eb7bce): cleanup code
+
+
 # Version: v8.0.1 (21-06-2023)
 * [eaae19a](https://github.com/devFelicity/Bot-Frontend/commit/eaae19aee0eebeed80cd5bdb625fbe9f2d8db505): docs(changelog): trim unwanted lines [skip ci]
 * [b0fa1ad](https://github.com/devFelicity/Bot-Frontend/commit/b0fa1ad2cd85e33942a6f7cb8d04a04ae200ec5a): [Changelog CI] Add Changelog for Version v8.0.0 (21-06-2023)
