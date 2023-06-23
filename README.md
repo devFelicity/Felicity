@@ -109,6 +109,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://gothfem.me"><img src="https://avatars.githubusercontent.com/u/42180996?v=4?s=100" width="100px;" alt="Kat Michaela"/><br /><sub><b>Kat Michaela</b></sub></a><br /><a href="#tool-gothfemme" title="Tools">🔧</a> <a href="#mentoring-gothfemme" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://d2checkpoint.com/"><img src="https://avatars.githubusercontent.com/u/11087140?v=4?s=100" width="100px;" alt="camo"/><br /><sub><b>camo</b></sub></a><br /><a href="#financial-camohiddendj" title="Financial">💵</a> <a href="#infra-camohiddendj" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     </tr>
   </tbody>
 </table>
