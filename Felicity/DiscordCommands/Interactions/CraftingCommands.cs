@@ -116,7 +116,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     //$"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(manifestRecord.Hash)})");
                     $"\n> {FormattedWeaponLevel(highestWeaponLevel, itemList.Count > 1)} - {manifestRecord.DisplayProperties.Name}");
 
-                if (itemList.Count > 1 && !embed.Description.Contains("* = "))
+                if (itemList.Count > 1 && !embed.Description.Contains("`*` = "))
                     embed.Description +=
                         "\n\n`*` = Multiple crafted weapons are in your inventory, only the highest level is returned.";
             }
@@ -259,7 +259,15 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             }
 
             if (page.Fields.Count == 0)
-                page.Description += "\n\nYou have completed all available patterns.";
+            {
+                if (pageList.Count == 0)
+                {
+                    page.Description += "\n\nYou have completed all available patterns.";
+                    pageList.Add(page);
+                }
+                
+                continue;
+            }
 
             pageList.Add(page);
         }
