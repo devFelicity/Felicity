@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
@@ -259,7 +259,15 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             }
 
             if (page.Fields.Count == 0)
-                page.Description += "\n\nYou have completed all available patterns.";
+            {
+                if (pageList.Count == 0)
+                {
+                    page.Description += "\n\nYou have completed all available patterns.";
+                    pageList.Add(page);
+                }
+                
+                continue;
+            }
 
             pageList.Add(page);
         }
