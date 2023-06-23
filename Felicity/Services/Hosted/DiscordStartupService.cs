@@ -130,7 +130,8 @@ public class DiscordStartupService : BackgroundService
         var buggedServers = new List<ulong>
         {
             260978723455631373,
-            1068135541360578590
+            1068135541360578590,
+            719161295232040961
         };
 
         if (buggedServers.Contains(arg.Id))
