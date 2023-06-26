@@ -37,9 +37,10 @@ public static class ProcessMementoData
 {
     private const string FilePath = "Data/mementoCache.json";
 
-    public static MementoCache? ReadJson()
+    public static async Task<MementoCache?> ReadJsonAsync()
     {
-        return JsonSerializer.Deserialize<MementoCache>(File.ReadAllText(FilePath));
+        await using var stream = File.OpenRead(FilePath);
+        return await JsonSerializer.DeserializeAsync<MementoCache>(stream);
     }
 }
 

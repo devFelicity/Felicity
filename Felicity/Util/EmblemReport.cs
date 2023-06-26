@@ -12,9 +12,7 @@ public class EmblemReport
     public partial class EmblemResponse
     {
         [JsonPropertyName("data")]
-#pragma warning disable CS8618
-        public List<Datum> Data { get; set; }
-#pragma warning restore CS8618
+        public List<Datum> Data { get; set; } = null!;
     }
 
     public class Datum

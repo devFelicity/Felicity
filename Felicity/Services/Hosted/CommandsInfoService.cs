@@ -12,14 +12,14 @@ public class CommandsInfoService : ICommandsInfoService
 {
     private readonly Type _baseCommandType = typeof(IInteractionModuleBase);
 
-    public ReadOnlyCollection<CommandInfo> CommandsInfo { get; private set; }
+    public ReadOnlyCollection<CommandInfo> CommandsInfo { get; private set; } = null!;
 
     public void Initialize()
     {
         var commandsInfo = new List<CommandInfo>();
         var assembly = Assembly.GetAssembly(typeof(CommandsInfoService));
 
-        if (assembly == null)
+        if (assembly is null)
         {
             Log.Error("Assembly failed to populate.");
             return;

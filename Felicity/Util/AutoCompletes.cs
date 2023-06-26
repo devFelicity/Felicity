@@ -6,6 +6,7 @@ using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Models.Caches;
 using Felicity.Util.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Felicity.Util;
 
@@ -18,13 +19,13 @@ public class TwitchStreamAutocomplete : AutocompleteHandler
         _streamDb = streamDb;
     }
 
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter,
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
-        var streamList = _streamDb.TwitchStreams.Where(stream => stream.ServerId == context.Guild.Id).ToList();
+        var streamList = await _streamDb.TwitchStreams.Where(stream => stream.ServerId == context.Guild.Id).ToListAsync();
 
         if (streamList.Count == 0)
             return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful, "No streams found.");
@@ -41,47 +42,54 @@ public class TwitchStreamAutocomplete : AutocompleteHandler
 
 public class MetricAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
-        IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
-    {
-        await Task.Delay(0);
+    private readonly IBungieClient _bungieClient;
 
+    public MetricAutocomplete(IBungieClient bungieClient)
+    {
+        _bungieClient = bungieClient;
+    }
+
+    public override Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
+        IAutocompleteInteraction autocompleteInteraction,
+        IParameterInfo parameter,
+        IServiceProvider services)
+    {
         var resultList = new List<AutocompleteResult>();
 
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
-        var metricsList = services.GetService<IBungieClient>()!.Repository.GetAll<DestinyMetricDefinition>();
+        var metricsList = _bungieClient.Repository.GetAll<DestinyMetricDefinition>();
 
         if (currentSearch != null)
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
-                select new AutocompleteResult(
-                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                    destinyMetricDefinition.Hash));
+                                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
+                                select new AutocompleteResult(
+                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                                    destinyMetricDefinition.Hash));
         else
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                select new AutocompleteResult(
-                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                    destinyMetricDefinition.Hash));
+                                select new AutocompleteResult(
+                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                                    destinyMetricDefinition.Hash));
 
-        return AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25));
+        return Task.FromResult(AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25)));
     }
 }
 
 public class MementoWeaponAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter,
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
-            where autocompleteOption.Name == "source"
-            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+                      where autocompleteOption.Name == "source"
+                      select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
 
-        var memCache = ProcessMementoData.ReadJson();
+        var memCache = await ProcessMementoData.ReadJsonAsync();
 
         if (memCache == null)
             return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful, "Memento cache not found.");
@@ -94,8 +102,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var results = (from weapon in goodSource.WeaponList
-            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
-            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+                       where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+                       select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
 
         results = results.OrderBy(x => x.Name).ToList();
 
@@ -105,12 +113,12 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
 
 public class LootTableAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter,
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
         var resultList = new List<LootTableDefinition>();
 
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
@@ -126,18 +134,18 @@ public class LootTableAutocomplete : AutocompleteHandler
 
         autocompleteList = autocompleteList.OrderBy(x => x.Name).ToList();
 
-        return AutocompletionResult.FromSuccess(autocompleteList);
+        return Task.FromResult(AutocompletionResult.FromSuccess(autocompleteList));
     }
 }
 
 public class WishAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter,
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
         var resultList = new List<Wish>();
 
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
@@ -150,19 +158,19 @@ public class WishAutocomplete : AutocompleteHandler
         var autocompleteList = resultList
             .Select(wish => new AutocompleteResult($"Wish {wish.Number}: {wish.Description}", wish.Number)).ToList();
 
-        return AutocompletionResult.FromSuccess(autocompleteList);
+        return Task.FromResult(AutocompletionResult.FromSuccess(autocompleteList));
     }
 }
 
 public class RollFinderAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter, 
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
-        var weaponList = ProcessRollData.FromJson();
+        var weaponList = await ProcessRollData.FromJsonAsync();
 
         if (weaponList == null)
             return AutocompletionResult.FromError(InteractionCommandError.ParseFailed, "Failed to parse weapon rolls.");
@@ -202,15 +210,15 @@ public class RollFinderAutocomplete : AutocompleteHandler
 
 public class CheckpointAutocomplete : AutocompleteHandler
 {
-    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
+    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
+        IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, IServiceProvider services)
+        IParameterInfo parameter,
+        IServiceProvider services)
     {
-        await Task.Delay(0);
-
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
-        var checkpointList = await CheckpointParser.Fetch();
+        var checkpointList = await CheckpointParser.FetchAsync();
         if (checkpointList == null)
             return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful,
                 "Failed to fetch checkpoint list.");
@@ -222,12 +230,12 @@ public class CheckpointAutocomplete : AutocompleteHandler
             autocompleteList.AddRange(checkpointList.Official?.Select(officialCp =>
                                           new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}",
                                               officialCp.DisplayOrder)) ??
-                                      Array.Empty<AutocompleteResult>());
+                                      Enumerable.Empty<AutocompleteResult>());
         else
             autocompleteList.AddRange(from officialCp in checkpointList.Official
-                where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
-                select new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}",
-                    officialCp.DisplayOrder));
+                                      where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
+                                      select new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}",
+                                          officialCp.DisplayOrder));
 
         return AutocompletionResult.FromSuccess(string.IsNullOrEmpty(currentSearch)
             ? autocompleteList
