@@ -177,7 +177,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             var name = bungieTag.Split("#").First();
             var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-            var goodProfile = await BungieApiUtils.GetLatestProfile(_bungieClient, name, code);
+            var goodProfile = await BungieApiUtils.GetLatestProfileAsync(_bungieClient, name, code);
             if (goodProfile == null)
             {
                 var errorEmbed = Embeds.MakeErrorEmbed();

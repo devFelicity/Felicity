@@ -16,7 +16,7 @@ public class CheckpointCommands : InteractionModuleBase<ShardedInteractionContex
     {
         await DeferAsync();
 
-        var checkpointList = await CheckpointParser.Fetch();
+        var checkpointList = await CheckpointParser.FetchAsync();
 
         var embed = Embeds.MakeBuilder();
 
@@ -54,7 +54,7 @@ public class CheckpointCommands : InteractionModuleBase<ShardedInteractionContex
     {
         await DeferAsync();
 
-        var checkpointList = await CheckpointParser.Fetch();
+        var checkpointList = await CheckpointParser.FetchAsync();
 
         // ReSharper disable once MergeSequentialChecks
         var failed = checkpointList == null && checkpointList?.Official != null;

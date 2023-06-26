@@ -25,13 +25,15 @@ public static class BungieApiUtils
         }
         catch (Exception e)
         {
-            Log.Error(e, "API check failure.");
+            Log.Error(e, "API check failure");
         }
 
         return false;
     }
 
-    public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(IBungieClient client, long membershipId,
+    public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(
+        IBungieClient client, 
+        long membershipId,
         BungieMembershipType membershipType)
     {
         var result = new DestinyProfileUserInfoCard();
@@ -45,8 +47,10 @@ public static class BungieApiUtils
         return result;
     }
 
-    public static async Task<DestinyProfileUserInfoCard?> GetLatestProfile(IBungieClient bungieClient,
-        string bungieName, short bungieCode)
+    public static async Task<DestinyProfileUserInfoCard?> GetLatestProfileAsync(
+        IBungieClient bungieClient,
+        string bungieName, 
+        short bungieCode)
     {
         var userInfoCard = await bungieClient.ApiAccess.Destiny2.SearchDestinyPlayerByBungieName(
             BungieMembershipType.All,
@@ -88,7 +92,7 @@ public static class BungieApiUtils
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Caught {e.GetType()}: {e.Message}\n{user.BungieName}");
+                Log.Logger.Error(e, "Failed to refresh token for {BungieName}", user.BungieName);
             }
 
         await userDb.SaveChangesAsync();

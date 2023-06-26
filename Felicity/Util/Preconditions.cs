@@ -11,20 +11,21 @@ public class Preconditions
 {
     public class RequireBotModerator : PreconditionAttribute
     {
-        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
-            ICommandInfo commandInfo, IServiceProvider services)
+        public override async Task<PreconditionResult> CheckRequirementsAsync(
+            IInteractionContext context,
+            ICommandInfo commandInfo, 
+            IServiceProvider services)
         {
             if (context.User.Id == BotVariables.BotOwnerId)
                 return PreconditionResult.FromSuccess();
 
-            if (((IGuildUser)context.User).GuildPermissions.ManageGuild)
+            if (context.User is IGuildUser guildUser && guildUser.GuildPermissions.ManageGuild)
                 return PreconditionResult.FromSuccess();
 
             if (context.Guild.OwnerId == context.User.Id)
                 return PreconditionResult.FromSuccess();
 
-            const string msg =
-                "You are not a bot moderator for this server.";
+            const string msg = "You are not a bot moderator for this server.";
 
             await context.Interaction.RespondAsync(msg);
 
@@ -34,8 +35,10 @@ public class Preconditions
 
     public class RequireOAuth : PreconditionAttribute
     {
-        public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context,
-            ICommandInfo commandInfo, IServiceProvider services)
+        public override async Task<PreconditionResult> CheckRequirementsAsync(
+            IInteractionContext context,
+            ICommandInfo commandInfo, 
+            IServiceProvider services)
         {
             await context.Interaction.DeferAsync();
 
@@ -45,7 +48,7 @@ public class Preconditions
 
             var errorEmbed = Embeds.MakeErrorEmbed();
 
-            if (user != null)
+            if (user is not null)
             {
                 if (user.OAuthRefreshExpires < nowTime)
                     errorEmbed.Description =
