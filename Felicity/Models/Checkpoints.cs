@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
+using Felicity.Util;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ClassNeverInstantiated.Global
@@ -11,15 +11,11 @@ namespace Felicity.Models;
 
 public class CheckpointParser
 {
-    public static async Task<Checkpoints?> Fetch()
+    public static async Task<Checkpoints?> FetchAsync()
     {
-        using var httpClient = new HttpClient();
-        var json = await httpClient.GetStringAsync(
-            "https://d2cp.io/platform/checkpoints?v=2");
-
         try
         {
-            return JsonConvert.DeserializeObject<Checkpoints>(json, Converter.Settings);
+            return await HttpClientInstance.Instance.GetFromJsonAsync<Checkpoints>("https://d2cp.io/platform/checkpoints?v=2");
         }
         catch
         {

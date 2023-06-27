@@ -1,3 +1,12 @@
+# Version: v8.0.5 (27-06-2023)
+
+* [a2ea6ee](https://github.com/devFelicity/Bot-Frontend/commit/a2ea6eed2e5e2080f9d44c64c1230243bb596552): Update FUNDING.yml
+* [3c84501](https://github.com/devFelicity/Bot-Frontend/commit/3c84501b77228d1b8a4faef8efab1c3979cd8804): ci(docker): update build actions
+* [acc95d3](https://github.com/devFelicity/Bot-Frontend/commit/acc95d33cf078c3be25b495cf897f88f33c14e6f): Update publish.yml
+* [5c34905](https://github.com/devFelicity/Bot-Frontend/commit/5c34905f6fa3f4e06e8ba27d63fad8e27ac9cac9): Update publish.yml
+* [974baa7](https://github.com/devFelicity/Bot-Frontend/commit/974baa7e3765ec7f7942ef9da7ee798fd17f4816): Update publish.yml
+
+
 # Version: v8.0.1 (21-06-2023)
 * [eaae19a](https://github.com/devFelicity/Bot-Frontend/commit/eaae19aee0eebeed80cd5bdb625fbe9f2d8db505): docs(changelog): trim unwanted lines [skip ci]
 * [b0fa1ad](https://github.com/devFelicity/Bot-Frontend/commit/b0fa1ad2cd85e33942a6f7cb8d04a04ae200ec5a): [Changelog CI] Add Changelog for Version v8.0.0 (21-06-2023)

@@ -33,10 +33,14 @@ public class StatusService : BackgroundService
 
     private readonly TimeSpan _delay = TimeSpan.FromMinutes(15);
     private readonly DiscordShardedClient _discordClient;
+    private readonly ILogger<StatusService> _logger;
 
-    public StatusService(DiscordShardedClient discordClient)
+    public StatusService(
+        DiscordShardedClient discordClient,
+        ILogger<StatusService> logger)
     {
         _discordClient = discordClient;
+        _logger = logger;
     }
 
     private static Game LastGame { get; set; } = null!;
@@ -58,7 +62,7 @@ public class StatusService : BackgroundService
                 try
                 {
                     await _discordClient.SetActivityAsync(newGame);
-                    Log.Information($"Set game to: {newGame.Name}");
+                    _logger.LogInformation("Set game to: {Name}", newGame.Name);
                     LastGame = newGame;
                 }
                 catch
@@ -71,7 +75,7 @@ public class StatusService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in StatusService\n{e.GetType()}: {e.Message}");
+            _logger.LogError(e, "Exception in StatusService");
         }
     }
 }

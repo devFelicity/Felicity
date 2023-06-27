@@ -10,8 +10,9 @@ public static class BotVariables
     public const string DiscordInvite = "https://discord.gg/JBBqF6Pw2z";
     public const string BungieBaseUrl = "https://www.bungie.net/";
 
-    internal const string ErrorMessage = $"You can report this error either in our [Support Server]({DiscordInvite}) " +
-                                         "or by creating a new [Issue](https://github.com/devFelicity/Bot-Frontend/issues/new?assignees=MoonieGZ&labels=bug&template=bug-report.md&title=) on GitHub.";
+    internal const string ErrorMessage =
+        $"You can report this error either in our [Support Server]({DiscordInvite}) " +
+         "or by creating a new [Issue](https://github.com/devFelicity/Bot-Frontend/issues/new?assignees=MoonieGZ&labels=bug&template=bug-report.md&title=) on GitHub.";
 
     internal static bool IsDebug;
     internal static string? Version;
@@ -27,8 +28,7 @@ public static class BotVariables
         }
         else
         {
-            using var httpClient = new HttpClient();
-            var s = await httpClient.GetStringAsync(
+            var s = await HttpClientInstance.Instance.GetStringAsync(
                 "https://raw.githubusercontent.com/devFelicity/Bot-Frontend/main/CHANGELOG.md");
             Version = s.Split("# Version: v")[1].Split(" (")[0];
         }

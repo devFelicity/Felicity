@@ -115,10 +115,13 @@ public static class ProcessRollData
 {
     private const string JsonFile = "Data/weaponRolls.json";
 
-    public static RecommendedRolls? FromJson()
+    public static async Task<RecommendedRolls?> FromJsonAsync()
     {
-        return File.Exists(JsonFile)
-            ? JsonSerializer.Deserialize<RecommendedRolls>(File.ReadAllText(JsonFile))
-            : null;
+        if (File.Exists(JsonFile))
+        {
+            await using var stream = File.OpenRead(JsonFile);
+            return await JsonSerializer.DeserializeAsync<RecommendedRolls?>(stream);
+        }
+        return null;
     }
 }

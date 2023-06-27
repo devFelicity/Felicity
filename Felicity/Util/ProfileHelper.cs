@@ -6,7 +6,10 @@ namespace Felicity.Util;
 
 public abstract class ProfileHelper
 {
-    public static async Task<ProfileResponse> GetRequestedProfile(string bungieTag, ulong discordId, UserDb userDb,
+    public static async Task<ProfileResponse> GetRequestedProfile(
+        string bungieTag, 
+        ulong discordId, 
+        UserDb userDb,
         IBungieClient bungieClient)
     {
         var profile = new ProfileResponse();
@@ -33,7 +36,7 @@ public abstract class ProfileHelper
         var name = bungieTag.Split("#").First();
         var code = Convert.ToInt16(bungieTag.Split("#").Last());
 
-        var goodProfile = await BungieApiUtils.GetLatestProfile(bungieClient, name, code);
+        var goodProfile = await BungieApiUtils.GetLatestProfileAsync(bungieClient, name, code);
         if (goodProfile == null || goodProfile.MembershipType == BungieMembershipType.None)
         {
             profile.Error =

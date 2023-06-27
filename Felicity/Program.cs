@@ -23,19 +23,16 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Quartz", LogEventLevel.Information)
     .WriteTo.Console()
-    .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 14)
+    .WriteTo.File("Logs/latest-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14)
     .CreateLogger();
-
-await BotVariables.Initialize();
 
 try
 {
+    await BotVariables.Initialize();
     var builder = WebApplication.CreateBuilder(args);
-
-    var title = $"Felicity v.{BotVariables.Version} on {Environment.OSVersion}";
-    Console.WriteLine($"Starting {title}...");
+    var title = $"Starting Felicity v.{BotVariables.Version} on {Environment.OSVersion}...";
     Console.Title = title;
+    Log.Information(title);
     
     if (!BotVariables.IsDebug)
         builder.WebHost.UseSentry(options =>
@@ -184,9 +181,11 @@ try
     app.UseAuthorization();
     app.MapControllers();
     app.UseMvc();
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
     if (!app.Environment.IsDevelopment())
         app.UseHsts();
+
+    app.MapGet("/health", () => Results.Ok());
 
     await app.RunAsync();
 }

@@ -23,6 +23,7 @@ public class DiscordStartupService : BackgroundService
     private readonly DiscordShardedClient _discordShardedClient;
     private readonly InteractionService _interactionService;
     private readonly InteractiveService _interactiveService;
+    private readonly ILogger<DiscordStartupService> _logger;
     private readonly MetricDb _metricDb;
     private readonly IServiceProvider _serviceProvider;
 
@@ -37,7 +38,8 @@ public class DiscordStartupService : BackgroundService
         IServiceProvider serviceProvider,
         LogAdapter<BaseSocketClient> adapter,
         MetricDb metricDb,
-        InteractiveService interactiveService)
+        InteractiveService interactiveService,
+        ILogger<DiscordStartupService> logger)
     {
         _discordShardedClient = discordShardedClient;
         _discordBotOptions = discordBotOptions;
@@ -47,6 +49,7 @@ public class DiscordStartupService : BackgroundService
         _adapter = adapter;
         _metricDb = metricDb;
         _interactiveService = interactiveService;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -86,7 +89,7 @@ public class DiscordStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in DiscordStartupService\n{e.GetType()}: {e.Message}");
+            _logger.LogError(e, "Exception in DiscordStartupService");
         }
     }
 
@@ -220,8 +223,10 @@ public class DiscordStartupService : BackgroundService
         var context = new ShardedCommandContext(_discordShardedClient, socketUserMessage);
         var command = await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
 
-        if (command.Error != null)
-            Log.Error($"{command.Error}: {command.ErrorReason}");
+        if (command.Error is not null)
+        {
+            _logger.LogError("{Error}: {ErrorReason}", command.Error, command.ErrorReason);
+        }
     }
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
@@ -230,11 +235,11 @@ public class DiscordStartupService : BackgroundService
             _interactiveService.Callbacks.ContainsKey(messageComponent.Message.Id))
             return;
 
-        if (_discordBotOptions.Value.BannedUsers != null &&
+        if (_discordBotOptions.Value.BannedUsers is not null &&
             _discordBotOptions.Value.BannedUsers.Contains(socketInteraction.User.Id))
         {
             await socketInteraction.DeferAsync();
-            Log.Information($"Banned user `{socketInteraction.User}` tried to run a command.");
+            _logger.LogInformation("Banned user `{User}` tried to run a command", socketInteraction.User.ToString());
             return;
         }
 
@@ -270,8 +275,10 @@ public class DiscordStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            if (e.InnerException != null && !e.InnerException.Message.StartsWith("Duplicate entry"))
-                Log.Error(e, "Failed to push metrics.");
+            if (e.InnerException is not null && !e.InnerException.Message.StartsWith("Duplicate entry"))
+            {
+                _logger.LogError(e, "Failed to push metrics");
+            }
         }
     }
 

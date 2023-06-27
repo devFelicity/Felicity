@@ -23,8 +23,10 @@ public class TwitchService
     private readonly TwitchAPI _twitchApi;
     private readonly TwitchStreamDb _twitchStreamDb;
 
-    public TwitchService(DiscordShardedClient discordClient,
-        IOptions<TwitchOptions> twitchOptions, TwitchStreamDb twitchStreamDb)
+    public TwitchService(
+        DiscordShardedClient discordClient,
+        IOptions<TwitchOptions> twitchOptions, 
+        TwitchStreamDb twitchStreamDb)
     {
         _discordClient = discordClient;
         _twitchStreamDb = twitchStreamDb;

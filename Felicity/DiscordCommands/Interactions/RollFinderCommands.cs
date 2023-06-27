@@ -31,7 +31,7 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
     {
         await DeferAsync();
 
-        var weaponRollList = ProcessRollData.FromJson();
+        var weaponRollList = await ProcessRollData.FromJsonAsync();
 
         if (weaponRollList == null)
         {

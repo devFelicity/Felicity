@@ -1,16 +1,18 @@
 ﻿using DotNetBungieAPI.Service.Abstractions;
-using Serilog;
 
 namespace Felicity.Services.Hosted;
 
 public class BungieClientStartupService : BackgroundService
 {
     private readonly IBungieClient _bungieClient;
+    private readonly ILogger<BungieClientStartupService> _logger;
 
     public BungieClientStartupService(
-        IBungieClient bungieClient)
+        IBungieClient bungieClient,
+        ILogger<BungieClientStartupService> logger)
     {
         _bungieClient = bungieClient;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -22,7 +24,7 @@ public class BungieClientStartupService : BackgroundService
         }
         catch (Exception e)
         {
-            Log.Error($"Exception in BungieClientStartupService\n{e.GetType()}: {e.Message}");
+            _logger.LogError(e, "Exception in BungieClientStartupService");
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using DotNetBungieAPI.Service.Abstractions;
-using Serilog;
 
 namespace Felicity.Services.Hosted;
 
@@ -10,11 +9,16 @@ public class ResetService : BackgroundService
 
     private readonly TimeSpan _delay = TimeSpan.FromMinutes(10);
     private readonly DiscordShardedClient _discordClient;
+    private readonly ILogger<ResetService> _logger;
 
-    public ResetService(IBungieClient bungieClient, DiscordShardedClient discordClient)
+    public ResetService(
+        IBungieClient bungieClient,
+        DiscordShardedClient discordClient,
+        ILogger<ResetService> logger)
     {
         _bungieClient = bungieClient;
         _discordClient = discordClient;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,7 +29,7 @@ public class ResetService : BackgroundService
             {
                 await _bungieClient.ResetService.WaitForNextDailyReset(_delay, stoppingToken);
 
-                Log.Information("Reset task starting.");
+                _logger.LogInformation("Reset task starting");
 
                 switch (DateTime.UtcNow.DayOfWeek)
                 {
@@ -55,7 +59,7 @@ public class ResetService : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception in ResetService\n{e.GetType()}: {e.Message}");
+            _logger.LogError(e, "Exception in ResetService");
         }
     }
 }

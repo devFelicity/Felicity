@@ -1,10 +1,10 @@
-﻿using System.Web;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models.Caches;
+using System.Web;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
@@ -13,7 +13,10 @@ namespace Felicity.Util;
 
 internal static class WeaponHelper
 {
-    public static string PopulateWeaponPerks(BaseSocketClient discordClient, List<Weapon> weapons, bool gunsmithLink)
+    public static string PopulateWeaponPerks(
+        BaseSocketClient discordClient,
+        List<Weapon> weapons, 
+        bool gunsmithLink)
     {
         var result = "";
 
@@ -42,7 +45,8 @@ internal static class WeaponHelper
         return result;
     }
 
-    public static Task<Dictionary<string, Perk>> BuildPerks(IBungieClient bungieClient,
+    public static Task<Dictionary<string, Perk>> BuildPerks(
+        IBungieClient bungieClient,
         ItemTierType inventoryTierType,
         DestinyItemSocketsComponent weaponPerk)
     {
@@ -105,7 +109,9 @@ internal static class WeaponHelper
         return $"https://www.light.gg/db/all?page=1&f=12({HttpUtility.UrlEncode(search.TrimEnd(' '))}),3";
     }
 
-    private static string BuildGunsmithLink(uint exoticWeaponWeaponId, Dictionary<string, Perk> exoticWeaponPerks)
+    private static string BuildGunsmithLink(
+        uint exoticWeaponWeaponId,
+        Dictionary<string, Perk> exoticWeaponPerks)
     {
         var result = $"https://d2gunsmith.com/w/{exoticWeaponWeaponId}?s=";
 

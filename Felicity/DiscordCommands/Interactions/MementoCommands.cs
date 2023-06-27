@@ -22,7 +22,7 @@ public class MementoCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         await DeferAsync();
 
-        var memCache = ProcessMementoData.ReadJson();
+        var memCache = await ProcessMementoData.ReadJsonAsync();
         if (memCache == null)
         {
             await FollowupAsync("Error fetching memento cache.");
