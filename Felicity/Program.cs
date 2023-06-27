@@ -30,7 +30,9 @@ try
 {
     await BotVariables.Initialize();
     var builder = WebApplication.CreateBuilder(args);
-    Log.Logger.Information("Starting Felicity v.{Version} on {OSVersion}...", BotVariables.Version, Environment.OSVersion);
+    var title = $"Starting Felicity v.{BotVariables.Version} on {Environment.OSVersion}...";
+    Console.Title = title;
+    Log.Information(title);
     
     if (!BotVariables.IsDebug)
         builder.WebHost.UseSentry(options =>
@@ -179,9 +181,11 @@ try
     app.UseAuthorization();
     app.MapControllers();
     app.UseMvc();
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
     if (!app.Environment.IsDevelopment())
         app.UseHsts();
+
+    app.MapGet("/health", () => Results.Ok());
 
     await app.RunAsync();
 }
