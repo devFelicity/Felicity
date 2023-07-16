@@ -437,7 +437,7 @@ public static class LootTables
         new LootTableDefinition
         {
             ActivityType = ActivityType.Dungeon, Name = "Ghosts of the Deep",
-            Description = "fish go brrr or something idk",
+            Description = "Drown in the deep, or rise from it.",
             Loot = new List<LootTable>
             {
                 new()
@@ -457,6 +457,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
+                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
                         DefinitionHashes.InventoryItems.GreasyLuck,
                         DefinitionHashes.InventoryItems.ColdComfort_839786290
                     }
