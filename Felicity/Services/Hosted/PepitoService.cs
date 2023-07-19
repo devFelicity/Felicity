@@ -32,7 +32,9 @@ public class PepitoService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 using var client = new HttpClient();
-                var result = await client.GetStringAsync("https://is-pepito-out.vercel.app/", stoppingToken);
+
+                var nowTime = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                var result = await client.GetStringAsync($"https://is-pepito-out.vercel.app/?{nowTime}", stoppingToken);
 
                 if (!string.IsNullOrEmpty(result))
                 {
