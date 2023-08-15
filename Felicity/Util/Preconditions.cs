@@ -19,7 +19,7 @@ public class Preconditions
             if (context.User.Id == BotVariables.BotOwnerId)
                 return PreconditionResult.FromSuccess();
 
-            if (context.User is IGuildUser guildUser && guildUser.GuildPermissions.ManageGuild)
+            if (context.User is IGuildUser { GuildPermissions.ManageGuild: true })
                 return PreconditionResult.FromSuccess();
 
             if (context.Guild.OwnerId == context.User.Id)

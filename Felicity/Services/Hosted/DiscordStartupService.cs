@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using DotNetBungieAPI.Models.Exceptions;
 using Felicity.Models;
 using Felicity.Options;
 using Felicity.Util;
@@ -11,6 +12,7 @@ using Fergun.Interactive;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Context;
+using ExecuteResult = Discord.Interactions.ExecuteResult;
 using IResult = Discord.Interactions.IResult;
 
 namespace Felicity.Services.Hosted;
@@ -164,11 +166,28 @@ public class DiscordStartupService : BackgroundService
         var errorEmbed = Embeds.MakeErrorEmbed();
         errorEmbed.Title = "Failed to execute command.";
 
+        if (result is ExecuteResult { Exception: BungieNetAuthorizationErrorException { Error.ErrorDescription: "AuthorizationRecordExpired" } })
+        {
+            errorEmbed.Description =
+                "Your membership info has expired, this can happen due to a Bungie change that happened 2023-08-15.\n\n" +
+                "To fix it, please:\n" +
+                "> - manually sign-in to [bungie.net](https://www.bungie.net/7/en/Destiny)\n" +
+                "> - fill in the date of birth and location info\n" +
+                "> - run `/user register`\n" +
+                "> - re-run the command that caused this error\n\n" +
+                "Note: if you already have given your location and date of birth, just run `/user register`\n\n" +
+                "Apologies for any inconvenience.";
+
+            await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
+
+            return;
+        }
+
         if (result.ErrorReason.StartsWith("Refresh token for membership id"))
         {
             errorEmbed.Description =
                 "Your membership info has expired, this can happen when you haven't run any commands for a while.\n" +
-                "To fix it, please run </user register:992144588334714963> and re-run the command.";
+                "To fix it, please run `/user register` and re-run the command.";
 
             await arg2.Interaction.FollowupAsync(embed: errorEmbed.Build());
 

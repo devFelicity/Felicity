@@ -132,7 +132,6 @@ try
     builder.Services.AddHostedService<TwitchStartupService>();
     builder.Services.AddHostedService<ResetService>();
     builder.Services.AddHostedService<StatusService>();
-    builder.Services.AddHostedService<PepitoService>();
 
     builder.Services
         .AddAuthentication(options =>
@@ -198,6 +197,8 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+return;
 
 static void EnsureDirectoryExists(string path)
 {

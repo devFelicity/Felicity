@@ -40,11 +40,11 @@ public class BungieAuthController : ControllerBase
     {
         var claim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
         if (claim is null)
-            return RedirectPermanent("https://devfelicity.github.io/Bot-Frontend/auth_failure");
+            return RedirectPermanent("https://tryfelicity.one/auth_failure");
 
         var id = long.Parse(claim.Value);
         if (!BungieAuthCacheService.GetByIdAndRemove(id, out var context))
-            return RedirectPermanent("https://devfelicity.github.io/Bot-Frontend/auth_failure");
+            return RedirectPermanent("https://tryfelicity.one/auth_failure");
 
         var token = context.Token;
 
@@ -90,6 +90,6 @@ public class BungieAuthController : ControllerBase
 
         await _dbContext.SaveChangesAsync();
 
-        return RedirectPermanent("https://devfelicity.github.io/Bot-Frontend/auth_success");
+        return RedirectPermanent("https://tryfelicity.one/auth_success");
     }
 }
