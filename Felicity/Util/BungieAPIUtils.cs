@@ -38,7 +38,7 @@ public static class BungieApiUtils
     {
         var result = new DestinyProfileUserInfoCard();
 
-        var linkedProfiles = await client.ApiAccess.Destiny2.GetLinkedProfiles(membershipType, membershipId);
+        var linkedProfiles = await client.ApiAccess.Destiny2.GetLinkedProfiles(membershipType, membershipId, true);
 
         foreach (var potentialProfile in linkedProfiles.Response.Profiles)
             if (potentialProfile.DateLastPlayed > result.DateLastPlayed)
@@ -61,6 +61,7 @@ public static class BungieApiUtils
             });
 
         var response = userInfoCard.Response;
+
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (response == null || response.Count == 0)
             return null;
