@@ -8,6 +8,17 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonWitch, new List<uint>
+            {
+                4112659123, // Brya's Love
+                1610063585, // Eleatic Principle
+                1526803724, // The Eremite
+                3113198670, // Kept Confidence
+                1452920131, // Locus Locutus
+                2949440399 // Semiotician
+            }
+        },
+        {
             CraftSource.SeasonDeep, new List<uint>
             {
                 DefinitionHashes.Records.DifferentTimes,
@@ -130,7 +141,11 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                DefinitionHashes.Records.Taipan4fr
+                2708276045,
+                3027110436,
+                DefinitionHashes.Records.Taipan4fr,
+                DefinitionHashes.Records.RevisionZero,
+                DefinitionHashes.Records.Vexcalibur
             }
         },
         {
@@ -208,6 +223,17 @@ internal static class Craftables
 
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
+        {
+            CraftSource.SeasonWitch, new List<uint>
+            {
+                1875512595,
+                2779821308,
+                1526803724,
+                4132072834,
+                105306149,
+                2922749929
+            }
+        },
         {
             CraftSource.SeasonDeep, new List<uint>
             {
@@ -331,8 +357,10 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.InventoryItems.AmmitAR2_2119346509,
-                DefinitionHashes.InventoryItems.Taipan4fr_1911060537,
+                2188764214,
+                46125926,
                 DefinitionHashes.InventoryItems.RevisionZero_1473821207,
+                DefinitionHashes.InventoryItems.Taipan4fr_1911060537,
                 DefinitionHashes.InventoryItems.Vexcalibur_3118061005
             }
         },
@@ -413,6 +441,14 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
+            3113198670 => 1875512595,
+            2708276045 => 2188764214,
+            4112659123 => 2779821308,
+            1526803724 => 1526803724,
+            3027110436 => 46125926,
+            1452920131 => 4132072834,
+            1610063585 => 105306149,
+            2949440399 => 2922749929,
             DefinitionHashes.Records.DifferentTimes => DefinitionHashes.InventoryItems.DifferentTimes_3016891299,
             DefinitionHashes.Records.ADistantPull => DefinitionHashes.InventoryItems.ADistantPull_1769847435,
             DefinitionHashes.Records.RapaciousAppetite => DefinitionHashes.InventoryItems.RapaciousAppetite_1081724548,
@@ -568,6 +604,7 @@ internal static class Craftables
         public const string SeasonSeraph = "Seraph";
         public const string SeasonDefiance = "Defiance";
         public const string SeasonDeep = "Deep";
+        public const string SeasonWitch = "Witch";
         public const string Unknown = "Quest / Unknown";
         public const string Wq = "Witch Queen";
         public const string WqWellspring = "Wellspring";
