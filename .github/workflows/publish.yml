@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: devfelicity/bot-frontend
+  IMAGE_NAME: devfelicity/felicity
 
 jobs:
   build_and_push:
