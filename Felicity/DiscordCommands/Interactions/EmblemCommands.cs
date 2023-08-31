@@ -3,6 +3,7 @@ using System.Text.Json;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
@@ -39,11 +40,6 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         if (!await BungieApiUtils.CheckApi(_bungieClient))
             throw new Exception("Bungie API is down or unresponsive.");
 
-        var joke = bungieTag.ToLower() == "moonie#6881";
-
-        if (bungieTag.ToLower() == "~moonie#6881")
-            bungieTag = "Moonie#6881";
-
         if (!string.IsNullOrEmpty(bungieTag) && !bungieTag.Contains('#'))
         {
             var errorEmbed = Embeds.MakeErrorEmbed();
@@ -69,29 +65,6 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             {
                 DestinyComponentType.Characters, DestinyComponentType.Profiles, DestinyComponentType.Collectibles
             });
-
-        if (joke)
-        {
-            var jokeEmbed = Embeds.MakeBuilder();
-
-            jokeEmbed.Title = requestedProfile.BungieName;
-            jokeEmbed.Url =
-                $"https://www.bungie.net/7/en/User/Profile/{(int)profile.Response.Profile.Data.UserInfo.MembershipType}/" +
-                profile.Response.Profile.Data.UserInfo.MembershipId;
-            jokeEmbed.ThumbnailUrl =
-                BotVariables.BungieBaseUrl + profile.Response.Characters.Data.First().Value.EmblemPath;
-
-            jokeEmbed.Description += "> [Wish Ascended](https://emblem.report/2419113769)\n";
-            jokeEmbed.Description += "> [Parallel Program](https://emblem.report/3936625542)\n";
-
-            jokeEmbed.Footer.Text += " | Try ~Moonie#6881.";
-
-            jokeEmbed.AddField("Parsed", "> 2", true);
-            jokeEmbed.AddField("Shared", "> 719", true);
-
-            await FollowupAsync(embed: jokeEmbed.Build());
-            return;
-        }
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         // Note to self, bungie privacy sucks ass and always reports privacy as private.
@@ -263,6 +236,35 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
                       collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
                 where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
                 select collectibleComponent.Key);
+
+        if (requestedProfile.MembershipId == 4611686018471516071)
+        {
+            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(BungieMembershipType.TigerSteam,
+                4611686018500337909, new[]
+                {
+                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                });
+
+            manifestCollectibleIDs.AddRange(
+                (from destinyCollectibleComponent in profile.Response.ProfileCollectibles.Data.Collectibles
+                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState
+                              .UniquenessViolation) ||
+                          !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                          destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    select destinyCollectibleComponent.Key).ToList());
+
+            foreach (var destinyCollectibleComponent in profile.Response.CharacterCollectibles.Data)
+                manifestCollectibleIDs.AddRange(
+                    from collectibleComponent in destinyCollectibleComponent.Value.Collectibles
+                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
+                          !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                          collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                    select collectibleComponent.Key);
+        }
 
         var manifestCollectibles = new List<DestinyCollectibleDefinition>();
         foreach (var definitionHashPointer in manifestCollectibleIDs)

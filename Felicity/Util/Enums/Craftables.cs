@@ -10,12 +10,12 @@ internal static class Craftables
         {
             CraftSource.SeasonWitch, new List<uint>
             {
-                4112659123, // Brya's Love
-                1610063585, // Eleatic Principle
-                1526803724, // The Eremite
-                3113198670, // Kept Confidence
-                1452920131, // Locus Locutus
-                2949440399 // Semiotician
+                DefinitionHashes.Records.BryasLove,
+                DefinitionHashes.Records.EleaticPrinciple,
+                DefinitionHashes.Records.TheEremite,
+                DefinitionHashes.Records.KeptConfidence,
+                DefinitionHashes.Records.LocusLocutus,
+                DefinitionHashes.Records.Semiotician
             }
         },
         {
@@ -141,8 +141,8 @@ internal static class Craftables
             CraftSource.Unknown, new List<uint>
             {
                 DefinitionHashes.Records.AmmitAR2,
-                2708276045,
-                3027110436,
+                DefinitionHashes.Records.DeadMansTale,
+                DefinitionHashes.Records.DeadMessenger,
                 DefinitionHashes.Records.Taipan4fr,
                 DefinitionHashes.Records.RevisionZero,
                 DefinitionHashes.Records.Vexcalibur
@@ -226,12 +226,12 @@ internal static class Craftables
         {
             CraftSource.SeasonWitch, new List<uint>
             {
-                1875512595,
-                2779821308,
-                1526803724,
-                4132072834,
-                105306149,
-                2922749929
+                DefinitionHashes.InventoryItems.BryasLove_2779821308,
+                DefinitionHashes.InventoryItems.EleaticPrinciple_105306149,
+                DefinitionHashes.InventoryItems.TheEremite_3347946548,
+                DefinitionHashes.InventoryItems.LocusLocutus_4132072834,
+                DefinitionHashes.InventoryItems.KeptConfidence_1875512595,
+                DefinitionHashes.InventoryItems.Semiotician_2922749929
             }
         },
         {
@@ -441,14 +441,12 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
-            3113198670 => 1875512595,
-            2708276045 => 2188764214,
-            4112659123 => 2779821308,
-            1526803724 => 1526803724,
-            3027110436 => 46125926,
-            1452920131 => 4132072834,
-            1610063585 => 105306149,
-            2949440399 => 2922749929,
+            DefinitionHashes.Records.BryasLove => DefinitionHashes.InventoryItems.BryasLove_2779821308,
+            DefinitionHashes.Records.EleaticPrinciple => DefinitionHashes.InventoryItems.EleaticPrinciple_105306149,
+            DefinitionHashes.Records.TheEremite => DefinitionHashes.InventoryItems.TheEremite_3347946548,
+            DefinitionHashes.Records.KeptConfidence => DefinitionHashes.InventoryItems.LocusLocutus_4132072834,
+            DefinitionHashes.Records.LocusLocutus => DefinitionHashes.InventoryItems.KeptConfidence_1875512595,
+            DefinitionHashes.Records.Semiotician => DefinitionHashes.InventoryItems.Semiotician_2922749929,
             DefinitionHashes.Records.DifferentTimes => DefinitionHashes.InventoryItems.DifferentTimes_3016891299,
             DefinitionHashes.Records.ADistantPull => DefinitionHashes.InventoryItems.ADistantPull_1769847435,
             DefinitionHashes.Records.RapaciousAppetite => DefinitionHashes.InventoryItems.RapaciousAppetite_1081724548,
