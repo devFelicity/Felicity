@@ -11,8 +11,7 @@ public class EmblemReport
 {
     public partial class EmblemResponse
     {
-        [JsonPropertyName("data")]
-        public List<Datum> Data { get; set; } = null!;
+        [JsonPropertyName("data")] public List<Datum> Data { get; set; } = null!;
     }
 
     public class Datum

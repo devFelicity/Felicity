@@ -12,7 +12,7 @@ public static class BotVariables
 
     internal const string ErrorMessage =
         $"You can report this error either in our [Support Server]({DiscordInvite}) " +
-         "or by creating a new [Issue](https://github.com/devFelicity/Bot-Frontend/issues/new?assignees=MoonieGZ&labels=bug&template=bug-report.md&title=) on GitHub.";
+        "or by creating a new [Issue](https://github.com/devFelicity/Bot-Frontend/issues/new?assignees=MoonieGZ&labels=bug&template=bug-report.md&title=) on GitHub.";
 
     internal static bool IsDebug;
     internal static string? Version;

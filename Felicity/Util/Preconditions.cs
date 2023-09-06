@@ -13,7 +13,7 @@ public class Preconditions
     {
         public override async Task<PreconditionResult> CheckRequirementsAsync(
             IInteractionContext context,
-            ICommandInfo commandInfo, 
+            ICommandInfo commandInfo,
             IServiceProvider services)
         {
             if (context.User.Id == BotVariables.BotOwnerId)
@@ -37,7 +37,7 @@ public class Preconditions
     {
         public override async Task<PreconditionResult> CheckRequirementsAsync(
             IInteractionContext context,
-            ICommandInfo commandInfo, 
+            ICommandInfo commandInfo,
             IServiceProvider services)
         {
             await context.Interaction.DeferAsync();

@@ -25,7 +25,8 @@ public class TwitchStreamAutocomplete : AutocompleteHandler
         IParameterInfo parameter,
         IServiceProvider services)
     {
-        var streamList = await _streamDb.TwitchStreams.Where(stream => stream.ServerId == context.Guild.Id).ToListAsync();
+        var streamList = await _streamDb.TwitchStreams.Where(stream => stream.ServerId == context.Guild.Id)
+            .ToListAsync();
 
         if (streamList.Count == 0)
             return AutocompletionResult.FromError(InteractionCommandError.Unsuccessful, "No streams found.");
@@ -63,17 +64,18 @@ public class MetricAutocomplete : AutocompleteHandler
 
         if (currentSearch != null)
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
-                                select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                                    destinyMetricDefinition.Hash));
+                where destinyMetricDefinition.DisplayProperties.Name.ToLower().Contains(currentSearch.ToLower())
+                select new AutocompleteResult(
+                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                    destinyMetricDefinition.Hash));
         else
             resultList.AddRange(from destinyMetricDefinition in metricsList
-                                select new AutocompleteResult(
-                                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
-                                    destinyMetricDefinition.Hash));
+                select new AutocompleteResult(
+                    $"{destinyMetricDefinition.DisplayProperties.Name} ({destinyMetricDefinition.Traits.Last().Select(x => x.DisplayProperties.Name)})",
+                    destinyMetricDefinition.Hash));
 
-        return Task.FromResult(AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25)));
+        return Task.FromResult(
+            AutocompletionResult.FromSuccess(resultList.OrderBy(_ => Random.Shared.Next()).Take(25)));
     }
 }
 
@@ -86,8 +88,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         IServiceProvider services)
     {
         var source = (from autocompleteOption in autocompleteInteraction.Data.Options
-                      where autocompleteOption.Name == "source"
-                      select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
+            where autocompleteOption.Name == "source"
+            select Enum.Parse<MementoSource>(autocompleteOption.Value.ToString() ?? string.Empty)).FirstOrDefault();
 
         var memCache = await ProcessMementoData.ReadJsonAsync();
 
@@ -102,8 +104,8 @@ public class MementoWeaponAutocomplete : AutocompleteHandler
         var currentSearch = autocompleteInteraction.Data.Current.Value.ToString();
 
         var results = (from weapon in goodSource.WeaponList
-                       where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
-                       select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
+            where currentSearch == null || weapon.WeaponName!.ToLower().Contains(currentSearch.ToLower())
+            select new AutocompleteResult { Name = weapon.WeaponName, Value = weapon.WeaponName }).ToList();
 
         results = results.OrderBy(x => x.Name).ToList();
 
@@ -167,7 +169,7 @@ public class RollFinderAutocomplete : AutocompleteHandler
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
         IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
-        IParameterInfo parameter, 
+        IParameterInfo parameter,
         IServiceProvider services)
     {
         var weaponList = await ProcessRollData.FromJsonAsync();
@@ -233,9 +235,9 @@ public class CheckpointAutocomplete : AutocompleteHandler
                                       Enumerable.Empty<AutocompleteResult>());
         else
             autocompleteList.AddRange(from officialCp in checkpointList.Official
-                                      where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
-                                      select new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}",
-                                          officialCp.DisplayOrder));
+                where $"{officialCp.Activity} {officialCp.Encounter}".ToLower().Contains(currentSearch.ToLower())
+                select new AutocompleteResult($"{officialCp.Activity} - {officialCp.Encounter}",
+                    officialCp.DisplayOrder));
 
         return AutocompletionResult.FromSuccess(string.IsNullOrEmpty(currentSearch)
             ? autocompleteList

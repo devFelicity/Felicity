@@ -33,7 +33,7 @@ try
     var title = $"Starting Felicity v.{BotVariables.Version} on {Environment.OSVersion}...";
     Console.Title = title;
     Log.Information(title);
-    
+
     if (!BotVariables.IsDebug)
         builder.WebHost.UseSentry(options =>
         {

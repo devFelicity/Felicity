@@ -15,7 +15,8 @@ public class CheckpointParser
     {
         try
         {
-            return await HttpClientInstance.Instance.GetFromJsonAsync<Checkpoints>("https://d2cp.io/platform/checkpoints?v=2");
+            return await HttpClientInstance.Instance.GetFromJsonAsync<Checkpoints>(
+                "https://d2cp.io/platform/checkpoints?v=2");
         }
         catch
         {

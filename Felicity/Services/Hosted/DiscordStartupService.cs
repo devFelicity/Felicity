@@ -166,7 +166,13 @@ public class DiscordStartupService : BackgroundService
         var errorEmbed = Embeds.MakeErrorEmbed();
         errorEmbed.Title = "Failed to execute command.";
 
-        if (result is ExecuteResult { Exception: BungieNetAuthorizationErrorException { Error.ErrorDescription: "AuthorizationRecordExpired" } })
+        if (result is ExecuteResult
+            {
+                Exception: BungieNetAuthorizationErrorException
+                {
+                    Error.ErrorDescription: "AuthorizationRecordExpired"
+                }
+            })
         {
             errorEmbed.Description =
                 "Your membership info has expired, this can happen due to a Bungie change that happened 2023-08-15.\n\n" +
@@ -242,10 +248,7 @@ public class DiscordStartupService : BackgroundService
         var context = new ShardedCommandContext(_discordShardedClient, socketUserMessage);
         var command = await _commandService.ExecuteAsync(context, argPos, _serviceProvider);
 
-        if (command.Error is not null)
-        {
-            _logger.LogError("{Error}: {ErrorReason}", command.Error, command.ErrorReason);
-        }
+        if (command.Error is not null) _logger.LogError("{Error}: {ErrorReason}", command.Error, command.ErrorReason);
     }
 
     private async Task OnInteractionCreated(SocketInteraction socketInteraction)
@@ -295,9 +298,7 @@ public class DiscordStartupService : BackgroundService
         catch (Exception e)
         {
             if (e.InnerException is not null && !e.InnerException.Message.StartsWith("Duplicate entry"))
-            {
                 _logger.LogError(e, "Failed to push metrics");
-            }
         }
     }
 

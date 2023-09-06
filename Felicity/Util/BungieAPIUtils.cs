@@ -32,7 +32,7 @@ public static class BungieApiUtils
     }
 
     public static async Task<DestinyProfileUserInfoCard> GetLatestProfile(
-        IBungieClient client, 
+        IBungieClient client,
         long membershipId,
         BungieMembershipType membershipType)
     {
@@ -49,7 +49,7 @@ public static class BungieApiUtils
 
     public static async Task<DestinyProfileUserInfoCard?> GetLatestProfileAsync(
         IBungieClient bungieClient,
-        string bungieName, 
+        string bungieName,
         short bungieCode)
     {
         var userInfoCard = await bungieClient.ApiAccess.Destiny2.SearchDestinyPlayerByBungieName(

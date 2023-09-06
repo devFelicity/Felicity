@@ -2,8 +2,8 @@ namespace Felicity.Services.Hosted;
 
 public class TwitchStartupService : BackgroundService
 {
-    private readonly TwitchService _twitchService;
     private readonly ILogger<TwitchStartupService> _logger;
+    private readonly TwitchService _twitchService;
 
     public TwitchStartupService(
         TwitchService twitchService,

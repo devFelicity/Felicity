@@ -8,7 +8,6 @@ using DotNetBungieAPI.Extensions;
 using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
-using DotNetBungieAPI.Models.Destiny.Definitions;
 using DotNetBungieAPI.Models.Requests;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
@@ -44,13 +43,12 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
         var validUsers = _userDb.Users.Where(x => x.OAuthRefreshExpires > DateTime.Now).ToList();
         var nowTime = DateTime.Now;
         var tasks = new List<Task<string>>();
-        
+
         foreach (var validUser in validUsers)
         {
             var user = validUser;
 
             if (validUser.OAuthTokenExpires < nowTime)
-            {
                 try
                 {
                     user = await validUser.RefreshToken(_bungieClient, nowTime);
@@ -61,7 +59,6 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
                     Console.WriteLine($"{user.BungieName} - {ex.GetType()}: {ex.Message}");
                     continue;
                 }
-            }
 
             tasks.Add(Task.Run(async () =>
             {
@@ -71,15 +68,19 @@ public class BasicTextCommands : ModuleBase<ShardedCommandContext>
                         user.DestinyMembershipId, new[] { DestinyComponentType.Characters });
 
                     var saintVendor = await _bungieClient.ApiAccess.Destiny2.GetVendor(user.DestinyMembershipType,
-                        user.DestinyMembershipId, characterId.Response.Characters.Data.FirstOrDefault().Value.CharacterId,
+                        user.DestinyMembershipId,
+                        characterId.Response.Characters.Data.FirstOrDefault().Value.CharacterId,
                         DefinitionHashes.Vendors.Saint14, new[] { DestinyComponentType.Vendors }, user.GetTokenData());
 
                     var saladinVendor = await _bungieClient.ApiAccess.Destiny2.GetVendor(user.DestinyMembershipType,
-                        user.DestinyMembershipId, characterId.Response.Characters.Data.FirstOrDefault().Value.CharacterId,
-                        DefinitionHashes.Vendors.LordSaladin, new[] { DestinyComponentType.Vendors }, user.GetTokenData());
+                        user.DestinyMembershipId,
+                        characterId.Response.Characters.Data.FirstOrDefault().Value.CharacterId,
+                        DefinitionHashes.Vendors.LordSaladin, new[] { DestinyComponentType.Vendors },
+                        user.GetTokenData());
 
                     Console.WriteLine($"Finished task for {user.BungieName}");
-                    return $"{user.BungieName}: Saint-14: {saintVendor.Response.Vendor.Data.Progression.CurrentResetCount}, Saladin: {saladinVendor.Response.Vendor.Data.Progression.CurrentResetCount}";
+                    return
+                        $"{user.BungieName}: Saint-14: {saintVendor.Response.Vendor.Data.Progression.CurrentResetCount}, Saladin: {saladinVendor.Response.Vendor.Data.Progression.CurrentResetCount}";
                 }
                 catch
                 {

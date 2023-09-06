@@ -7,6 +7,7 @@ using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.Collectibles;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
+using DotNetBungieAPI.Models.Destiny.Responses;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
 using Felicity.Util;
@@ -219,51 +220,39 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             return;
         }
 
-        var manifestCollectibleIDs =
-            (from destinyCollectibleComponent in profile.Response.ProfileCollectibles.Data.Collectibles
-                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
-                      !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                      destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                select destinyCollectibleComponent.Key).ToList();
+        var manifestCollectibleIDs = AddEmblems(profile.Response);
 
-        foreach (var destinyCollectibleComponent in profile.Response.CharacterCollectibles.Data)
-            manifestCollectibleIDs.AddRange(from collectibleComponent in destinyCollectibleComponent.Value.Collectibles
-                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
-                      !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                      collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                select collectibleComponent.Key);
-
-        if (requestedProfile.MembershipId == 4611686018471516071)
+        if (requestedProfile.MembershipId == 4611686018471516071) // Moonie
         {
-            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(BungieMembershipType.TigerSteam,
-                4611686018500337909, new[]
+            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                BungieMembershipType.TigerSteam, 4611686018500337909,
+                new[]
                 {
                     DestinyComponentType.Collectibles, DestinyComponentType.Profiles
                 });
 
-            manifestCollectibleIDs.AddRange(
-                (from destinyCollectibleComponent in profile.Response.ProfileCollectibles.Data.Collectibles
-                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState
-                              .UniquenessViolation) ||
-                          !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                          destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    select destinyCollectibleComponent.Key).ToList());
+            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+        }
 
-            foreach (var destinyCollectibleComponent in profile.Response.CharacterCollectibles.Data)
-                manifestCollectibleIDs.AddRange(
-                    from collectibleComponent in destinyCollectibleComponent.Value.Collectibles
-                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
-                          !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                          collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                    select collectibleComponent.Key);
+        if (requestedProfile.MembershipId == 4611686018432393645) // Zempp
+        {
+            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                BungieMembershipType.TigerPsn, 4611686018475371052,
+                new[]
+                {
+                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                });
+
+            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+
+            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                BungieMembershipType.TigerSteam, 4611686018483360936,
+                new[]
+                {
+                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                });
+
+            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
         }
 
         var manifestCollectibles = new List<DestinyCollectibleDefinition>();
@@ -360,5 +349,29 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             }
 
         await FollowupAsync(embed: embed.Build());
+    }
+
+    private static List<DefinitionHashPointer<DestinyCollectibleDefinition>> AddEmblems(
+        DestinyProfileResponse profileResponse)
+    {
+        var manifestCollectibleIDs =
+            (from destinyCollectibleComponent in profileResponse.ProfileCollectibles.Data.Collectibles
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
+                      !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                      destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                select destinyCollectibleComponent.Key).ToList();
+
+        foreach (var destinyCollectibleComponent in profileResponse.CharacterCollectibles.Data)
+            manifestCollectibleIDs.AddRange(from collectibleComponent in destinyCollectibleComponent.Value.Collectibles
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
+                      !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                      collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                select collectibleComponent.Key);
+
+        return manifestCollectibleIDs;
     }
 }
