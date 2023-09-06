@@ -222,37 +222,39 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var manifestCollectibleIDs = AddEmblems(profile.Response);
 
-        if (requestedProfile.MembershipId == 4611686018471516071) // Moonie
+        switch (requestedProfile.MembershipId)
         {
-            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
-                BungieMembershipType.TigerSteam, 4611686018500337909,
-                new[]
-                {
-                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
-                });
+            // Moonie
+            case 4611686018471516071:
+                profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                    BungieMembershipType.TigerSteam, 4611686018500337909,
+                    new[]
+                    {
+                        DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                    });
 
-            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
-        }
+                manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+                break;
+            // Zempp
+            case 4611686018432393645:
+                profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                    BungieMembershipType.TigerPsn, 4611686018475371052,
+                    new[]
+                    {
+                        DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                    });
 
-        if (requestedProfile.MembershipId == 4611686018432393645) // Zempp
-        {
-            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
-                BungieMembershipType.TigerPsn, 4611686018475371052,
-                new[]
-                {
-                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
-                });
+                manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
 
-            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+                profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
+                    BungieMembershipType.TigerSteam, 4611686018483360936,
+                    new[]
+                    {
+                        DestinyComponentType.Collectibles, DestinyComponentType.Profiles
+                    });
 
-            profile = await _bungieClient.ApiAccess.Destiny2.GetProfile(
-                BungieMembershipType.TigerSteam, 4611686018483360936,
-                new[]
-                {
-                    DestinyComponentType.Collectibles, DestinyComponentType.Profiles
-                });
-
-            manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+                manifestCollectibleIDs.AddRange(AddEmblems(profile.Response));
+                break;
         }
 
         var manifestCollectibles = new List<DestinyCollectibleDefinition>();

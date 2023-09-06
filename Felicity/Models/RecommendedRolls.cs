@@ -99,6 +99,7 @@ public enum WeaponSource
     Lightfall,
     RootOfNightmares,
     GhostsOfTheDeep,
+    CrotasEnd,
     SeasonalHunt = 112,
     SeasonalChosen = 113,
     SeasonalSplicer = 114,
@@ -117,12 +118,10 @@ public static class ProcessRollData
 
     public static async Task<RecommendedRolls?> FromJsonAsync()
     {
-        if (File.Exists(JsonFile))
-        {
-            await using var stream = File.OpenRead(JsonFile);
-            return await JsonSerializer.DeserializeAsync<RecommendedRolls?>(stream);
-        }
+        if (!File.Exists(JsonFile))
+            return null;
 
-        return null;
+        await using var stream = File.OpenRead(JsonFile);
+        return await JsonSerializer.DeserializeAsync<RecommendedRolls?>(stream);
     }
 }
