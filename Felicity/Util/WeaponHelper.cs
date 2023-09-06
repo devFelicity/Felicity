@@ -1,10 +1,10 @@
-﻿using Discord.WebSocket;
+﻿using System.Web;
+using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models.Caches;
-using System.Web;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
@@ -15,8 +15,8 @@ internal static class WeaponHelper
 {
     public static string PopulateWeaponPerks(
         BaseSocketClient discordClient,
-        List<Weapon> weapons, 
-        bool gunsmithLink)
+        List<Weapon> weapons,
+        bool foundryLink)
     {
         var result = "";
 
@@ -30,8 +30,8 @@ internal static class WeaponHelper
             }
             else
             {
-                if (gunsmithLink)
-                    result += $"[{weapon.Name}]({BuildGunsmithLink(weapon.WeaponId, weapon.Perks)})\n";
+                if (foundryLink)
+                    result += $"[{weapon.Name}]({BuildFoundryLink(weapon.WeaponId, weapon.Perks)})\n";
                 else
                     result += $"[{weapon.Name}]({MiscUtils.GetLightGgLink(weapon.WeaponId)}/) | ";
 
@@ -109,11 +109,11 @@ internal static class WeaponHelper
         return $"https://www.light.gg/db/all?page=1&f=12({HttpUtility.UrlEncode(search.TrimEnd(' '))}),3";
     }
 
-    private static string BuildGunsmithLink(
+    private static string BuildFoundryLink(
         uint exoticWeaponWeaponId,
         Dictionary<string, Perk> exoticWeaponPerks)
     {
-        var result = $"https://d2gunsmith.com/w/{exoticWeaponWeaponId}?s=";
+        var result = $"https://d2foundry.gg/w/{exoticWeaponWeaponId}?p=";
 
         result = exoticWeaponPerks.Values.Aggregate(result, (current, value) => current + (value.PerkId + ","));
 
