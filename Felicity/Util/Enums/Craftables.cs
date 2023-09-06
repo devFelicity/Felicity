@@ -8,6 +8,17 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.RaidCe, new List<uint>
+            {
+                1294327154, // abyss defiant
+                583710954, // fang of ir yut
+                3250738778, // oversoul edict
+                3859670341, // song of ir yut
+                411909019 // swordbreaker
+                // missing word of crota
+            }
+        },
+        {
             CraftSource.SeasonWitch, new List<uint>
             {
                 DefinitionHashes.Records.BryasLove,
@@ -94,7 +105,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.DeepStoneCrypt, new List<uint>
+            CraftSource.RaidDsc, new List<uint>
             {
                 DefinitionHashes.Records.Bequest,
                 DefinitionHashes.Records.Commemoration,
@@ -105,7 +116,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.KingsFall, new List<uint>
+            CraftSource.RaidKf, new List<uint>
             {
                 DefinitionHashes.Records.DefianceofYasmin,
                 DefinitionHashes.Records.DoomofChelchis,
@@ -224,6 +235,17 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
         {
+            CraftSource.RaidCe, new List<uint>
+            {
+                833898322, // abyss defiant
+                1432682459, // fang of ir yut
+                1098171824, // oversoul edict
+                2828278545, // song of ir yut
+                3163900678, // swordbreaker
+                120706239 // word of crota
+            }
+        },
+        {
             CraftSource.SeasonWitch, new List<uint>
             {
                 DefinitionHashes.InventoryItems.BryasLove_2779821308,
@@ -310,7 +332,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.DeepStoneCrypt, new List<uint>
+            CraftSource.RaidDsc, new List<uint>
             {
                 DefinitionHashes.InventoryItems.Bequest_3366545721,
                 DefinitionHashes.InventoryItems.Commemoration_4230965989,
@@ -321,7 +343,7 @@ internal static class Craftables
             }
         },
         {
-            CraftSource.KingsFall, new List<uint>
+            CraftSource.RaidKf, new List<uint>
             {
                 DefinitionHashes.InventoryItems.DefianceofYasmin_3228096719,
                 DefinitionHashes.InventoryItems.DoomofChelchis_1937552980,
@@ -441,6 +463,11 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
+            1294327154 => 833898322, // abyss defiant
+            583710954 => 1432682459, // fang of ir yut
+            3250738778 => 1098171824, // oversoul edict
+            3859670341 => 2828278545, // song of ir yut
+            411909019 => 3163900678, // swordbreaker
             DefinitionHashes.Records.BryasLove => DefinitionHashes.InventoryItems.BryasLove_2779821308,
             DefinitionHashes.Records.EleaticPrinciple => DefinitionHashes.InventoryItems.EleaticPrinciple_105306149,
             DefinitionHashes.Records.TheEremite => DefinitionHashes.InventoryItems.TheEremite_3347946548,
@@ -589,19 +616,20 @@ internal static class Craftables
     private static class CraftSource
     {
         public const string Anniversary = "30th Anniversary";
-        public const string DeepStoneCrypt = "Deep Stone Crypt";
-        public const string KingsFall = "Kings Fall";
         public const string Lightfall = "Lightfall";
         public const string Opulent = "Opulent";
-        public const string RaidVotD = "Vow of the Disciple";
-        public const string RaidRoN = "Root of Nightmares";
+        public const string RaidCe = "Crota's End";
+        public const string RaidDsc = "Deep Stone Crypt";
+        public const string RaidKf = "Kings Fall";
         public const string RaidLw = "Last Wish";
+        public const string RaidRoN = "Root of Nightmares";
+        public const string RaidVotD = "Vow of the Disciple";
+        public const string SeasonDeep = "Deep";
+        public const string SeasonDefiance = "Defiance";
         public const string SeasonHaunted = "Haunted";
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";
         public const string SeasonSeraph = "Seraph";
-        public const string SeasonDefiance = "Defiance";
-        public const string SeasonDeep = "Deep";
         public const string SeasonWitch = "Witch";
         public const string Unknown = "Quest / Unknown";
         public const string Wq = "Witch Queen";
