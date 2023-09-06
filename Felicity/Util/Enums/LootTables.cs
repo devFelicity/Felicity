@@ -52,6 +52,58 @@ public static class LootTables
     {
         new LootTableDefinition
         {
+            ActivityType = ActivityType.Raid, Name = "Crota's End",
+            Description = "The Dark Below",
+            Loot = new List<LootTable>
+            {
+                new()
+                {
+                    EncounterType = Encounter.First, EncounterName = "The Abyss",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
+                        833898322, // abyss defiant
+                        1432682459, // fang of ir yut
+                        2828278545 // song of ir yut
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Second, EncounterName = "The Bridge",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        1432682459, // fang of ir yut
+                        3163900678, // swordbreaker
+                        1098171824 // oversoul edict
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Third, EncounterName = "Ir Yût, the Deathsinger",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        1098171824, // oversoul edict
+                        2828278545, // song of ir yut
+                        120706239 // word of crota
+                    }
+                },
+                new()
+                {
+                    EncounterType = Encounter.Boss, EncounterName = "Crota, Son of Oryx",
+                    LootIds = new List<uint>
+                    {
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Class,
+                        833898322, // abyss defiant
+                        3163900678, // swordbreaker
+                        120706239 // word of crota
+                    }
+                }
+            }
+        },
+        new LootTableDefinition
+        {
             ActivityType = ActivityType.Raid, Name = "Root of Nightmares",
             Description = "A sinister threat has taken root.",
             Loot = new List<LootTable>

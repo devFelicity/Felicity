@@ -13,35 +13,35 @@ namespace Felicity.Models;
 
 public partial class NewWeaponRoll
 {
-    [JsonPropertyName("weaponRolls")]
-    public List<WeaponRoll> WeaponRolls { get; set; }
+    [JsonPropertyName("weaponRolls")] public List<WeaponRoll> WeaponRolls { get; set; }
 }
 
-public partial class WeaponRoll
+public class WeaponRoll
 {
-    [JsonPropertyName("weaponHash")]
-    public uint WeaponHash { get; set; }
+    [JsonPropertyName("weaponHash")] public uint WeaponHash { get; set; }
 
-    [JsonPropertyName("authorId")]
-    public int AuthorId { get; set; }
+    [JsonPropertyName("authorId")] public int AuthorId { get; set; }
 
-    [JsonPropertyName("source")]
-    public int Source { get; set; }
+    [JsonPropertyName("source")] public int Source { get; set; }
 
-    [JsonPropertyName("notes")]
-    public string? Notes { get; set; }
+    [JsonPropertyName("notes")] public string? Notes { get; set; }
 
-    [JsonPropertyName("perks")]
-    public List<uint> Perks { get; set; }
+    [JsonPropertyName("perks")] public List<uint> Perks { get; set; }
 
-    [JsonPropertyName("canDrop")]
-    public bool CanDrop { get; set; }
+    [JsonPropertyName("canDrop")] public bool CanDrop { get; set; }
 }
 
 public partial class NewWeaponRoll
 {
-    public static NewWeaponRoll FromJson(string json) => JsonSerializer.Deserialize<NewWeaponRoll>(json)!;
-    public static string ToJson(NewWeaponRoll self) => JsonSerializer.Serialize(self);
+    public static NewWeaponRoll FromJson(string json)
+    {
+        return JsonSerializer.Deserialize<NewWeaponRoll>(json)!;
+    }
+
+    public static string ToJson(NewWeaponRoll self)
+    {
+        return JsonSerializer.Serialize(self);
+    }
 }
 
 public class RecommendedRolls
@@ -99,6 +99,7 @@ public enum WeaponSource
     Lightfall,
     RootOfNightmares,
     GhostsOfTheDeep,
+    CrotasEnd,
     SeasonalHunt = 112,
     SeasonalChosen = 113,
     SeasonalSplicer = 114,
@@ -117,11 +118,10 @@ public static class ProcessRollData
 
     public static async Task<RecommendedRolls?> FromJsonAsync()
     {
-        if (File.Exists(JsonFile))
-        {
-            await using var stream = File.OpenRead(JsonFile);
-            return await JsonSerializer.DeserializeAsync<RecommendedRolls?>(stream);
-        }
-        return null;
+        if (!File.Exists(JsonFile))
+            return null;
+
+        await using var stream = File.OpenRead(JsonFile);
+        return await JsonSerializer.DeserializeAsync<RecommendedRolls?>(stream);
     }
 }

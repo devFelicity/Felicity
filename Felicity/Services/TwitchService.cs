@@ -25,7 +25,7 @@ public class TwitchService
 
     public TwitchService(
         DiscordShardedClient discordClient,
-        IOptions<TwitchOptions> twitchOptions, 
+        IOptions<TwitchOptions> twitchOptions,
         TwitchStreamDb twitchStreamDb)
     {
         _discordClient = discordClient;

@@ -1,9 +1,9 @@
-﻿using Discord;
+﻿using System.Text.Json;
+using Discord;
 using Discord.WebSocket;
 using DotNetBungieAPI.Models.Destiny;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using Felicity.Models.Caches;
-using System.Text.Json;
 using Emote = Felicity.Models.Caches.Emote;
 
 namespace Felicity.Util;

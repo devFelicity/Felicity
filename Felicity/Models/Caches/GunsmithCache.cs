@@ -31,7 +31,7 @@ public static class ProcessGunsmithData
         return embed.Build();
     }
 
-    public static async Task<GunsmithCache?>  FetchInventory(User oauth, IBungieClient bungieClient)
+    public static async Task<GunsmithCache?> FetchInventory(User oauth, IBungieClient bungieClient)
     {
         /*var path = $"Data/gsCache-{lg}.json";
 

@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Felicity.Util;
-using Serilog;
 
 namespace Felicity.Services.Hosted;
 

@@ -240,10 +240,10 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
                 i++;
 
-                if (invDescription)
+                if (invDescription && !page.Description.Contains('⚠'))
                     page.Description += "\n\n⚠ = Includes incomplete deepsight weapons.";
 
-                if (buyDescription)
+                if (buyDescription && !page.Description.Contains("💰"))
                     page.Description +=
                         "\n\n💰 = A pattern for this weapon can be purchased from the appropriate vendor.";
 
@@ -265,7 +265,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     page.Description += "\n\nYou have completed all available patterns.";
                     pageList.Add(page);
                 }
-                
+
                 continue;
             }
 

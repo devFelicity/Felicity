@@ -7,8 +7,8 @@ namespace Felicity.Util;
 public abstract class ProfileHelper
 {
     public static async Task<ProfileResponse> GetRequestedProfile(
-        string bungieTag, 
-        ulong discordId, 
+        string bungieTag,
+        ulong discordId,
         UserDb userDb,
         IBungieClient bungieClient)
     {
