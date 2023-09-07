@@ -62,9 +62,9 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
-                        833898322, // abyss defiant
-                        1432682459, // fang of ir yut
-                        2828278545 // song of ir yut
+                        DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
+                        DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
+                        DefinitionHashes.InventoryItems.SongofIrYût_2828278545
                     }
                 },
                 new()
@@ -73,9 +73,9 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Gloves, (uint)Armor.Chest,
-                        1432682459, // fang of ir yut
-                        3163900678, // swordbreaker
-                        1098171824 // oversoul edict
+                        DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
+                        DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
+                        DefinitionHashes.InventoryItems.OversoulEdict_1098171824
                     }
                 },
                 new()
@@ -84,9 +84,9 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Gloves, (uint)Armor.Chest,
-                        1098171824, // oversoul edict
-                        2828278545, // song of ir yut
-                        120706239 // word of crota
+                        DefinitionHashes.InventoryItems.OversoulEdict_1098171824,
+                        DefinitionHashes.InventoryItems.SongofIrYût_2828278545,
+                        DefinitionHashes.InventoryItems.WordofCrota_120706239
                     }
                 },
                 new()
@@ -95,9 +95,9 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Class,
-                        833898322, // abyss defiant
-                        3163900678, // swordbreaker
-                        120706239 // word of crota
+                        DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
+                        DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
+                        DefinitionHashes.InventoryItems.WordofCrota_120706239
                     }
                 }
             }

@@ -10,12 +10,12 @@ internal static class Craftables
         {
             CraftSource.RaidCe, new List<uint>
             {
-                1294327154, // abyss defiant
-                583710954, // fang of ir yut
-                3250738778, // oversoul edict
-                3859670341, // song of ir yut
-                411909019 // swordbreaker
-                // missing word of crota
+                DefinitionHashes.Records.AbyssDefiant,
+                DefinitionHashes.Records.FangofIrYût,
+                DefinitionHashes.Records.OversoulEdict,
+                DefinitionHashes.Records.SongofIrYût,
+                DefinitionHashes.Records.Swordbreaker,
+                DefinitionHashes.Records.WordofCrota
             }
         },
         {
@@ -237,12 +237,12 @@ internal static class Craftables
         {
             CraftSource.RaidCe, new List<uint>
             {
-                833898322, // abyss defiant
-                1432682459, // fang of ir yut
-                1098171824, // oversoul edict
-                2828278545, // song of ir yut
-                3163900678, // swordbreaker
-                120706239 // word of crota
+                DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
+                DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
+                DefinitionHashes.InventoryItems.OversoulEdict_1098171824,
+                DefinitionHashes.InventoryItems.SongofIrYût_2828278545,
+                DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
+                DefinitionHashes.InventoryItems.WordofCrota_120706239
             }
         },
         {
@@ -463,11 +463,12 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
-            1294327154 => 833898322, // abyss defiant
-            583710954 => 1432682459, // fang of ir yut
-            3250738778 => 1098171824, // oversoul edict
-            3859670341 => 2828278545, // song of ir yut
-            411909019 => 3163900678, // swordbreaker
+            DefinitionHashes.Records.AbyssDefiant => DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
+            DefinitionHashes.Records.FangofIrYût => DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
+            DefinitionHashes.Records.OversoulEdict => DefinitionHashes.InventoryItems.OversoulEdict_1098171824,
+            DefinitionHashes.Records.SongofIrYût => DefinitionHashes.InventoryItems.SongofIrYût_2828278545,
+            DefinitionHashes.Records.Swordbreaker => DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
+            DefinitionHashes.Records.WordofCrota => DefinitionHashes.InventoryItems.WordofCrota_120706239,
             DefinitionHashes.Records.BryasLove => DefinitionHashes.InventoryItems.BryasLove_2779821308,
             DefinitionHashes.Records.EleaticPrinciple => DefinitionHashes.InventoryItems.EleaticPrinciple_105306149,
             DefinitionHashes.Records.TheEremite => DefinitionHashes.InventoryItems.TheEremite_3347946548,
