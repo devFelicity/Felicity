@@ -61,7 +61,7 @@ public static class LootTables
                     EncounterType = Encounter.First, EncounterName = "The Abyss",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
+                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Chest,
                         DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
                         DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
                         DefinitionHashes.InventoryItems.SongofIrYût_2828278545
@@ -72,7 +72,7 @@ public static class LootTables
                     EncounterType = Encounter.Second, EncounterName = "The Bridge",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Boots,
                         DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
                         DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
                         DefinitionHashes.InventoryItems.OversoulEdict_1098171824
@@ -83,7 +83,7 @@ public static class LootTables
                     EncounterType = Encounter.Third, EncounterName = "Ir Yût, the Deathsinger",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Gloves, (uint)Armor.Chest,
+                        (uint)Armor.Chest, (uint)Armor.Boots, (uint)Armor.Class,
                         DefinitionHashes.InventoryItems.OversoulEdict_1098171824,
                         DefinitionHashes.InventoryItems.SongofIrYût_2828278545,
                         DefinitionHashes.InventoryItems.WordofCrota_120706239
@@ -94,7 +94,7 @@ public static class LootTables
                     EncounterType = Encounter.Boss, EncounterName = "Crota, Son of Oryx",
                     LootIds = new List<uint>
                     {
-                        (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Class,
+                        (uint)Armor.Helmet, (uint)Armor.Boots, (uint)Armor.Class,
                         DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
                         DefinitionHashes.InventoryItems.Swordbreaker_3163900678,
                         DefinitionHashes.InventoryItems.WordofCrota_120706239
