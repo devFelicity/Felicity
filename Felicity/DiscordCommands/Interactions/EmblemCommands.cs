@@ -10,8 +10,10 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Responses;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
+using Felicity.Options;
 using Felicity.Util;
 using Felicity.Util.Enums;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -23,11 +25,13 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
     private readonly UserDb _userDb;
+    private readonly IOptions<BungieApiOptions> _botOptions;
 
-    public EmblemCommands(IBungieClient bungieClient, UserDb userDb)
+    public EmblemCommands(IBungieClient bungieClient, UserDb userDb, IOptions<BungieApiOptions> botOptions)
     {
         _bungieClient = bungieClient;
         _userDb = userDb;
+        _botOptions = botOptions;
     }
 
     [SlashCommand("shares", "Look up account shared emblems of a player.")]
@@ -279,6 +283,9 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
             };
 
             using var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; Felicity/1.0)");
+            client.DefaultRequestHeaders.Add("X-API-KEY", _botOptions.Value.EmblemReportApiKey);
+
             var json = JsonSerializer.Serialize(collectiblesData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
