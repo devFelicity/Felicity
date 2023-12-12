@@ -10,7 +10,8 @@ namespace Felicity.Models;
 
 public class Server
 {
-    [Key] public ulong ServerId { get; set; }
+    [Key]
+    public ulong ServerId { get; set; }
 
     public BungieLocales BungieLocale { get; set; }
     public ulong? AnnouncementChannel { get; set; }

@@ -2,7 +2,6 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Felicity.Models;
-using Felicity.Services;
 using Felicity.Util;
 
 // ReSharper disable StringLiteralTypo
@@ -101,7 +100,7 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
         return channelId == null ? "not set." : guild.GetTextChannel((ulong)channelId).Mention;
     }
 
-    [RequireContext(ContextType.Guild)]
+    /*[RequireContext(ContextType.Guild)]
     [Preconditions.RequireBotModerator]
     [Group("twitch", "Manage Twitch stream notifications for this server.")]
     public class TwitchNotifications : InteractionModuleBase<ShardedInteractionContext>
@@ -172,5 +171,5 @@ public class ServerCommands : InteractionModuleBase<ShardedInteractionContext>
             await FollowupAsync($"Successfully removed {Format.Bold(stream.TwitchName)}'s stream from server.",
                 ephemeral: true);
         }
-    }
+    }*/
 }

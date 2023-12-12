@@ -161,6 +161,10 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
             user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
             request.Response.Characters.Data.Keys.First());
 
+        var wishDeepsight = await IsDeepsightAvailable(1251298789,
+            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
+            request.Response.Characters.Data.Keys.First());
+
         var invDescription = false;
         var buyDescription = false;
 
@@ -222,7 +226,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                             field.Value += $"\n > `{obj.Progress}/{obj.CompletionValue}`";
                         }
 
-                        if (keyValuePair.Key is "Deep" && deepDeepsight)
+                        if ((keyValuePair.Key is "Deep" && deepDeepsight) || (keyValuePair.Key is "Wish" && wishDeepsight))
                         {
                             if (field.Value.ToString()!.Contains("⚠️"))
                                 field.Value += "💰 ";
@@ -235,7 +239,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
                     if (!obj.IsComplete || showAll)
                         field.Value +=
-                            $" - [{manifestRecord.DisplayProperties.Name}]({MiscUtils.GetLightGgLink(Craftables.GetWeaponId(manifestRecord.Hash))})";
+                            $" - [{manifestRecord.DisplayProperties.Name}](https://d2foundry.gg/w/{Craftables.GetWeaponId(manifestRecord.Hash)})";
                 }
 
                 i++;
@@ -299,6 +303,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
         var categoryIndex = vendorId switch
         {
             8721509 => 1,
+            1251298789 => 1,
             _ => 0
         };
 

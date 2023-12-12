@@ -9,17 +9,23 @@ namespace Felicity.Models;
 
 public class Clarity
 {
-    [JsonProperty("hash")] public long Hash { get; set; }
+    [JsonProperty("hash")]
+    public long Hash { get; set; }
 
-    [JsonProperty("name")] public string? Name { get; set; }
+    [JsonProperty("name")]
+    public string? Name { get; set; }
 
-    [JsonProperty("lastUpdate")] public long LastUpdate { get; set; }
+    [JsonProperty("lastUpdate")]
+    public long LastUpdate { get; set; }
 
-    [JsonProperty("updatedBy")] public string? UpdatedBy { get; set; }
+    [JsonProperty("updatedBy")]
+    public string? UpdatedBy { get; set; }
 
-    [JsonProperty("type")] public TypeEnum Type { get; set; }
+    [JsonProperty("type")]
+    public TypeEnum Type { get; set; }
 
-    [JsonProperty("description")] public string? Description { get; set; }
+    [JsonProperty("description")]
+    public string? Description { get; set; }
 
     [JsonProperty("stats", NullValueHandling = NullValueHandling.Ignore)]
     public Stats? Stats { get; set; }
@@ -72,7 +78,8 @@ public class Stats
 
 public class StatType
 {
-    [JsonProperty("stat")] public long[]? Stat { get; set; }
+    [JsonProperty("stat")]
+    public long[]? Stat { get; set; }
 
     [JsonProperty("multiplier", NullValueHandling = NullValueHandling.Ignore)]
     public double[]? Multiplier { get; set; }

@@ -235,7 +235,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
         embed.Url = $"https://www.bungie.net/7/en/User/Profile/{memTypeAndId}";
 
         embed.AddField("Current Season Rank",
-            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonoftheWitchRank].ObjectiveProgress.Progress:n0}",
+            $"> {playerResponse.Response.Metrics.Data.Metrics[DefinitionHashes.Metrics.SeasonoftheWishRank].ObjectiveProgress.Progress:n0}",
             true);
         embed.AddField("Raid Completions", $"> {GetRaidCompletions(playerResponse.Response.Metrics.Data):n0}", true);
         embed.AddField("Triumph Score",
@@ -345,7 +345,9 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             DefinitionHashes.Metrics.DeepStoneCryptCompletions,
             DefinitionHashes.Metrics.VaultofGlassCompletions,
             DefinitionHashes.Metrics.VowoftheDiscipleCompletions,
-            DefinitionHashes.Metrics.KingsFallCompletions
+            DefinitionHashes.Metrics.KingsFallCompletions,
+            DefinitionHashes.Metrics.RootofNightmaresCompletions,
+            DefinitionHashes.Metrics.CrotasEndCompletions
         };
 
         return raidList.Where(u => metricsData.Metrics[u].ObjectiveProgress.Progress is not null)

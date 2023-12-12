@@ -11,16 +11,20 @@ public class EmblemReport
 {
     public partial class EmblemResponse
     {
-        [JsonPropertyName("data")] public List<Datum> Data { get; set; } = null!;
+        [JsonPropertyName("data")]
+        public List<Datum> Data { get; set; } = null!;
     }
 
     public class Datum
     {
-        [JsonPropertyName("collectible_hash")] public uint CollectibleHash { get; set; }
+        [JsonPropertyName("collectible_hash")]
+        public uint CollectibleHash { get; set; }
 
-        [JsonPropertyName("acquisition")] public long Acquisition { get; set; }
+        [JsonPropertyName("acquisition")]
+        public long Acquisition { get; set; }
 
-        [JsonPropertyName("percentage")] public double Percentage { get; set; }
+        [JsonPropertyName("percentage")]
+        public double Percentage { get; set; }
     }
 
     public partial class EmblemResponse
