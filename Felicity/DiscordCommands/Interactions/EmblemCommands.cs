@@ -10,10 +10,8 @@ using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Responses;
 using DotNetBungieAPI.Service.Abstractions;
 using Felicity.Models;
-using Felicity.Options;
 using Felicity.Util;
 using Felicity.Util.Enums;
-using Microsoft.Extensions.Options;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
@@ -24,8 +22,8 @@ namespace Felicity.DiscordCommands.Interactions;
 public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 {
     private readonly IBungieClient _bungieClient;
-    private readonly UserDb _userDb;
     private readonly IConfiguration _configuration;
+    private readonly UserDb _userDb;
 
     public EmblemCommands(IBungieClient bungieClient, UserDb userDb, IConfiguration configuration)
     {
@@ -109,21 +107,21 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
         }
 
         foreach (var collectible in from collectible in manifestCollectibles
-                                    where !collectible.Redacted
-                                    where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
-                                    from manifestCollectibleParentNodeHash in collectible.ParentNodes
-                                    where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
-                                    select collectible)
+                 where !collectible.Redacted
+                 where !string.IsNullOrEmpty(collectible.DisplayProperties.Name)
+                 from manifestCollectibleParentNodeHash in collectible.ParentNodes
+                 where EmblemCats.EmblemCatList.Contains((EmblemCat)manifestCollectibleParentNodeHash.Hash!)
+                 select collectible)
         {
             emblemCount++;
 
             var value = profile.Response.ProfileCollectibles.Data.Collectibles[collectible.Hash];
 
             foreach (var unused in from emblem in manifestInventoryItems
-                                   where emblem.Collectible.Hash == collectible.Hash
-                                   where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                   where !emblemList.Contains(collectible)
-                                   select emblem) emblemList.Add(collectible);
+                     where emblem.Collectible.Hash == collectible.Hash
+                     where value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                     where !emblemList.Contains(collectible)
+                     select emblem) emblemList.Add(collectible);
 
             if (value.State.HasFlag(DestinyCollectibleState.Invisible) &&
                 !value.State.HasFlag(DestinyCollectibleState.NotAcquired))
@@ -269,8 +267,8 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
 
             if (!result.Redacted && !string.IsNullOrEmpty(result.DisplayProperties.Name))
                 manifestCollectibles.AddRange(from definitionParentNode in result.ParentNodes
-                                              where EmblemCats.EmblemCatList.Contains((EmblemCat)definitionParentNode.Hash!)
-                                              select result);
+                    where EmblemCats.EmblemCatList.Contains((EmblemCat)definitionParentNode.Hash!)
+                    select result);
         }
 
         string jsonString;
@@ -365,21 +363,21 @@ public class EmblemCommands : InteractionModuleBase<ShardedInteractionContext>
     {
         var manifestCollectibleIDs =
             (from destinyCollectibleComponent in profileResponse.ProfileCollectibles.Data.Collectibles
-             where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
-                   !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-             where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                   destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-             where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-             select destinyCollectibleComponent.Key).ToList();
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
+                      !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                      destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !destinyCollectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                select destinyCollectibleComponent.Key).ToList();
 
         foreach (var destinyCollectibleComponent in profileResponse.CharacterCollectibles.Data)
             manifestCollectibleIDs.AddRange(from collectibleComponent in destinyCollectibleComponent.Value.Collectibles
-                                            where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
-                                                  !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                            where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
-                                                  collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                            where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
-                                            select collectibleComponent.Key);
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.UniquenessViolation) ||
+                      !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.Invisible) ||
+                      collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                where !collectibleComponent.Value.State.HasFlag(DestinyCollectibleState.NotAcquired)
+                select collectibleComponent.Key);
 
         return manifestCollectibleIDs;
     }

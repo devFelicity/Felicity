@@ -8,6 +8,26 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftableList = new()
     {
         {
+            CraftSource.SeasonWish, new List<uint>
+            {
+                DefinitionHashes.Records.Appetence,
+                DefinitionHashes.Records.DoomedPetitioner,
+                DefinitionHashes.Records.Lethophobia,
+                DefinitionHashes.Records.ScalarPotential,
+                DefinitionHashes.Records.ScatterSignal,
+                DefinitionHashes.Records.Supercluster
+            }
+        },
+        {
+            CraftSource.SeasonUndying, new List<uint>
+            {
+                DefinitionHashes.Records.Adhortative,
+                DefinitionHashes.Records.Imperative,
+                DefinitionHashes.Records.Subjunctive,
+                DefinitionHashes.Records.Optative
+            }
+        },
+        {
             CraftSource.RaidCe, new List<uint>
             {
                 DefinitionHashes.Records.AbyssDefiant,
@@ -235,6 +255,26 @@ internal static class Craftables
     public static readonly Dictionary<string, List<uint>> CraftedList = new()
     {
         {
+            CraftSource.SeasonWish, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Appetence_4153087276,
+                DefinitionHashes.InventoryItems.DoomedPetitioner_1501688142,
+                DefinitionHashes.InventoryItems.Lethophobia_3710082365,
+                DefinitionHashes.InventoryItems.ScalarPotential_2563668388,
+                DefinitionHashes.InventoryItems.ScatterSignal_2558925366,
+                DefinitionHashes.InventoryItems.Supercluster_92459755
+            }
+        },
+        {
+            CraftSource.SeasonUndying, new List<uint>
+            {
+                DefinitionHashes.InventoryItems.Adhortative_2993554824,
+                DefinitionHashes.InventoryItems.Imperative_2045811635,
+                DefinitionHashes.InventoryItems.Subjunctive_1447836603,
+                DefinitionHashes.InventoryItems.Optative_2817683783
+            }
+        },
+        {
             CraftSource.RaidCe, new List<uint>
             {
                 DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
@@ -321,10 +361,10 @@ internal static class Craftables
             {
                 DefinitionHashes.InventoryItems.Disparity_1751893422,
                 DefinitionHashes.InventoryItems.FireandForget_2272041093,
-                DefinitionHashes.InventoryItems.IKELOS_HC_v103_1731355324,
+                DefinitionHashes.InventoryItems.IKELOS_HC_v103,
                 DefinitionHashes.InventoryItems.IKELOS_SG_v103,
                 DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
-                DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
+                DefinitionHashes.InventoryItems.IKELOS_SR_v103,
                 DefinitionHashes.InventoryItems.JudgmentofKelgorath_2978226043,
                 DefinitionHashes.InventoryItems.PathofLeastResistance_2827764482,
                 DefinitionHashes.InventoryItems.RetrofitEscapade_3103325054,
@@ -463,6 +503,16 @@ internal static class Craftables
     {
         return recordDefinitionHash switch
         {
+            DefinitionHashes.Records.Appetence => DefinitionHashes.InventoryItems.Appetence_4153087276,
+            DefinitionHashes.Records.DoomedPetitioner => DefinitionHashes.InventoryItems.DoomedPetitioner_1501688142,
+            DefinitionHashes.Records.Lethophobia => DefinitionHashes.InventoryItems.Lethophobia_3710082365,
+            DefinitionHashes.Records.ScalarPotential => DefinitionHashes.InventoryItems.ScalarPotential_2563668388,
+            DefinitionHashes.Records.ScatterSignal => DefinitionHashes.InventoryItems.ScatterSignal_2558925366,
+            DefinitionHashes.Records.Supercluster => DefinitionHashes.InventoryItems.Supercluster_92459755,
+            DefinitionHashes.Records.Adhortative => DefinitionHashes.InventoryItems.Adhortative_2993554824,
+            DefinitionHashes.Records.Imperative => DefinitionHashes.InventoryItems.Imperative_2045811635,
+            DefinitionHashes.Records.Subjunctive => DefinitionHashes.InventoryItems.Subjunctive_1447836603,
+            DefinitionHashes.Records.Optative => DefinitionHashes.InventoryItems.Optative_2817683783,
             DefinitionHashes.Records.AbyssDefiant => DefinitionHashes.InventoryItems.AbyssDefiant_833898322,
             DefinitionHashes.Records.FangofIrYût => DefinitionHashes.InventoryItems.FangofIrYût_1432682459,
             DefinitionHashes.Records.OversoulEdict => DefinitionHashes.InventoryItems.OversoulEdict_1098171824,
@@ -572,10 +622,10 @@ internal static class Craftables
             DefinitionHashes.Records.VoltaBracket => DefinitionHashes.InventoryItems.VoltaBracket_3920310144,
             DefinitionHashes.Records.Disparity => DefinitionHashes.InventoryItems.Disparity_1751893422,
             DefinitionHashes.Records.FireandForget => DefinitionHashes.InventoryItems.FireandForget_2272041093,
-            DefinitionHashes.Records.IKELOS_HC_v103 => DefinitionHashes.InventoryItems.IKELOS_HC_v103_1731355324,
+            DefinitionHashes.Records.IKELOS_HC_v103 => DefinitionHashes.InventoryItems.IKELOS_HC_v103,
             DefinitionHashes.Records.IKELOS_SG_v103 => DefinitionHashes.InventoryItems.IKELOS_SG_v103,
             DefinitionHashes.Records.IKELOS_SMG_v103 => DefinitionHashes.InventoryItems.IKELOS_SMG_v103,
-            DefinitionHashes.Records.IKELOS_SR_v103 => DefinitionHashes.InventoryItems.IKELOS_SR_v103_2302346155,
+            DefinitionHashes.Records.IKELOS_SR_v103 => DefinitionHashes.InventoryItems.IKELOS_SR_v103,
             DefinitionHashes.Records.JudgmentofKelgorath => DefinitionHashes.InventoryItems
                 .JudgmentofKelgorath_2978226043,
             DefinitionHashes.Records.PathofLeastResistance => DefinitionHashes.InventoryItems
@@ -631,6 +681,8 @@ internal static class Craftables
         public const string SeasonPlunder = "Plunder";
         public const string SeasonRisen = "Risen";
         public const string SeasonSeraph = "Seraph";
+        public const string SeasonUndying = "Undying";
+        public const string SeasonWish = "Wish";
         public const string SeasonWitch = "Witch";
         public const string Unknown = "Quest / Unknown";
         public const string Wq = "Witch Queen";

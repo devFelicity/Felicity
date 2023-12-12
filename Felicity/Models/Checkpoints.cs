@@ -29,41 +29,56 @@ public class CheckpointParser
 
 public class Checkpoints
 {
-    [JsonPropertyName("official")] public Official[]? Official { get; set; }
+    [JsonPropertyName("official")]
+    public Official[]? Official { get; set; }
 
-    [JsonPropertyName("community")] public object Community { get; set; }
+    [JsonPropertyName("community")]
+    public object Community { get; set; }
 
-    [JsonPropertyName("alert")] public Alert Alert { get; set; }
+    [JsonPropertyName("alert")]
+    public Alert Alert { get; set; }
 }
 
 public class Alert
 {
-    [JsonPropertyName("alertActive")] public bool AlertActive { get; set; }
+    [JsonPropertyName("alertActive")]
+    public bool AlertActive { get; set; }
 
-    [JsonPropertyName("alertText")] public string AlertText { get; set; }
+    [JsonPropertyName("alertText")]
+    public string AlertText { get; set; }
 }
 
 public class Official
 {
-    [JsonPropertyName("name")] public string Name { get; set; }
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
-    [JsonPropertyName("activity")] public string Activity { get; set; }
+    [JsonPropertyName("activity")]
+    public string Activity { get; set; }
 
-    [JsonPropertyName("activityHash")] public long ActivityHash { get; set; }
+    [JsonPropertyName("activityHash")]
+    public long ActivityHash { get; set; }
 
-    [JsonPropertyName("encounter")] public string Encounter { get; set; }
+    [JsonPropertyName("encounter")]
+    public string Encounter { get; set; }
 
-    [JsonPropertyName("players")] public int Players { get; set; }
+    [JsonPropertyName("players")]
+    public int Players { get; set; }
 
-    [JsonPropertyName("maxPlayers")] public int MaxPlayers { get; set; }
+    [JsonPropertyName("maxPlayers")]
+    public int MaxPlayers { get; set; }
 
-    [JsonPropertyName("difficultyTier")] public Difficulty DifficultyTier { get; set; }
+    [JsonPropertyName("difficultyTier")]
+    public Difficulty DifficultyTier { get; set; }
 
-    [JsonPropertyName("imgURL")] public string ImgUrl { get; set; }
+    [JsonPropertyName("imgURL")]
+    public string ImgUrl { get; set; }
 
-    [JsonPropertyName("iconURL")] public string IconUrl { get; set; }
+    [JsonPropertyName("iconURL")]
+    public string IconUrl { get; set; }
 
-    [JsonPropertyName("displayOrder")] public int DisplayOrder { get; set; }
+    [JsonPropertyName("displayOrder")]
+    public int DisplayOrder { get; set; }
 }
 
 public enum Difficulty

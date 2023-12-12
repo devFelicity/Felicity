@@ -11,7 +11,8 @@ namespace Felicity.Models;
 
 public class User
 {
-    [Key] public ulong DiscordId { get; set; }
+    [Key]
+    public ulong DiscordId { get; set; }
 
     public string OAuthToken { get; set; } = string.Empty;
     public DateTime OAuthTokenExpires { get; set; }
