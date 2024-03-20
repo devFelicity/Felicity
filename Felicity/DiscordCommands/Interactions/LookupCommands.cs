@@ -278,6 +278,7 @@ public class LookupCommands : InteractionModuleBase<ShardedInteractionContext>
             DefinitionHashes.Collectibles.TractorCannon,
             DefinitionHashes.Collectibles.Witherhoard,
             DefinitionHashes.Collectibles.Xenophage,
+            DefinitionHashes.Collectibles.WhisperoftheWorm,
             DefinitionHashes.Collectibles.AeonSafe,
             DefinitionHashes.Collectibles.AeonSoul,
             DefinitionHashes.Collectibles.AeonSwift,
