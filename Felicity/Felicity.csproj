@@ -12,7 +12,7 @@
       <PackageReference Include="Discord.Net" Version="3.13.0" />
       <PackageReference Include="DotNetBungieAPI" Version="2.12.2" />
       <PackageReference Include="DotNetBungieAPI.AspNet.Security.OAuth.Providers" Version="1.0.2" />
-      <PackageReference Include="DotNetBungieAPI.DefinitionProvider.Sqlite" Version="1.5.3" />
+      <PackageReference Include="DotNetBungieAPI.DefinitionProvider.Sqlite" Version="1.5.4" />
       <PackageReference Include="DotNetBungieAPI.HashReferences" Version="1.22.1" />
       <PackageReference Include="DotNetBungieAPI.Models" Version="2.11.3" />
       <PackageReference Include="DotNetBungieAPI.Service.Abstractions" Version="2.11.1" />
