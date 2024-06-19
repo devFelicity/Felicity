@@ -2,7 +2,7 @@
   "profiles": {
     "Felicity": {
       "commandName": "Project",
-      "workingDirectory": "bin/Debug/net6.0",
+      "workingDirectory": "bin/Debug/net8.0",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -16,7 +16,7 @@
     },
     "WSL": {
       "commandName": "WSL2",
-      "workingDirectory": "{ProjectDir}/bin/Debug/net6.0",
+      "workingDirectory": "{ProjectDir}/bin/Debug/net8.0",
       "launchUrl": "https://localhost:4259",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

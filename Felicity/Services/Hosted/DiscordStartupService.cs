@@ -214,6 +214,9 @@ public class DiscordStartupService : BackgroundService
 
         var errorMessage = $"{result.Error}: {result.ErrorReason}";
 
+        if(result is ExecuteResult eResult)
+            errorMessage = $"{eResult.Exception.InnerException!.GetType()}: {eResult.Exception.InnerException!.Message}";
+        
         errorEmbed.AddField("Command", $"```{options!.Name}```");
         errorEmbed.AddField("Parameters", $"```{JsonSerializer.Serialize(debugOptions)}```");
         errorEmbed.AddField("Error", $"```{errorMessage}```");

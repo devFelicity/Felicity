@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Eventing.Reader;
+using System.Text;
 using Discord;
 using Discord.Interactions;
 using DotNetBungieAPI.Extensions;
+using DotNetBungieAPI.HashReferences;
 using DotNetBungieAPI.Models;
 using DotNetBungieAPI.Models.Authorization;
 using DotNetBungieAPI.Models.Destiny;
+using DotNetBungieAPI.Models.Destiny.Components;
 using DotNetBungieAPI.Models.Destiny.Definitions.InventoryItems;
 using DotNetBungieAPI.Models.Destiny.Definitions.Records;
 using DotNetBungieAPI.Models.Destiny.Responses;
@@ -157,11 +160,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                 DestinyComponentType.ProfileInventories
             }, user.GetTokenData());
 
-        var deepDeepsight = await IsDeepsightAvailable(8721509,
-            user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
-            request.Response.Characters.Data.Keys.First());
-
-        var wishDeepsight = await IsDeepsightAvailable(1251298789,
+        var failsafeDeepsight = await IsDeepsightAvailable(DefinitionHashes.Vendors.SeasonalEngramDecoding,
             user.DestinyMembershipType, user.DestinyMembershipId, user.GetTokenData(),
             request.Response.Characters.Data.Keys.First());
 
@@ -203,7 +202,35 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                     _bungieClient.Repository.TryGetDestinyDefinition<DestinyRecordDefinition>(weaponId,
                         out var manifestRecord);
 
-                    var record = request.Response.ProfileRecords.Data.Records[weaponId];
+                    DestinyRecordComponent? record = null;
+                    var characterWeapons = new List<uint>
+                    {
+                        DefinitionHashes.Records.FaithKeeper,
+                        DefinitionHashes.Records.IllOmen,
+                        DefinitionHashes.Records.SightlineSurvey,
+                        DefinitionHashes.Records.TimewornWayfarer,
+                        DefinitionHashes.Records.VeiledThreat
+                    };
+
+                    if (characterWeapons.Contains(weaponId))
+                    {
+                        foreach (var characterKey in request.Response.Characters.Data.Keys)
+                        {
+                            if (!request.Response.CharacterRecords.Data[characterKey].Records.ContainsKey(weaponId))
+                                continue;
+
+                            record = request.Response.CharacterRecords.Data[characterKey].Records[weaponId];
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        record = request.Response.ProfileRecords.Data.Records[weaponId];
+                    }
+
+                    if (record == null)
+                        continue;
+
                     var obj = record.Objectives.First();
 
                     if (obj.IsComplete)
@@ -226,7 +253,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
                             field.Value += $"\n > `{obj.Progress}/{obj.CompletionValue}`";
                         }
 
-                        if ((keyValuePair.Key is "Deep" && deepDeepsight) || (keyValuePair.Key is "Wish" && wishDeepsight))
+                        if (keyValuePair.Key is "Failsafe" && failsafeDeepsight)
                         {
                             if (field.Value.ToString()!.Contains("⚠️"))
                                 field.Value += "💰 ";
@@ -302,8 +329,7 @@ public class CraftingCommands : InteractionModuleBase<ShardedInteractionContext>
 
         var categoryIndex = vendorId switch
         {
-            8721509 => 1,
-            1251298789 => 1,
+            908390552 => 1,
             _ => 0
         };
 
