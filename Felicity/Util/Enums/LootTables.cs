@@ -498,7 +498,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Helmet, (uint)Armor.Gloves, (uint)Armor.Boots,
-                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
+                        DefinitionHashes.InventoryItems.NoSurvivors,
                         DefinitionHashes.InventoryItems.NewPacificEpitaph,
                         DefinitionHashes.InventoryItems.ColdComfort_839786290
                     }
@@ -509,7 +509,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         (uint)Armor.Gloves, (uint)Armor.Chest, (uint)Armor.Class,
-                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
+                        DefinitionHashes.InventoryItems.NoSurvivors,
                         DefinitionHashes.InventoryItems.GreasyLuck,
                         DefinitionHashes.InventoryItems.ColdComfort_839786290
                     }
@@ -520,7 +520,7 @@ public static class LootTables
                     LootIds = new List<uint>
                     {
                         DefinitionHashes.InventoryItems.TheNavigator,
-                        DefinitionHashes.InventoryItems.NoSurvivors_3262192268,
+                        DefinitionHashes.InventoryItems.NoSurvivors,
                         DefinitionHashes.InventoryItems.NewPacificEpitaph,
                         DefinitionHashes.InventoryItems.ColdComfort_839786290,
                         DefinitionHashes.InventoryItems.GreasyLuck,
