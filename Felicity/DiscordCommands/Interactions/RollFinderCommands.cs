@@ -118,15 +118,6 @@ public class RollFinderCommands : InteractionModuleBase<ShardedInteractionContex
         {
             case WeaponSource.XurEternity:
                 return "Dares Of Eternity";
-            case WeaponSource.SeasonalHunt:
-            case WeaponSource.SeasonalChosen:
-            case WeaponSource.SeasonalSplicer:
-            case WeaponSource.SeasonalLost:
-            case WeaponSource.SeasonalRisen:
-            case WeaponSource.SeasonalHaunted:
-            case WeaponSource.SeasonalPlunder:
-                var split = source.Humanize(LetterCasing.Title).Split(' ');
-                return $"{split[0]} ({split[1]})";
             default:
                 return source.Humanize(LetterCasing.Title);
         }
