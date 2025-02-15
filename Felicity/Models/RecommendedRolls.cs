@@ -107,16 +107,11 @@ public enum WeaponSource
     RootOfNightmares,
     GhostsOfTheDeep,
     CrotasEnd,
-    SeasonalHunt = 112,
-    SeasonalChosen = 113,
-    SeasonalSplicer = 114,
-    SeasonalLost = 115,
-    SeasonalRisen = 116,
-    SeasonalHaunted = 117,
-    SeasonalPlunder = 118,
-    SeasonalSeraph = 119,
-    SeasonalDefiance = 120,
-    SeasonalDeep = 121,
+    SalvationsEdge,
+    WarlordsRuin,
+    VespersHost,
+    SunderedDoctrine,
+    Seasonal = 100,
     Unknown = 999
 }
 
