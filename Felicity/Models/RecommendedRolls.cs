@@ -116,7 +116,8 @@ public enum WeaponSource
     SeasonalPlunder = 118,
     SeasonalSeraph = 119,
     SeasonalDefiance = 120,
-    SeasonalDeep = 121
+    SeasonalDeep = 121,
+    Unknown = 999
 }
 
 public static class ProcessRollData
