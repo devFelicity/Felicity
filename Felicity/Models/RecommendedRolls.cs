@@ -111,6 +111,7 @@ public enum WeaponSource
     WarlordsRuin,
     VespersHost,
     SunderedDoctrine,
+    PaleHeart,
     Seasonal = 100,
     Unknown = 999
 }
